@@ -1,0 +1,1899 @@
+{
+    "data_headers": {
+        "result_code": 1,
+        "user_id": 0,
+        "user_name": "",
+        "is_login": false,
+        "csrf_token": "6b582739-aabe-4556-ae8d-961fb7de8124"
+    },
+    "data": {
+        "cards": {
+            "10112120": {
+                "related_card_ids": [
+                    90011110
+                ],
+                "specific_effect_card_ids": []
+            },
+            "10111310": {
+                "related_card_ids": [
+                    90011110
+                ],
+                "specific_effect_card_ids": []
+            },
+            "10122110": {
+                "related_card_ids": [
+                    90021110
+                ],
+                "specific_effect_card_ids": []
+            },
+            "10031210": {
+                "related_card_ids": [
+                    90031210
+                ],
+                "specific_effect_card_ids": []
+            },
+            "10143210": {
+                "related_card_ids": [
+                    90043110
+                ],
+                "specific_effect_card_ids": []
+            },
+            "10242210": {
+                "related_card_ids": [
+                    10242210
+                ],
+                "specific_effect_card_ids": []
+            },
+            "10052110": {
+                "related_card_ids": [
+                    90051120
+                ],
+                "specific_effect_card_ids": []
+            },
+            "10251120": {
+                "related_card_ids": [
+                    90051130
+                ],
+                "specific_effect_card_ids": []
+            },
+            "10062210": {
+                "related_card_ids": [
+                    90061110
+                ],
+                "specific_effect_card_ids": []
+            },
+            "10171110": {
+                "related_card_ids": [
+                    90071220,
+                    90072120,
+                    90073110,
+                    90073120,
+                    90073130,
+                    90074110
+                ],
+                "specific_effect_card_ids": []
+            },
+            "10171320": {
+                "related_card_ids": [
+                    90071210,
+                    90071220,
+                    90072110,
+                    90073110,
+                    90073120,
+                    90073130,
+                    90074110,
+                    90072120
+                ],
+                "specific_effect_card_ids": []
+            },
+            "90031210": {
+                "related_card_ids": [
+                    90031210
+                ],
+                "specific_effect_card_ids": []
+            },
+            "90071220": {
+                "related_card_ids": [
+                    90072120
+                ],
+                "specific_effect_card_ids": []
+            },
+            "90072120": {
+                "related_card_ids": [
+                    90073110,
+                    90073120,
+                    90073130
+                ],
+                "specific_effect_card_ids": []
+            },
+            "90073110": {
+                "related_card_ids": [
+                    90073120,
+                    90073130,
+                    90074110
+                ],
+                "specific_effect_card_ids": []
+            },
+            "90071210": {
+                "related_card_ids": [
+                    90072110
+                ],
+                "specific_effect_card_ids": []
+            },
+            "90072110": {
+                "related_card_ids": [
+                    90073110,
+                    90073120,
+                    90073130
+                ],
+                "specific_effect_card_ids": []
+            }
+        },
+        "card_details": {
+            "10201110": {
+                "common": {
+                    "card_id": 10201110,
+                    "name": "\u96d9\u5203\u54e5\u5e03\u6797",
+                    "name_ruby": "\u96d9\u5203\u54e5\u5e03\u6797",
+                    "base_card_id": 10201110,
+                    "card_resource_id": 102011100,
+                    "atk": 1,
+                    "life": 1,
+                    "flavour_text": "\u4eba\u5011\u9996\u6b21\u767c\u73fe\u5230\u62ff\u8457\u5169\u628a\u76f8\u540c\u6b66\u5668\u7684\u54e5\u5e03\u6797\u3002\n\u7531\u65bc\u5728\u9b54\u7269\u4e2d\u6709\u8a31\u591a\u6703\u96a8\u8457\u74b0\u5883\u800c\u9032\u5316\u7684\u7269\u7a2e\uff0c\n\u56e0\u6b64\u7814\u7a76\u8005\u5011\u958b\u59cb\u8b70\u8ad6\u7d1b\u7d1b\uff0c\u9019\u662f\u5426\u4e5f\u662f\u9032\u5316\u5fb5\u5146\u3002",
+                    "skill_text": "\u3010<color=Keyword>\u5165\u5834\u66f2<\/color>\u3011\u5982\u679c\u81ea\u5df1\u6230\u5834\u4e0a\u6709\u5df2\u8d85\u9032\u5316\u7684\u5f9e\u8005\u5361\uff0c\u5247\u6703\u6307\u5b9a1\u5f35\u6575\u65b9\u6230\u5834\u4e0a\u7684\u5f9e\u8005\u5361\u3002\u7d66\u4e88\u51764\u9ede\u50b7\u5bb3\u3002",
+                    "card_set_id": 10002,
+                    "type": 1,
+                    "class": 0,
+                    "tribes": [
+                        0
+                    ],
+                    "cost": 1,
+                    "rarity": 1,
+                    "cv": "\u6c5f\u53e3\u62d3\u4e5f",
+                    "illustrator": "tricky\u80e1\u5750",
+                    "questions": [],
+                    "is_token": false,
+                    "is_include_rotation": false,
+                    "card_image_hash": "0a8181b6031d489c9b3d1d14466bef44",
+                    "card_banner_image_hash": "aca2639fc5674ba097d94dda4c321979"
+                },
+                "evo": {
+                    "card_resource_id": 102011101,
+                    "flavour_text": "\u6bd4\u8d77\u53ea\u6709\u4e00\u628a\u6b66\u5668\uff0c\u62ff\u5169\u628a\u6703\u66f4\u53b2\u5bb3\u5594\uff01\n\u9019\u6a23\u5c31\u80fd\u4e00\u6b21\u5207\u5169\u500b\u6c34\u679c\u4e86\uff01\n\u65b9\u4fbf\u53c8\u597d\u5403\u5594\u2500\u2500\uff01",
+                    "skill_text": "\u3010<color=Keyword>\u5165\u5834\u66f2<\/color>\u3011\u5982\u679c\u81ea\u5df1\u6230\u5834\u4e0a\u6709\u5df2\u8d85\u9032\u5316\u7684\u5f9e\u8005\u5361\uff0c\u5247\u6703\u6307\u5b9a1\u5f35\u6575\u65b9\u6230\u5834\u4e0a\u7684\u5f9e\u8005\u5361\u3002\u7d66\u4e88\u51764\u9ede\u50b7\u5bb3\u3002",
+                    "card_image_hash": "1b254af517af482f9e43424dfd0c5879",
+                    "card_banner_image_hash": "20caecab73814e389845426df4f1ed6f"
+                },
+                "style_card_list": []
+            },
+            "10012110": {
+                "common": {
+                    "card_id": 10012110,
+                    "name": "\u5192\u96aa\u7cbe\u9748\u2027\u5c0f\u6885",
+                    "name_ruby": "\u5192\u96aa\u7cbe\u9748\u2027\u5c0f\u6885",
+                    "base_card_id": 10012110,
+                    "card_resource_id": 100121100,
+                    "atk": 1,
+                    "life": 1,
+                    "flavour_text": "\u300c\u6211\u66fe\u4ee5\u70ba\u8b8a\u6210\u5927\u4eba\u5f8c\u5c31\u7121\u6240\u4e0d\u80fd\u3002\u300d\n\u5230\u5916\u9762\u7684\u4e16\u754c\u5192\u96aa\u5f8c\uff0c\u5979\u77e5\u66c9\u4e86\u8a31\u591a\u4e0d\u77e5\u9053\u7684\u4e8b\u3002\n\u300c\u4f46\u5176\u5be6\u4e0d\u662f\u7684\u3002\u5373\u4f7f\u662f\u5927\u4eba\u4e5f\u6709\u8fa6\u4e0d\u5230\u7684\u4e8b\u3002\u300d\n\u96d6\u7136\u5916\u8c8c\u4ecd\u662f\u5c11\u5973\uff0c\u4f46\u5979\u6b63\u8d70\u5728\u6210\u70ba\u5927\u4eba\u7684\u9053\u8def\u4e0a\u3002",
+                    "skill_text": "\u3010<color=Keyword>\u5165\u5834\u66f2<\/color>\u3011\u3010<color=Keyword>\u9023\u64ca<\/color>_3\u3011\u6307\u5b9a1\u5f35\u6575\u65b9\u6230\u5834\u4e0a\u7684\u5f9e\u8005\u5361\u3002\u7d66\u4e88\u51763\u9ede\u50b7\u5bb3\u3002",
+                    "card_set_id": 10000,
+                    "type": 1,
+                    "class": 1,
+                    "tribes": [
+                        0
+                    ],
+                    "cost": 1,
+                    "rarity": 2,
+                    "cv": "\u9580\u8107\u821e\u4ee5",
+                    "illustrator": "\u30c4\u30cd\u304f\u3093",
+                    "questions": [
+                        {
+                            "question": "\u672c\u56de\u5408\u4e2d\u5df2\u4f7f\u75282\u5f35\u5361\u7247\u6642\uff0c\u82e5\u4f7f\u7528\u300e\u5192\u96aa\u7cbe\u9748\u2027\u5c0f\u6885\u300f\u6703\u767c\u52d5\u3010\u9023\u64ca_3\u3011\u55ce\uff1f",
+                            "answer": "\u6703\u767c\u52d5\u3002\u4f7f\u7528\u7684\u5361\u7247\u672c\u8eab\u4e5f\u5c07\u8a08\u5165\u3010\u9023\u64ca\u3011\u3002"
+                        }
+                    ],
+                    "is_token": false,
+                    "is_include_rotation": true,
+                    "card_image_hash": "eaa4a29ae3524dc393076e69fba629b2",
+                    "card_banner_image_hash": "f3419dc8a59a4539a5ca1245cf24bac5"
+                },
+                "evo": {
+                    "card_resource_id": 100121101,
+                    "flavour_text": "\u8b8a\u6210\u5927\u4eba\uff0c\u662f\u975e\u5e38\u8f9b\u82e6\u7684\u3002\n\u4e0d\u662f\u53ea\u6709\u5feb\u6a02\u7684\u4e8b\uff0c\u800c\u4e14\u4e5f\u4e0d\u81ea\u7531\u2026\u2026\n\u2026\u2026\u5373\u4f7f\u9019\u6a23\uff0c\u6211\u9084\u662f\u60f3\u8b8a\u6210\u5927\u4eba\uff01\n\u56e0\u70ba\u8b8a\u6210\u5927\u4eba\u7684\u8a71\uff0c\u5c31\u80fd\u5b88\u8b77\u6bd4\u73fe\u5728\u66f4\u591a\u7684\u6771\u897f\uff01",
+                    "skill_text": "\u3010<color=Keyword>\u5165\u5834\u66f2<\/color>\u3011\u3010<color=Keyword>\u9023\u64ca<\/color>_3\u3011\u6307\u5b9a1\u5f35\u6575\u65b9\u6230\u5834\u4e0a\u7684\u5f9e\u8005\u5361\u3002\u7d66\u4e88\u51763\u9ede\u50b7\u5bb3\u3002",
+                    "card_image_hash": "614595b1202c4619b4ecd2f52aa901b9",
+                    "card_banner_image_hash": "dbbdb53a40e44726ab2559fd68b5616c"
+                },
+                "style_card_list": []
+            },
+            "10112120": {
+                "common": {
+                    "card_id": 10112120,
+                    "name": "\u7d14\u771f\u7684\u6c34\u4e4b\u5996\u7cbe",
+                    "name_ruby": "\u7d14\u771f\u7684\u6c34\u4e4b\u5996\u7cbe",
+                    "base_card_id": 10112120,
+                    "card_resource_id": 101121200,
+                    "atk": 1,
+                    "life": 1,
+                    "flavour_text": "\u6b63\u56e0\u77e5\u9053\u5996\u7cbe\u7684\u60e1\u6bd2\uff0c\u5f98\u5f8a\u65bc\u6797\u4e2d\u7684\u7537\u5b50\u9677\u5165\u6050\u614c\u3002\n\u5fcd\u53d7\u8457\u98e2\u6e34\u7684\u4ed6\u7d42\u65bc\u767c\u73fe\u4e86\u6c34\u6e90\uff0c\u4f46\u537b\u6709\u5996\u7cbe\u5728\u65c1\u3002\n\u300c\u7cdf\u7cd5\u4e86\uff01\u4f60\u8981\u8d95\u5feb\u559d\u6c34\u4f86\u6062\u5fa9\u9ad4\u529b\uff01\u300d",
+                    "skill_text": "\u3010<color=Keyword>\u8b1d\u5e55\u66f2<\/color>\u3011\u589e\u52a01\u5f35\u300e<color=Keyword>\u5996\u7cbe<\/color>\u300f\u5230\u81ea\u5df1\u7684\u624b\u724c\u4e2d\u3002",
+                    "card_set_id": 10001,
+                    "type": 1,
+                    "class": 1,
+                    "tribes": [
+                        0
+                    ],
+                    "cost": 1,
+                    "rarity": 2,
+                    "cv": "\u8fbb\u3042\u3086\u307f",
+                    "illustrator": "",
+                    "questions": [],
+                    "is_token": false,
+                    "is_include_rotation": true,
+                    "card_image_hash": "ec98855785e34d5788757c3dfc39465e",
+                    "card_banner_image_hash": "b9ed7e0d3baa4ba79e036efb27ff078d"
+                },
+                "evo": {
+                    "card_resource_id": 101121201,
+                    "flavour_text": "\u9019\u88e1\u7684\u6c34\u771f\u7684\u5f88\u597d\u559d\uff0c\u800c\u4e14\u9084\u5f88\u6709\u6548\uff01\n\u5927\u5bb6\u90fd\u8aaa\u4e00\u559d\u5c31\u6703\u4e0a\u766e\uff0c\u611f\u89ba\u50cf\u662f\u8981\u5347\u5929\u4e86\uff01\n\u2026\u2026\u4f60\u70ba\u4ec0\u9ebc\u8981\u9003\u8d70\u5462\uff01\uff1f\u9019\u4e0d\u662f\u53ef\u7591\u7684\u6c34\u554a\uff5e\uff01",
+                    "skill_text": "\u3010<color=Keyword>\u8b1d\u5e55\u66f2<\/color>\u3011\u589e\u52a01\u5f35\u300e<color=Keyword>\u5996\u7cbe<\/color>\u300f\u5230\u81ea\u5df1\u7684\u624b\u724c\u4e2d\u3002",
+                    "card_image_hash": "e8999e53131d4b8db1136ea063f2819a",
+                    "card_banner_image_hash": "51449a3bed424f8b81f177381728c31a"
+                },
+                "style_card_list": []
+            },
+            "90011110": {
+                "common": {
+                    "card_id": 90011110,
+                    "name": "\u5996\u7cbe",
+                    "name_ruby": "\u5996\u7cbe",
+                    "base_card_id": 90011110,
+                    "card_resource_id": 900111100,
+                    "atk": 1,
+                    "life": 1,
+                    "flavour_text": "\u6709\u4e0d\u5c11\u76ee\u7779\u5230\u5996\u7cbe\u7684\u8b49\u8a5e\uff0c\u5176\u7279\u5fb5\u4e5f\u51fa\u73fe\u8a31\u591a\u5206\u6b67\u3002\n\u4f46\u6240\u6709\u76ee\u64ca\u8005\u90fd\u6703\u7570\u53e3\u540c\u8072\u5730\u8aaa\u2500\u2500\n\u300c\u8981\u5c0f\u5fc3\u5996\u7cbe\u7684\u60e1\u4f5c\u5287\u300d\u3002",
+                    "skill_text": "\u3010<color=Keyword>\u7a81\u9032<\/color>\u3011",
+                    "card_set_id": 90000,
+                    "type": 1,
+                    "class": 1,
+                    "tribes": [
+                        5
+                    ],
+                    "cost": 1,
+                    "rarity": 1,
+                    "cv": "\u660e\u5742\u8070\u7f8e",
+                    "illustrator": "\u304a\u3076",
+                    "questions": [],
+                    "is_token": true,
+                    "is_include_rotation": false,
+                    "card_image_hash": "18d4d3c2ddd6481193aa789826aaac68",
+                    "card_banner_image_hash": "2981c32ad9a54871a2abae091cad0817"
+                },
+                "evo": {
+                    "card_resource_id": 900111101,
+                    "flavour_text": "\u4e5f\u6709\u4e00\u7a2e\u8aaa\u6cd5\u662f\u6bcf\u500b\u76ee\u64ca\u8005\u770b\u898b\u7684\u5996\u7cbe\u90fd\u4e0d\u76f8\u540c\u3002\n\u4f46\u4e0d\u7ba1\u5982\u4f55\u2026\u2026\u6beb\u7121\u7591\u554f\u5730\u5927\u5bb6\u90fd\u88ab\u5996\u7cbe\u73a9\u5f04\u4e86\u3002\n\u2500\u2500\u95dc\u65bc\u5996\u7cbe\u7684\u7814\u7a76\u5831\u544a",
+                    "skill_text": "\u3010<color=Keyword>\u7a81\u9032<\/color>\u3011",
+                    "card_image_hash": "f74fcf9e9e9347088871f88228dffec6",
+                    "card_banner_image_hash": "df7e98882c074ec1bba80a99ac1c9188"
+                },
+                "style_card_list": [
+                    {
+                        "hash": "61350bab20a344dba7ddfb7f343e9703",
+                        "evo_hash": "b62d554bc75f41998a7007cc1d514b37",
+                        "name": "",
+                        "name_ruby": "",
+                        "cv": "",
+                        "illustrator": "\u30ab\u30a4\u30a8\u30c0\u30d2\u30ed\u30b7",
+                        "skill_text": "",
+                        "flavour_text": "",
+                        "evo_flavour_text": ""
+                    }
+                ]
+            },
+            "10012310": {
+                "common": {
+                    "card_id": 10012310,
+                    "name": "\u7fa4\u87f2\u60e1\u5146",
+                    "name_ruby": "\u7fa4\u87f2\u60e1\u5146",
+                    "base_card_id": 10012310,
+                    "card_resource_id": 100123100,
+                    "atk": 0,
+                    "life": 0,
+                    "flavour_text": "\u87f2\u7fa4\u906e\u853d\u6574\u7247\u666f\u8272\uff0c\u662f\u7260\u5011\u73cd\u8996\u68ee\u6797\u7684\u7121\u5fc3\u4e4b\u8209\u3002\n\u300c\u7576\u6642\u5982\u679c\u7121\u8996\u7260\u5011\uff0c\u53ef\u5c31\u8981\u51fa\u5927\u4e8b\u4e86\u5462\uff01\u300d\n\u300c\u5225\u518d\u91cd\u63d0\u90a3\u9ebc\u4e45\u4ee5\u524d\u7684\u4e8b\u4e86\u5566\uff01\u300d\n\u87f2\u7fa4\u51fa\u65bc\u597d\u610f\u7684\u50b3\u8a00\uff0c\u4e00\u65e6\u932f\u904e\u4fbf\u6703\u7acb\u5373\u4ed8\u51fa\u4ee3\u50f9\u3002",
+                    "skill_text": "\u6307\u5b9a1\u5f35\u81ea\u5df1\u6230\u5834\u4e0a\u7684\u5361\u7247\u3002\u4f7f\u5176\u8fd4\u56de\u624b\u724c\u4e2d\u3002\u96a8\u6a5f\u7d66\u4e881\u5f35\u6575\u65b9\u6230\u5834\u4e0a\u7684\u5f9e\u8005\u53612\u9ede\u50b7\u5bb3\u3002",
+                    "card_set_id": 10000,
+                    "type": 4,
+                    "class": 1,
+                    "tribes": [
+                        0
+                    ],
+                    "cost": 1,
+                    "rarity": 2,
+                    "cv": "",
+                    "illustrator": "misekiss",
+                    "questions": [],
+                    "is_token": false,
+                    "is_include_rotation": true,
+                    "card_image_hash": "4afc10fa4e5447d480b3240d718393cf",
+                    "card_banner_image_hash": "3d376a7b4b9c4df6901cac304f0a7a46"
+                },
+                "evo": [],
+                "style_card_list": []
+            },
+            "10111310": {
+                "common": {
+                    "card_id": 10111310,
+                    "name": "\u53ec\u96c6\u5996\u7cbe",
+                    "name_ruby": "\u53ec\u96c6\u5996\u7cbe",
+                    "base_card_id": 10111310,
+                    "card_resource_id": 101113100,
+                    "atk": 0,
+                    "life": 0,
+                    "flavour_text": "\u300c\u5996\u7cbe\u6536\u5230\u6307\u793a\u6216\u547d\u4ee4\u6642\u90fd\u6703\u5145\u8033\u4e0d\u805e\u3002\n\u4f46\u5982\u679c\u662f\u670b\u53cb\u7684\u8acb\u6c42\uff0c\u4ed6\u5011\u5c31\u6703\u771f\u8aa0\u5730\u50be\u807d\u3002\u300d\n\u2500\u2500\u8ac7\u8ad6\u8457\u5996\u7cbe\u7684\u7cbe\u9748\u7537\u6027",
+                    "skill_text": "\u589e\u52a02\u5f35\u300e<color=Keyword>\u5996\u7cbe<\/color>\u300f\u5230\u81ea\u5df1\u7684\u624b\u724c\u4e2d\u3002",
+                    "card_set_id": 10001,
+                    "type": 4,
+                    "class": 1,
+                    "tribes": [
+                        0
+                    ],
+                    "cost": 1,
+                    "rarity": 1,
+                    "cv": "",
+                    "illustrator": "",
+                    "questions": [],
+                    "is_token": false,
+                    "is_include_rotation": true,
+                    "card_image_hash": "477d6f7072fa4faea2a57a72188931b9",
+                    "card_banner_image_hash": "db75b2d55f5f4c4e8faeb07720c358b9"
+                },
+                "evo": [],
+                "style_card_list": [
+                    {
+                        "hash": "462189df64e642a0866a0fa99179a251",
+                        "evo_hash": "",
+                        "name": "",
+                        "name_ruby": "",
+                        "cv": "\u82b1\u6fa4\u9999\u83dc",
+                        "illustrator": "",
+                        "skill_text": "",
+                        "flavour_text": "",
+                        "evo_flavour_text": ""
+                    }
+                ]
+            },
+            "10212310": {
+                "common": {
+                    "card_id": 10212310,
+                    "name": "\u4f86\u81ea\u6a39\u4e0a\u7684\u7a81\u8972",
+                    "name_ruby": "\u4f86\u81ea\u6a39\u4e0a\u7684\u7a81\u8972",
+                    "base_card_id": 10212310,
+                    "card_resource_id": 102123100,
+                    "atk": 0,
+                    "life": 0,
+                    "flavour_text": "\u5728\u68ee\u6797\u4e2d\u8ff7\u8def\u6642\uff0c\u5c31\u7b97\u767c\u73fe\u6709\u8def\u4e5f\u4e0d\u80fd\u6cbf\u8457\u5b83\u8d70\u3002\n\u300c\u6797\u9593\u9053\u8def\u4e43\u7378\u9053\uff0c\u5373\u662f\u4f5c\u70ba\u91ce\u7378\u88ab\u7375\u6bba\u4e4b\u9053\u8def\u3002\u300d",
+                    "skill_text": "\u767c\u52d51\u6b21\u300c\u96a8\u6a5f\u7d66\u4e881\u5f35\u6575\u65b9\u6230\u5834\u4e0a\u7684\u5f9e\u8005\u53612\u9ede\u50b7\u5bb3\u300d\u3002\u3010<color=Keyword>\u9023\u64ca<\/color>_3\u3011\u7531\u539f\u672c\u76841\u6b21\u8f49\u8b8a\u70ba2\u6b21\u3002",
+                    "card_set_id": 10002,
+                    "type": 4,
+                    "class": 1,
+                    "tribes": [
+                        0
+                    ],
+                    "cost": 1,
+                    "rarity": 2,
+                    "cv": "",
+                    "illustrator": "",
+                    "questions": [],
+                    "is_token": false,
+                    "is_include_rotation": false,
+                    "card_image_hash": "647f36fd750d4e39ab5f306c8bb5b78f",
+                    "card_banner_image_hash": "097bfb50037342279c519bb02dbb8073"
+                },
+                "evo": [],
+                "style_card_list": []
+            },
+            "10021110": {
+                "common": {
+                    "card_id": 10021110,
+                    "name": "\u77ac\u606f\u7684\u8fc5\u6377\u528d\u58eb",
+                    "name_ruby": "\u77ac\u606f\u7684\u8fc5\u6377\u528d\u58eb",
+                    "base_card_id": 10021110,
+                    "card_resource_id": 100211100,
+                    "atk": 1,
+                    "life": 1,
+                    "flavour_text": "\u54c8\uff0c\u9084\u771f\u6162\u554a\uff01\n\u6191\u4f60\u90a3\u7a2e\u9f9c\u901f\uff0c\u5c31\u7b97\u5230\u4e0b\u8f29\u5b50\u4e5f\u8ffd\u4e0d\u4e0a\u6211\u5566\uff01",
+                    "skill_text": "\u3010<color=Keyword>\u75be\u99b3<\/color>\u3011",
+                    "card_set_id": 10000,
+                    "type": 1,
+                    "class": 2,
+                    "tribes": [
+                        0
+                    ],
+                    "cost": 1,
+                    "rarity": 1,
+                    "cv": "\u5167\u7530\u96c4\u99ac",
+                    "illustrator": "\u8a00\u72ac",
+                    "questions": [],
+                    "is_token": false,
+                    "is_include_rotation": true,
+                    "card_image_hash": "120880754664424399ab44e866361f08",
+                    "card_banner_image_hash": "e9b8f78ec3474596b6e5b0e0cecaf289"
+                },
+                "evo": {
+                    "card_resource_id": 100211101,
+                    "flavour_text": "\u53ea\u6c42\u6bd4\u4efb\u4f55\u4eba\u90fd\u9084\u8981\u5feb\u3002\n\u70ba\u4e86\u9054\u6210\u9019\u500b\u5fc3\u9858\uff0c\u7537\u5b50\u53ef\u8aaa\u662f\u8c41\u51fa\u4e86\u6027\u547d\u3002\n\u7121\u8ad6\u5632\u7b11\u6216\u5f8c\u6094\uff0c\u5c0d\u4ed6\u4f86\u8aaa\u90a3\u5168\u90fd\u2500\u2500\n\u300c\u2500\u2500\u592a\u6162\u5566\uff01\u300d",
+                    "skill_text": "\u3010<color=Keyword>\u75be\u99b3<\/color>\u3011",
+                    "card_image_hash": "b520fa9a9a74458fb84676036f8accd5",
+                    "card_banner_image_hash": "c495c9c875db4986bbd582dc47135c70"
+                },
+                "style_card_list": []
+            },
+            "10122110": {
+                "common": {
+                    "card_id": 10122110,
+                    "name": "\u7d71\u7387\u7684\u9b6f\u7c73\u90a3\u65af\u9a0e\u58eb",
+                    "name_ruby": "\u7d71\u7387\u7684\u9b6f\u7c73\u90a3\u65af\u9a0e\u58eb",
+                    "base_card_id": 10122110,
+                    "card_resource_id": 101221100,
+                    "atk": 1,
+                    "life": 1,
+                    "flavour_text": "\u5728\u65b0\u767c\u73fe\u7684\u672a\u77e5\u5927\u9678\u4e0a\uff0c\u6210\u7fa4\u7684\u9b54\u7269\u5927\u8209\u58d3\u5883\u3002\n\u82e5\u5404\u4f4d\u7684\u96d9\u8173\u56e0\u6050\u61fc\u800c\u4e0d\u807d\u4f7f\u559a\uff0c\u90a3\u5c31\u7531\u6211\u6253\u524d\u92d2\uff01\n\u5373\u4f7f\u5728\u65b0\u7684\u571f\u5730\u4e0a\u2500\u2500\u9b6f\u7c73\u90a3\u65af\u9a0e\u58eb\u5718\uff0c\u958b\u59cb\u9032\u8ecd\uff01",
+                    "skill_text": "\u7576\u81ea\u5df1\u7684\u58eb\u5175\u2027\u5f9e\u8005\u5361\u9032\u5165\u6230\u5834\u6642\uff0c\u5230\u56de\u5408\u7d50\u675f\u70ba\u6b62\uff0c\u4f7f\u9019\u5f35\u5361\u7247+1\/+0\u3002\n<hr><ev>\u3010<color=Keyword>\u9032\u5316\u6642<\/color>\u3011\u53ec\u559a1\u5f35\u300e<color=Keyword>\u9a0e\u58eb<\/color>\u300f\u5230\u81ea\u5df1\u7684\u6230\u5834\u4e0a\u3002<\/ev>",
+                    "card_set_id": 10001,
+                    "type": 1,
+                    "class": 2,
+                    "tribes": [
+                        3
+                    ],
+                    "cost": 1,
+                    "rarity": 2,
+                    "cv": "\u65e5\u7b20\u967d\u5b50",
+                    "illustrator": "\u6797",
+                    "questions": [
+                        {
+                            "question": "\u5728\u6575\u65b9\u7684\u56de\u5408\u4e2d\uff0c\u7576\u81ea\u5df1\u6230\u5834\u4e0a\u7684\u300e\u738b\u5ba4\u8eca\u592b\u300f\u88ab\u7834\u58de\uff0c\u4e14\u900f\u904e\u3010\u8b1d\u5e55\u66f2\u3011\u80fd\u529b\u53ec\u559a\u300e\u9a0e\u58eb\u300f\u5230\u6230\u5834\u4e0a\u6642\uff0c\u6703\u4f7f\u81ea\u5df1\u6230\u5834\u4e0a\u7684\u300e\u7d71\u7387\u7684\u9b6f\u7c73\u90a3\u65af\u9a0e\u58eb\u300f+1\/+0\u55ce\uff1f\u82e5\u6703\u4f7f\u5176+1\/+0\uff0c\u5c07\u6301\u7e8c\u81f3\u4f55\u6642\uff1f",
+                            "answer": "\u6703\u4f7f\u5176+1\/+0\u3002\u5c07\u6301\u7e8c\u81f3\u6575\u65b9\u7684\u56de\u5408\u7d50\u675f\u3002"
+                        }
+                    ],
+                    "is_token": false,
+                    "is_include_rotation": true,
+                    "card_image_hash": "fbad6e8202184ca3a6f030c25b27cad8",
+                    "card_banner_image_hash": "3376f2cbd5b1416db62a6043e5c34e83"
+                },
+                "evo": {
+                    "card_resource_id": 101221101,
+                    "flavour_text": "\u4ee5\u660e\u78ba\u7684\u6307\u793a\u8207\u5408\u4f5c\uff0c\u63a5\u4e8c\u9023\u4e09\u5730\u65ac\u6bba\u4f86\u8972\u7684\u9b54\u7269\u3002\n\u90a3\u596e\u6230\u7684\u82f1\u59ff\u4e5f\u9f13\u821e\u4e86\u5949\u547d\u524d\u4f86\u9019\u7247\u5927\u9678\u7684\u6230\u58eb\u5011\u3002\n\u300c\u518d\u4f86\u8f2a\u5230\u6cd5\u5e2b\u51fa\u5834\u4e86\uff01\u70ba\u5927\u5bb6\u65bd\u653e\u9b54\u6cd5\u5427\uff01\u300d",
+                    "skill_text": "\u7576\u81ea\u5df1\u7684\u58eb\u5175\u2027\u5f9e\u8005\u5361\u9032\u5165\u6230\u5834\u6642\uff0c\u5230\u56de\u5408\u7d50\u675f\u70ba\u6b62\uff0c\u4f7f\u9019\u5f35\u5361\u7247+1\/+0\u3002\n<hr><ev>\u3010<color=Keyword>\u9032\u5316\u6642<\/color>\u3011\u53ec\u559a1\u5f35\u300e<color=Keyword>\u9a0e\u58eb<\/color>\u300f\u5230\u81ea\u5df1\u7684\u6230\u5834\u4e0a\u3002<\/ev>",
+                    "card_image_hash": "f890e3ea24ac4a30b8f8b5859d98f843",
+                    "card_banner_image_hash": "216ace4d8d96453186eb1c9e1408e0e0"
+                },
+                "style_card_list": []
+            },
+            "90021110": {
+                "common": {
+                    "card_id": 90021110,
+                    "name": "\u9a0e\u58eb",
+                    "name_ruby": "\u9a0e\u58eb",
+                    "base_card_id": 90021110,
+                    "card_resource_id": 900211100,
+                    "atk": 1,
+                    "life": 1,
+                    "flavour_text": "\u8eab\u70ba\u4e00\u540d\u58eb\u5175\uff0c\u4ed6\u7aed\u76e1\u5fe0\u7fa9\u3002\n\u76e1\u7684\u662f\u90a3\u4efd\u5c6c\u65bc\u81ea\u5df1\uff0c\u70ba\u65ac\u65b7\u60b2\u75db\u7684\u6b63\u7fa9\u3002",
+                    "skill_text": "",
+                    "card_set_id": 90000,
+                    "type": 1,
+                    "class": 2,
+                    "tribes": [
+                        2
+                    ],
+                    "cost": 0,
+                    "rarity": 1,
+                    "cv": "\u77f3\u5ddd\u754c\u4eba",
+                    "illustrator": "\u3084\u307e\u3082\u3082",
+                    "questions": [],
+                    "is_token": true,
+                    "is_include_rotation": false,
+                    "card_image_hash": "4496d4bacac54475a1f2456fa3bb944f",
+                    "card_banner_image_hash": "bcf455aa6b0d400a87d3ca96ee43264c"
+                },
+                "evo": {
+                    "card_resource_id": 900211101,
+                    "flavour_text": "\u7121\u8ad6\u6230\u5834\u518d\u600e\u9ebc\u8b8a\u5316\uff0c\u552f\u6709\u6230\u9b25\u7684\u7406\u7531\u4e0d\u6703\u6539\u8b8a\u3002\n\u6211\u9019\u628a\u528d\u5f9e\u90a3\u5929\u958b\u59cb\uff0c\u5c31\u53ea\u70ba\u4e86\u5927\u5bb6\u7684\u7b11\u5bb9\u800c\u5b58\u5728\u3002",
+                    "skill_text": "",
+                    "card_image_hash": "8720d7006cd846ecb5ee0f1243e4de6d",
+                    "card_banner_image_hash": "350f931bf771447ba74a1adfbd9ce323"
+                },
+                "style_card_list": [
+                    {
+                        "hash": "2c7aca1fceb949b89651f1bc1130c69c",
+                        "evo_hash": "b2e5cb5cf850426b9f7de3191969a516",
+                        "name": "",
+                        "name_ruby": "",
+                        "cv": "",
+                        "illustrator": "hikaru",
+                        "skill_text": "",
+                        "flavour_text": "",
+                        "evo_flavour_text": ""
+                    }
+                ]
+            },
+            "10031310": {
+                "common": {
+                    "card_id": 10031310,
+                    "name": "\u667a\u6167\u8000\u5149",
+                    "name_ruby": "\u667a\u6167\u8000\u5149",
+                    "base_card_id": 10031310,
+                    "card_resource_id": 100313100,
+                    "atk": 0,
+                    "life": 0,
+                    "flavour_text": "\u300c\u6240\u6c42\u4e4b\u7269\uff0c\u50c5\u4e00\u7e37\u5149\u660e\u3002\u300d\n\u80fd\u4ee5\u5fae\u5149\u7167\u4eae\u9ed1\u6697\u4e4b\u4eba\uff0c\u65b9\u53ef\u6210\u70ba\u8ce2\u8005\u3002",
+                    "skill_text": "\u7531\u81ea\u5df1\u7684\u724c\u5806\u4e2d\u62bd\u53d61\u5f35\u5361\u7247\u3002",
+                    "card_set_id": 10000,
+                    "type": 4,
+                    "class": 3,
+                    "tribes": [
+                        0
+                    ],
+                    "cost": 1,
+                    "rarity": 1,
+                    "cv": "",
+                    "illustrator": "\u4f0a\u5439\u3064\u304f\u3070",
+                    "questions": [],
+                    "is_token": false,
+                    "is_include_rotation": true,
+                    "card_image_hash": "f57d11ef42ab42a1a7c270f998e830a8",
+                    "card_banner_image_hash": "ef6fe37955fc4c069b67912ae009ac4d"
+                },
+                "evo": [],
+                "style_card_list": []
+            },
+            "10131320": {
+                "common": {
+                    "card_id": 10131320,
+                    "name": "\u66b4\u98a8\u5674\u5c04",
+                    "name_ruby": "\u66b4\u98a8\u5674\u5c04",
+                    "base_card_id": 10131320,
+                    "card_resource_id": 101313200,
+                    "atk": 0,
+                    "life": 0,
+                    "flavour_text": "\u9f8d\u6372\u98a8\u7684\u58fd\u547d\u6975\u77ed\u3002\n\u88ab\u6372\u5165\u5176\u4e2d\u7684\u4e8b\u7269\u4ea6\u540c\u3002",
+                    "skill_text": "X\u75312\u958b\u59cb\u3002\n\u3010<color=Keyword>\u9b54\u529b\u589e\u5e45\u6642<\/color>\u3011\u4f7f\u9019\u5f35\u5361\u7247\u7684X+1\u3002\n<hr>\u6307\u5b9a1\u5f35\u6575\u65b9\u6230\u5834\u4e0a\u7684\u5f9e\u8005\u5361\u3002\u7d66\u4e88\u5176X\u9ede\u50b7\u5bb3\u3002",
+                    "card_set_id": 10001,
+                    "type": 4,
+                    "class": 3,
+                    "tribes": [
+                        0
+                    ],
+                    "cost": 1,
+                    "rarity": 1,
+                    "cv": "",
+                    "illustrator": "",
+                    "questions": [],
+                    "is_token": false,
+                    "is_include_rotation": true,
+                    "card_image_hash": "0ee26c0d428644c0ba32e9e1dd905914",
+                    "card_banner_image_hash": "88ceaa0368844044b258fa5ba6fbb959"
+                },
+                "evo": [],
+                "style_card_list": []
+            },
+            "10031210": {
+                "common": {
+                    "card_id": 10031210,
+                    "name": "\u9b54\u5973\u7684\u934a\u91d1\u91dc",
+                    "name_ruby": "\u9b54\u5973\u7684\u934a\u91d1\u91dc",
+                    "base_card_id": 10031210,
+                    "card_resource_id": 100312100,
+                    "atk": 0,
+                    "life": 0,
+                    "flavour_text": "\u6750\u6599\uff1a\u5f57\u661f\u8c6c\uff08\u4ed6\u7684\u6700\u611b\uff09\u3001\u8759\u8760\u773c\u7403\u3001\u4e7e\u5f7c\u5cb8\u86d9\u7b49\n\u505a\u6cd5\uff1a\u7528\u5927\u706b\u71ac\u716e\u534a\u5c0f\u6642\uff0c\u9808\u6ce8\u5165\u4fd7\u7a31\u611b\u60c5\u7684\u9b54\u529b\n\u5099\u8a3b\uff1a\u70ba\u4e86\u8b93\u4ed6\u518d\u5ea6\u559c\u6975\u800c\u6ce3\uff0c\u8ffd\u52a0\u5de7\u601d\u653e\u5165\u9435\u880d\n\u2500\u2500\u51fa\u81ea\u300c\u67d0\u4f4d\u9b54\u5973\u7684\u6599\u7406\u7b46\u8a18\u300d \uff08\u90e8\u5206\u6458\u9304\uff09",
+                    "skill_text": "\u3010<color=Keyword>\u5165\u5834\u66f2<\/color>\u3011\u7531\u81ea\u5df1\u7684\u724c\u5806\u4e2d\u62bd\u53d61\u5f35\u5361\u7247\u3002\n<hr>\u3010<color=Keyword>\u571f\u4e4b\u5370<\/color>\u3011\n<hr>\u6d88\u8cbb1\u3010<color=Keyword>\u7b56\u52d5<\/color>\u3011\u4f7f\u81ea\u5df1\u6230\u5834\u4e0a\u7684\u571f\u4e4b\u5370+1\u3002",
+                    "card_set_id": 10000,
+                    "type": 2,
+                    "class": 3,
+                    "tribes": [
+                        8
+                    ],
+                    "cost": 1,
+                    "rarity": 1,
+                    "cv": "",
+                    "illustrator": "\u3084\u307e\u3082\u3082",
+                    "questions": [
+                        {
+                            "question": "\u5148\u5c07\u81ea\u5df1\u6230\u5834\u4e0a\u7684\u300e\u9b54\u5973\u7684\u934a\u91d1\u91dc\u300f\u9032\u884c\u3010\u7b56\u52d5\u3011\u5f8c\uff0c\u518d\u4f7f\u7528\u81ea\u5df1\u624b\u724c\u4e2d\u7684\u7b2c2\u5f35\u300e\u9b54\u5973\u7684\u934a\u91d1\u91dc\u300f\u3002\u65bc\u6b64\u60c5\u5f62\u4e0b\uff0c\u82e5\u81ea\u5df1\u7684PP\u70ba1\u4ee5\u4e0a\uff0c\u7b2c2\u5f35\u300e\u9b54\u5973\u7684\u934a\u91d1\u91dc\u300f\u9084\u53ef\u4ee5\u9032\u884c\u3010\u7b56\u52d5\u3011\u55ce\uff1f",
+                            "answer": "\u53ef\u4ee5\u9032\u884c\u3010\u7b56\u52d5\u3011\u3002"
+                        }
+                    ],
+                    "is_token": false,
+                    "is_include_rotation": true,
+                    "card_image_hash": "9d49df795e484158b64f4acaf1b7ea6e",
+                    "card_banner_image_hash": "659486aa521f4586a21bf43a22beb3e8"
+                },
+                "evo": [],
+                "style_card_list": []
+            },
+            "90031210": {
+                "common": {
+                    "card_id": 90031210,
+                    "name": "\u5927\u5730\u4e4b\u9b54\u7247",
+                    "name_ruby": "\u5927\u5730\u4e4b\u9b54\u7247",
+                    "base_card_id": 90031210,
+                    "card_resource_id": 900312100,
+                    "atk": 0,
+                    "life": 0,
+                    "flavour_text": "\u6c99\u70ba\u571f\uff0c\u571f\u70ba\u5927\u5730\uff0c\u532f\u96c6\u7d30\u5c0f\u5316\u70ba\u5b8f\u5927\u3002\n\u5b78\u7fd2\u70ba\u77e5\u8b58\uff0c\u77e5\u8b58\u70ba\u777f\u667a\uff0c\u6c5d\u4ea6\u6703\u6548\u4eff\u81ea\u7136\u3002\n\u2500\u2500\u51fa\u81ea\u300c\u521d\u5b78\u9b54\u6cd5\u300d \u5e8f\u6587",
+                    "skill_text": "\u3010<color=Keyword>\u571f\u4e4b\u5370<\/color>\u3011\n<hr>\u6d88\u8cbb1\u3010<color=Keyword>\u7b56\u52d5<\/color>\u3011\u4f7f\u81ea\u5df1\u6230\u5834\u4e0a\u7684\u571f\u4e4b\u5370+1\u3002",
+                    "card_set_id": 90000,
+                    "type": 2,
+                    "class": 3,
+                    "tribes": [
+                        8
+                    ],
+                    "cost": 1,
+                    "rarity": 1,
+                    "cv": "",
+                    "illustrator": "\u3048\u306a\u308c\u3044\u3093",
+                    "questions": [],
+                    "is_token": true,
+                    "is_include_rotation": false,
+                    "card_image_hash": "041baa7347f2492cb057d3db35965b11",
+                    "card_banner_image_hash": "337fe79bfad749d7a8d9002a071f2e7f"
+                },
+                "evo": [],
+                "style_card_list": []
+            },
+            "10241120": {
+                "common": {
+                    "card_id": 10241120,
+                    "name": "\u98db\u8e8d\u7684\u9280\u767d\u5e7c\u9f8d",
+                    "name_ruby": "\u98db\u8e8d\u7684\u9280\u767d\u5e7c\u9f8d",
+                    "base_card_id": 10241120,
+                    "card_resource_id": 102411200,
+                    "atk": 1,
+                    "life": 1,
+                    "flavour_text": "\u4e0d\u65b7\u5411\u5929\u7948\u9858\u7684\u5e74\u5e7c\u767d\u9f8d\uff0c\u7d42\u65bc\u98db\u5411\u4e86\u5929\u7a7a\u3002\n\u7260\u7684\u5486\u54ee\uff0c\u4ee3\u8868\u80fd\u8ffd\u96a8\u7236\u6bcd\u80cc\u5f71\u7684\u7d14\u771f\u559c\u6085\u3002",
+                    "skill_text": "\u3010<color=Keyword>\u5165\u5834\u66f2<\/color>\u3011\u5982\u679c\u3010<color=Keyword>\u89ba\u9192<\/color>\u3011\u5df2\u767c\u52d5\uff0c\u5247\u6703\u7531\u81ea\u5df1\u7684\u724c\u5806\u4e2d\u62bd\u53d61\u5f35\u5361\u7247\u3002\n<hr>\u3010<color=Keyword>\u7a81\u9032<\/color>\u3011",
+                    "card_set_id": 10002,
+                    "type": 1,
+                    "class": 4,
+                    "tribes": [
+                        0
+                    ],
+                    "cost": 1,
+                    "rarity": 1,
+                    "cv": "",
+                    "illustrator": "",
+                    "questions": [],
+                    "is_token": false,
+                    "is_include_rotation": false,
+                    "card_image_hash": "819a891951094942bf4bf8f13865dac5",
+                    "card_banner_image_hash": "d98570c5a499404485c2979150a53a19"
+                },
+                "evo": {
+                    "card_resource_id": 102411201,
+                    "flavour_text": "\u5982\u679c\u53ea\u662f\u8ffd\u96a8\u81ea\u5df1\u61a7\u61ac\u7684\u80cc\u5f71\uff0c\u90a3\u9084\u7b97\u5bb9\u6613\u3002\n\u8b93\u81ea\u5df1\u64c1\u6709\u4ee4\u4eba\u61a7\u61ac\u7684\u80cc\u5f71\uff0c\u53ef\u5c31\u56f0\u96e3\u8a31\u591a\u3002\n\u9f8d\u5728\u6210\u9577\u5f8c\u6703\u6709\u7684\u7169\u60f1\uff0c\u770b\u4f86\u4e5f\u548c\u4eba\u985e\u76f8\u5dee\u7121\u5e7e\u3002\n\u2500\u2500\u6301\u7e8c\u95dc\u6ce8\u767d\u9f8d\u6210\u9577\u904e\u7a0b\u7684\u9f8d\u4eba\u7537\u5b50",
+                    "skill_text": "\u3010<color=Keyword>\u5165\u5834\u66f2<\/color>\u3011\u5982\u679c\u3010<color=Keyword>\u89ba\u9192<\/color>\u3011\u5df2\u767c\u52d5\uff0c\u5247\u6703\u7531\u81ea\u5df1\u7684\u724c\u5806\u4e2d\u62bd\u53d61\u5f35\u5361\u7247\u3002\n<hr>\u3010<color=Keyword>\u7a81\u9032<\/color>\u3011",
+                    "card_image_hash": "adad250e725a49ec80fe0b6cd47a52a5",
+                    "card_banner_image_hash": "5d67804824374918b68d3dda29dae1d9"
+                },
+                "style_card_list": []
+            },
+            "10041310": {
+                "common": {
+                    "card_id": 10041310,
+                    "name": "\u9f8d\u4eba\u7684\u6f70\u64ca",
+                    "name_ruby": "\u9f8d\u4eba\u7684\u6f70\u64ca",
+                    "base_card_id": 10041310,
+                    "card_resource_id": 100413100,
+                    "atk": 0,
+                    "life": 0,
+                    "flavour_text": "\u4eba\u9019\u7a2e\u751f\u7269\u751f\u4f86\u8106\u5f31\uff0c\u56e0\u6b64\u624d\u6703\u4e0d\u65b7\u947d\u7814\u6280\u8853\u3002\n\u5148\u5f8c\u5229\u7528\u6728\u6750\u3001\u77f3\u982d\u3001\u9752\u9285\u548c\u9435\uff0c\u4f7f\u5200\u5203\u65e5\u6f38\u92d2\u5229\u3002\n\u7136\u800c\u90a3\u4e9b\u5200\u5203\u5728\u9762\u5c0d\u9f8d\u6642\uff0c\u4e0b\u5834\u537b\u5f9e\u672a\u6539\u8b8a\u904e\u3002",
+                    "skill_text": "\u6307\u5b9a1\u5f35\u6575\u65b9\u6230\u5834\u4e0a\u7684\u5f9e\u8005\u5361\u3002\u7d66\u4e88\u51762\u9ede\u50b7\u5bb3\u3002\u5982\u679c\u3010<color=Keyword>\u89ba\u9192<\/color>\u3011\u5df2\u767c\u52d5\uff0c\u5247\u6703\u7531\u539f\u672c\u76842\u9ede\u50b7\u5bb3\u8f49\u8b8a\u70ba4\u9ede\u50b7\u5bb3\u3002",
+                    "card_set_id": 10000,
+                    "type": 4,
+                    "class": 4,
+                    "tribes": [
+                        0
+                    ],
+                    "cost": 1,
+                    "rarity": 1,
+                    "cv": "",
+                    "illustrator": "\u3042\u304b\u304b\u304c\u3061",
+                    "questions": [],
+                    "is_token": false,
+                    "is_include_rotation": true,
+                    "card_image_hash": "121b683e389a4133b8d6131270166296",
+                    "card_banner_image_hash": "b8aa301811ca44bfaad034fad02cf110"
+                },
+                "evo": [],
+                "style_card_list": []
+            },
+            "10143210": {
+                "common": {
+                    "card_id": 10143210,
+                    "name": "\u4e59\u59ec\u7684\u5bf6\u6247",
+                    "name_ruby": "\u4e59\u59ec\u7684\u5bf6\u6247",
+                    "base_card_id": 10143210,
+                    "card_resource_id": 101432100,
+                    "atk": 0,
+                    "life": 0,
+                    "flavour_text": "\u300c\u90a3\u662f\u4e00\u6427\u5c31\u80fd\u64cd\u63a7\u6d77\u6d41\u7684\u81f3\u5bf6\u5594\uff01\u5feb\u93ae\u4f4f\u5b83\u554a\uff01\u300d\n\u300c\u8fa6\u4e0d\u5230\u5566\uff5e\uff01\u300d\n\u300c\u662f\u4e59\u59ec\u5927\u4eba\u81ea\u5df1\u641e\u4e1f\u7684\u6240\u4ee5\u624d\u9019\u9ebc\u751f\u6c23\u5427\uff1f\u300d\n\u2500\u2500\u4e59\u59ec\u8207\u8fd1\u885b\u968a",
+                    "skill_text": "\u6d88\u8cbb3\u3010<color=Keyword>\u7b56\u52d5<\/color>\u3011\u53ec\u559a1\u5f35\u300e<color=Keyword>\u4e59\u59ec\u8fd1\u885b\u968a<\/color>\u300f\u5230\u81ea\u5df1\u7684\u6230\u5834\u4e0a\u3002\u6307\u5b9a1\u5f35\u81ea\u5df1\u624b\u724c\u4e2d\u7684\u5361\u7247\u3002\u5c07\u5176\u6368\u68c4\u3002",
+                    "card_set_id": 10001,
+                    "type": 2,
+                    "class": 4,
+                    "tribes": [
+                        0
+                    ],
+                    "cost": 1,
+                    "rarity": 3,
+                    "cv": "",
+                    "illustrator": "\u308a\u3087\u3046\u3078\u3044",
+                    "questions": [
+                        {
+                            "question": "\u81ea\u5df1\u6c92\u6709\u624b\u724c\u6642\uff0c\u300e\u4e59\u59ec\u7684\u5bf6\u6247\u300f\u9084\u53ef\u4ee5\u9032\u884c\u3010\u7b56\u52d5\u3011\u55ce\uff1f",
+                            "answer": "\u53ef\u4ee5\u3002\u5c07\u4e0d\u6703\u6368\u68c4\u624b\u724c\uff0c\u4f46\u4ecd\u6703\u53ec\u559a\u300e\u4e59\u59ec\u8fd1\u885b\u968a\u300f\u5230\u6230\u5834\u4e0a\u3002"
+                        }
+                    ],
+                    "is_token": false,
+                    "is_include_rotation": true,
+                    "card_image_hash": "82b3b0d645f24aab87ba59668610ee15",
+                    "card_banner_image_hash": "4f4a3b7d4f534d00b64f1eb3b847b1f0"
+                },
+                "evo": [],
+                "style_card_list": []
+            },
+            "90043110": {
+                "common": {
+                    "card_id": 90043110,
+                    "name": "\u4e59\u59ec\u8fd1\u885b\u968a",
+                    "name_ruby": "\u4e59\u59ec\u8fd1\u885b\u968a",
+                    "base_card_id": 90043110,
+                    "card_resource_id": 900431100,
+                    "atk": 2,
+                    "life": 2,
+                    "flavour_text": "\u90a3\u5c0f\u5c0f\u7684\u8eab\u8ec0\u80f8\u61f7\u5927\u5fd7\u3002\n\u70ba\u4e86\u5b8c\u6210\u88ab\u8ce6\u4e88\u7684\u5927\u7fa9\uff0c\u5979\u5011\u5c0f\u5fc3\u7ffc\u7ffc\u5730\u56fa\u5b88\u516c\u4e3b\u3002",
+                    "skill_text": "\u3010<color=Keyword>\u75be\u99b3<\/color>\u3011\n\u3010<color=Keyword>\u5b88\u8b77<\/color>\u3011",
+                    "card_set_id": 90000,
+                    "type": 1,
+                    "class": 4,
+                    "tribes": [
+                        17
+                    ],
+                    "cost": 3,
+                    "rarity": 3,
+                    "cv": "\u8d64\u5d0e\u5343\u590f",
+                    "illustrator": "",
+                    "questions": [],
+                    "is_token": true,
+                    "is_include_rotation": false,
+                    "card_image_hash": "7aa914273588484f9b5ef35785b84fd1",
+                    "card_banner_image_hash": "616ec4f0d1174f8394ef6a85ff6b3056"
+                },
+                "evo": {
+                    "card_resource_id": 900431101,
+                    "flavour_text": "\u4f8d\u5949\u4e59\u59ec\u5927\u4eba\u5f8c\uff0c\u8eab\u5fc3\u90fd\u6709\u4e86\u5f88\u5927\u7684\u6210\u9577\uff01\n\u9019\u9ebc\u4e00\u4f86\uff0c\u5c31\u66f4\u53ef\u4ee5\u4fdd\u8b77\u2026\u2026\n\u4ec0\u9ebc\uff01\uff1f\u56e0\u70ba\u9577\u5f97\u6bd4\u4e59\u59ec\u5927\u4eba\u9ad8\uff0c\u6240\u4ee5\u5f97\u7562\u696d\u55ce\uff01\uff1f",
+                    "skill_text": "\u3010<color=Keyword>\u75be\u99b3<\/color>\u3011\n\u3010<color=Keyword>\u5b88\u8b77<\/color>\u3011",
+                    "card_image_hash": "f8b52b89aef24205955290b553517dc8",
+                    "card_banner_image_hash": "62f520fb8ab24f7faa67a892b5bc9382"
+                },
+                "style_card_list": []
+            },
+            "10242210": {
+                "common": {
+                    "card_id": 10242210,
+                    "name": "\u708e\u9f8d\u4e4b\u528d",
+                    "name_ruby": "\u708e\u9f8d\u4e4b\u528d",
+                    "base_card_id": 10242210,
+                    "card_resource_id": 102422100,
+                    "atk": 0,
+                    "life": 0,
+                    "flavour_text": "\u300c\u4eba\u985e\u8207\u706b\u70ba\u9130\uff0c\u7528\u5b83\u4f86\u53d6\u6696\u6216\u711a\u71d2\u7269\u54c1\u5df2\u662f\u6975\u9650\u3002\n\u90a3\u5c31\u662f\u4eba\u985e\u7684\u6975\u9650\u3002\u7136\u800c\u9f8d\u5247\u662f\u4ee5\u706b\u5236\u706b\u3002\n\u53ea\u8981\u9f8d\u4e00\u8072\u4ee4\u4e0b\uff0c\u706b\u7130\u751a\u81f3\u6703\u9806\u5f9e\u5730\u6539\u8b8a\u5f62\u614b\u3002\u300d\n\u2500\u2500\u55ae\u624b\u6301\u528d\u5c55\u958b\u65c5\u7a0b\u7684\u708e\u9f8d\u4e4b\u5b50",
+                    "skill_text": "\u6d88\u8cbb1\u3010<color=Keyword>\u7b56\u52d5<\/color>\u3011\u7834\u58de\u9019\u5f35\u5361\u7247\u3002\u6307\u5b9a1\u5f35\u81ea\u5df1\u6230\u5834\u4e0a\u7684\u5f9e\u8005\u5361\u3002\u4f7f\u5176+1\/+1\u4e26\u7372\u5f97\u300c\u3010<color=Keyword>\u8b1d\u5e55\u66f2<\/color>\u3011\u53ec\u559a1\u5f35\u300e<color=Keyword>\u708e\u9f8d\u4e4b\u528d<\/color>\u300f\u5230\u81ea\u5df1\u7684\u6230\u5834\u4e0a\u300d\u3002",
+                    "card_set_id": 10002,
+                    "type": 2,
+                    "class": 4,
+                    "tribes": [
+                        0
+                    ],
+                    "cost": 1,
+                    "rarity": 2,
+                    "cv": "",
+                    "illustrator": "",
+                    "questions": [],
+                    "is_token": false,
+                    "is_include_rotation": false,
+                    "card_image_hash": "3892b541d0ee4979bbe041ae5dd9c540",
+                    "card_banner_image_hash": "fa39da2dbb5244f8831eed0ef35f36ec"
+                },
+                "evo": [],
+                "style_card_list": []
+            },
+            "10052110": {
+                "common": {
+                    "card_id": 10052110,
+                    "name": "\u5996\u60d1\u9b45\u9b54\u2027\u8389\u8389\u59c6",
+                    "name_ruby": "\u5996\u60d1\u9b45\u9b54\u2027\u8389\u8389\u59c6",
+                    "base_card_id": 10052110,
+                    "card_resource_id": 100521100,
+                    "atk": 1,
+                    "life": 1,
+                    "flavour_text": "\u6211\u5011\u6709\u898b\u904e\u597d\u591a\u6b21\uff0c\u6240\u4ee5\u4e26\u4e0d\u662f\u8a31\u4e45\u672a\u898b\u5537\uff01\n\u2026\u2026\u55ef\uff5e\uff1f\u4f60\u8aaa\u4e0d\u8a18\u5f97\u5728\u54ea\u898b\u904e\u6211\uff1f\n\u554a\u54c8\u266a\u6211\u4e0d\u6703\u8b93\u4f60\u5fd8\u8a18\u5594\uff01\n\u56e0\u70ba\u5728\u5922\u88e1\u7684\u4f60\uff0c\u771f\u7684\u5f88\u53ef\u611b\u561b\u266a",
+                    "skill_text": "\u3010<color=Keyword>\u8b1d\u5e55\u66f2<\/color>\u3011\u589e\u52a01\u5f35\u300e<color=Keyword>\u8759\u8760<\/color>\u300f\u5230\u81ea\u5df1\u7684\u624b\u724c\u4e2d\u3002",
+                    "card_set_id": 10000,
+                    "type": 1,
+                    "class": 5,
+                    "tribes": [
+                        0
+                    ],
+                    "cost": 1,
+                    "rarity": 2,
+                    "cv": "\u6f58\u3081\u3050\u307f",
+                    "illustrator": "",
+                    "questions": [],
+                    "is_token": false,
+                    "is_include_rotation": true,
+                    "card_image_hash": "e90f4df3c10e4de29474d338c791461b",
+                    "card_banner_image_hash": "5a7ea28be45f4ae497863991f081bc4a"
+                },
+                "evo": {
+                    "card_resource_id": 100521101,
+                    "flavour_text": "\u6b64\u8655\u662f\u6c38\u7121\u6b62\u5883\u7684\u5922\u4e2d\u3002\n\u5728\u9019\u88e1\u5c55\u958b\u7684\uff0c\u662f\u77ac\u9593\u7684\u76f8\u9047\u3002\n\u2500\u2500\u554a\u554a\uff0c\u4eca\u665a\u4e5f\u5c07\u6c89\u6eba\uff0c\u4e26\u5728\u6e05\u9192\u5f8c\u907a\u5fd8\u3002",
+                    "skill_text": "\u3010<color=Keyword>\u8b1d\u5e55\u66f2<\/color>\u3011\u589e\u52a01\u5f35\u300e<color=Keyword>\u8759\u8760<\/color>\u300f\u5230\u81ea\u5df1\u7684\u624b\u724c\u4e2d\u3002",
+                    "card_image_hash": "72400eaee60f4742a89e8b09ed5a698e",
+                    "card_banner_image_hash": "776af77bb266473883388c32f2d9c0ad"
+                },
+                "style_card_list": []
+            },
+            "90051120": {
+                "common": {
+                    "card_id": 90051120,
+                    "name": "\u8759\u8760",
+                    "name_ruby": "\u8759\u8760",
+                    "base_card_id": 90051120,
+                    "card_resource_id": 900511200,
+                    "atk": 1,
+                    "life": 1,
+                    "flavour_text": "\u52ff\u770b\u3001\u52ff\u8ffd\u3001\u52ff\u9760\u8fd1\u3002\n\u2500\u2500\u51fa\u81ea\u300c\u6d0b\u9928\u9644\u8fd1\u6751\u843d\u7684\u6559\u8aa8\u300d\n\u5c0b\u8993\u5427\u3001\u8ffd\u7d22\u5427\u3001\u70ba\u4e86\u66f4\u9760\u8fd1\u3002\n\u2500\u2500\u51fa\u81ea\u300c\u7375\u4eba\u7684\u6559\u8aa8\u300d",
+                    "skill_text": "\u3010<color=Keyword>\u5438\u8840<\/color>\u3011",
+                    "card_set_id": 90000,
+                    "type": 1,
+                    "class": 5,
+                    "tribes": [
+                        0
+                    ],
+                    "cost": 1,
+                    "rarity": 1,
+                    "cv": "",
+                    "illustrator": "ell",
+                    "questions": [],
+                    "is_token": true,
+                    "is_include_rotation": false,
+                    "card_image_hash": "b8ebbe8b8aca4e3bbf576f14cfeb76d5",
+                    "card_banner_image_hash": "7e5f8185a55a4c83b9512fd3c3b9203c"
+                },
+                "evo": {
+                    "card_resource_id": 900511201,
+                    "flavour_text": "\u5c0d\u7121\u529b\u4e4b\u4eba\u800c\u8a00\uff0c\u7981\u57df\u7684\u731b\u7378\u70ba\u707d\u798d\u4e4b\u8b49\u3002\n\u5c0d\u6709\u529b\u4e4b\u4eba\u800c\u8a00\uff0c\u7981\u57df\u7684\u8def\u6a19\u70ba\u4ec7\u6575\u4e4b\u8b49\u3002\n\u9003\u96e2\u4e5f\u597d\u3001\u5fa9\u4ec7\u4e5f\u7f77\u3001\u7686\u4e0d\u4e88\u62d2\u7d55\u3002\n\u6d0b\u9928\u4e4b\u4e3b\u50c5\u50c5\u53ea\u662f\u5750\u93ae\u65bc\u9ed1\u6697\u7fa4\u843d\u6df1\u8655\u3002",
+                    "skill_text": "\u3010<color=Keyword>\u5438\u8840<\/color>\u3011",
+                    "card_image_hash": "7e270cbf2532437980676a85db9fd81b",
+                    "card_banner_image_hash": "0a8f96c754fd4078805cc5eb604dd8ba"
+                },
+                "style_card_list": [
+                    {
+                        "hash": "ca6abae0f7034819bd07b158bb6d7460",
+                        "evo_hash": "522aaba9873c418d870e2bef0b161def",
+                        "name": "",
+                        "name_ruby": "",
+                        "cv": "",
+                        "illustrator": "\u7c73\u8c37 \u5c1a\u5c55",
+                        "skill_text": "",
+                        "flavour_text": "",
+                        "evo_flavour_text": ""
+                    }
+                ]
+            },
+            "10251120": {
+                "common": {
+                    "card_id": 10251120,
+                    "name": "\u6028\u6068\u7684\u683d\u57f9\u8005",
+                    "name_ruby": "\u6028\u6068\u7684\u683d\u57f9\u8005",
+                    "base_card_id": 10251120,
+                    "card_resource_id": 102511200,
+                    "atk": 1,
+                    "life": 1,
+                    "flavour_text": "\u5357\u74dc\u662f\u4e00\u7a2e\u80fd\u5920\u9577\u6642\u9593\u4fdd\u5b58\u7684\u852c\u83dc\u3002\n\u800c\u5357\u74dc\u982d\u7684\u5e7d\u9748\uff0c\u4e5f\u50cf\u5357\u74dc\u4e00\u6a23\u4e45\u4e45\u90fd\u4e0d\u6703\u6d88\u6563\u3002\n\u5373\u4f7f\u81c9\u4e0a\u523b\u4e86\u7b11\u81c9\uff0c\u5b83\u4e5f\u7d55\u4e0d\u6703\u5c31\u9019\u6a23\u5fd8\u4e86\u6028\u6068\u3002",
+                    "skill_text": "\u3010<color=Keyword>\u8b1d\u5e55\u66f2<\/color>\u3011\u589e\u52a01\u5f35\u300e<color=Keyword>\u6028\u9748<\/color>\u300f\u5230\u81ea\u5df1\u7684\u624b\u724c\u4e2d\u3002",
+                    "card_set_id": 10002,
+                    "type": 1,
+                    "class": 5,
+                    "tribes": [
+                        0
+                    ],
+                    "cost": 1,
+                    "rarity": 1,
+                    "cv": "\u8fd1\u85e4\u73b2\u5948",
+                    "illustrator": "",
+                    "questions": [],
+                    "is_token": false,
+                    "is_include_rotation": false,
+                    "card_image_hash": "9e2302862ea84f93914e6432b16eca68",
+                    "card_banner_image_hash": "8934135bb13a4aeebbdbefe4df1bc177"
+                },
+                "evo": {
+                    "card_resource_id": 102511201,
+                    "flavour_text": "\u5357\u74dc\u662f\u4e00\u7a2e\u5728\u63a1\u6536\u5f8c\u6703\u96a8\u6642\u9593\u66f4\u52a0\u6210\u719f\u7684\u852c\u83dc\u3002\n\u800c\u5357\u74dc\u982d\u7684\u5e7d\u9748\uff0c\u4e5f\u662f\u6b7b\u5f8c\u9760\u7d93\u5e74\u7d2f\u6708\u4f86\u50ac\u719f\u8a5b\u5492\u3002\n\u300c\u90a3\u8a72\u8aaa\u63b0\u63b0\u56c9\u3002\u9001\u4f60\u7684\u5c0f\u547d\u53bb\u898b\u5357\u7121\u74dc\u4e16\u97f3\uff5e\uff01\u300d",
+                    "skill_text": "\u3010<color=Keyword>\u8b1d\u5e55\u66f2<\/color>\u3011\u589e\u52a01\u5f35\u300e<color=Keyword>\u6028\u9748<\/color>\u300f\u5230\u81ea\u5df1\u7684\u624b\u724c\u4e2d\u3002",
+                    "card_image_hash": "024e582c5cb847d3ab192e30f3e172af",
+                    "card_banner_image_hash": "8ef50ccbd9524b75a04c2f3679a41ddc"
+                },
+                "style_card_list": []
+            },
+            "90051130": {
+                "common": {
+                    "card_id": 90051130,
+                    "name": "\u6028\u9748",
+                    "name_ruby": "\u6028\u9748",
+                    "base_card_id": 90051130,
+                    "card_resource_id": 900511300,
+                    "atk": 1,
+                    "life": 1,
+                    "flavour_text": "\u7d55\u4e0d\u539f\u8ad2\uff0c\u6211\u660e\u660e\u5c31\u9084\u4e0d\u60f3\u6b7b\u3002\n\u7d55\u4e0d\u9000\u8b93\uff0c\u56e0\u70ba\u6211\u9084\u60f3\u6d3b\u4e0b\u53bb\u3002\n\u7559\u6200\u5316\u6210\u5371\u96aa\u57f7\u8457\uff0c\u6210\u70ba\u6697\u591c\u88e1\u4e00\u500b\u4e0d\u5b8c\u5168\u7684\u6c38\u6046\u3002",
+                    "skill_text": "\u3010<color=Keyword>\u75be\u99b3<\/color>\u3011\n\u96e2\u958b\u6230\u5834\u6642\uff0c\u4f7f\u9019\u5f35\u5361\u7247\u6d88\u5931\u3002\n\u81ea\u5df1\u7684\u56de\u5408\u7d50\u675f\u6642\uff0c\u4f7f\u9019\u5f35\u5361\u7247\u6d88\u5931\u3002",
+                    "card_set_id": 90000,
+                    "type": 1,
+                    "class": 5,
+                    "tribes": [
+                        6
+                    ],
+                    "cost": 1,
+                    "rarity": 1,
+                    "cv": "\u6052\u677e\u3042\u3086\u307f",
+                    "illustrator": "\u3084\u307e\u3082\u3082",
+                    "questions": [],
+                    "is_token": true,
+                    "is_include_rotation": false,
+                    "card_image_hash": "38c0604d2ae34ab680621e5692dcf032",
+                    "card_banner_image_hash": "6a24d372b8914641b412d5f6540335e5"
+                },
+                "evo": {
+                    "card_resource_id": 900511301,
+                    "flavour_text": "\u300c\u7121\u6cd5\u539f\u8ad2\u4ec0\u9ebc\uff0c\u7121\u6cd5\u9000\u8b93\u4ec0\u9ebc\u3002\n\u70ba\u4f55\u6703\u6b7b\uff0c\u70ba\u4f55\u60f3\u6d3b\u3002\n\u8d8a\u662f\u5916\u884c\u5c31\u8d8a\u6703\u53bb\u601d\u8003\uff0c\u4f46\u4e0d\u53bb\u7406\u89e3\u624d\u662f\u5c08\u5bb6\u554a\u3002\u300d\n\u2500\u2500\u719f\u7df4\u7684\u9a45\u9b54\u5e2b",
+                    "skill_text": "\u3010<color=Keyword>\u75be\u99b3<\/color>\u3011\n\u96e2\u958b\u6230\u5834\u6642\uff0c\u4f7f\u9019\u5f35\u5361\u7247\u6d88\u5931\u3002\n\u81ea\u5df1\u7684\u56de\u5408\u7d50\u675f\u6642\uff0c\u4f7f\u9019\u5f35\u5361\u7247\u6d88\u5931\u3002",
+                    "card_image_hash": "4c5b586c5ee14f969bd8df712948e49f",
+                    "card_banner_image_hash": "e088fbd6373343e5a64d53b3f4e0e720"
+                },
+                "style_card_list": [
+                    {
+                        "hash": "0e46123bd1a049288ab09f2182da756f",
+                        "evo_hash": "cfccafdaae0d43bb8561da2f96ea0974",
+                        "name": "",
+                        "name_ruby": "",
+                        "cv": "",
+                        "illustrator": "\u9280",
+                        "skill_text": "",
+                        "flavour_text": "",
+                        "evo_flavour_text": ""
+                    }
+                ]
+            },
+            "10151310": {
+                "common": {
+                    "card_id": 10151310,
+                    "name": "\u6b7b\u795e\u63ee\u942e",
+                    "name_ruby": "\u6b7b\u795e\u63ee\u942e",
+                    "base_card_id": 10151310,
+                    "card_resource_id": 101513100,
+                    "atk": 0,
+                    "life": 0,
+                    "flavour_text": "\u5c31\u50cf\u7121\u6cd5\u75ca\u7652\u7684\u6230\u5834\u4e4b\u50b7\uff0c\u6703\u96a8\u60a0\u4e45\u6b72\u6708\u5316\u70ba\u570b\u5883\uff0c\n\u7121\u6cd5\u75ca\u7652\u7684\u6b7b\u795e\u4e4b\u50b7\uff0c\u6703\u65bc\u5f7c\u4e16\u8207\u6b64\u4e16\u9593\u756b\u4e0b\u754c\u7dda\u3002",
+                    "skill_text": "\u6307\u5b9a1\u5f35\u81ea\u5df1\u6230\u5834\u4e0a\u7684\u5f9e\u8005\u5361\u82071\u5f35\u6575\u65b9\u6230\u5834\u4e0a\u7684\u5f9e\u8005\u5361\u3002\u5c07\u5176\u7834\u58de\u3002",
+                    "card_set_id": 10001,
+                    "type": 4,
+                    "class": 5,
+                    "tribes": [
+                        0
+                    ],
+                    "cost": 1,
+                    "rarity": 1,
+                    "cv": "",
+                    "illustrator": "",
+                    "questions": [],
+                    "is_token": false,
+                    "is_include_rotation": true,
+                    "card_image_hash": "9074513599424956a7c060c737a22a03",
+                    "card_banner_image_hash": "3b1d93c5327c4b65812a48293c5e8f0f"
+                },
+                "evo": [],
+                "style_card_list": []
+            },
+            "10262310": {
+                "common": {
+                    "card_id": 10262310,
+                    "name": "\u795e\u8056\u9632\u79a6",
+                    "name_ruby": "\u795e\u8056\u9632\u79a6",
+                    "base_card_id": 10262310,
+                    "card_resource_id": 102623100,
+                    "atk": 0,
+                    "life": 0,
+                    "flavour_text": "\u300c\u60e1\u9b54\u7121\u6cd5\u901a\u904e\u7684\u7d50\u754c\uff0c\u7528\u5ca9\u77f3\u7e3d\u80fd\u6d88\u6ec5\u4e86\u5427\uff01\u300d\n\u300c\u82e5\u5fc3\u61f7\u60e1\u610f\uff0c\u5373\u4f7f\u662f\u5ca9\u77f3\u4e5f\u7121\u6cd5\u7a81\u7834\u3002\n\u9019\u5c31\u662f\u795e\u8056\u795d\u798f\u3002\u300d\n\u2500\u2500\u72e1\u733e\u60e1\u9b54\u8207\u9ad8\u6f54\u8056\u9a0e\u58eb\u7684\u5c0d\u8a71",
+                    "skill_text": "\u6307\u5b9a1\u5f35\u81ea\u5df1\u6230\u5834\u4e0a\u64c1\u6709\u3010<color=Keyword>\u5b88\u8b77<\/color>\u3011\u7684\u5f9e\u8005\u5361\u3002\u4f7f\u5176+0\/+1\u3002\u96a8\u6a5f\u7d66\u4e881\u5f35\u6575\u65b9\u6230\u5834\u4e0a\u7684\u5f9e\u8005\u5361X\u9ede\u50b7\u5bb3\u3002X\u70ba\u300c\u6240\u6307\u5b9a\u5f9e\u8005\u5361\u7684\u751f\u547d\u503c\u300d\u3002",
+                    "card_set_id": 10002,
+                    "type": 4,
+                    "class": 6,
+                    "tribes": [
+                        0
+                    ],
+                    "cost": 1,
+                    "rarity": 2,
+                    "cv": "",
+                    "illustrator": "Saika",
+                    "questions": [],
+                    "is_token": false,
+                    "is_include_rotation": false,
+                    "card_image_hash": "181f7a387749482aa7a7f76da8e05770",
+                    "card_banner_image_hash": "ff733442919e425f9eaaea305fcebdd3"
+                },
+                "evo": [],
+                "style_card_list": []
+            },
+            "10062210": {
+                "common": {
+                    "card_id": 10062210,
+                    "name": "\u64c1\u7ffc\u7684\u77f3\u50cf",
+                    "name_ruby": "\u64c1\u7ffc\u7684\u77f3\u50cf",
+                    "base_card_id": 10062210,
+                    "card_resource_id": 100622100,
+                    "atk": 0,
+                    "life": 0,
+                    "flavour_text": "\u70ba\u4e86\u5f9e\u300c\u6bc0\u6ec5\u300d\u4e2d\u5f97\u5230\u6551\u8d16\uff0c\n\u5c0d\u8c61\u5fb5\u8056\u300c\u7ffc\u6559\u300d\u8aa8\u7684\u8073\u7acb\u96d5\u50cf\uff0c\u737b\u4e0a\u7948\u79b1\u300c\u5427\u300d\u3002\n\u2500\u2500\u7d66\u4e88\u7121\u7ffc\u8005\u7684\u555f\u793a",
+                    "skill_text": "\u3010<color=Keyword>\u5012\u6578<\/color>_4\u3011\n\u3010<color=Keyword>\u8b1d\u5e55\u66f2<\/color>\u3011\u53ec\u559a1\u5f35\u300e<color=Keyword>\u795e\u8056\u7375\u9df9<\/color>\u300f\u5230\u81ea\u5df1\u7684\u6230\u5834\u4e0a\u3002\n<hr>\u6d88\u8cbb1\u3010<color=Keyword>\u7b56\u52d5<\/color>\u3011\u4f7f\u9019\u5f35\u5361\u7247\u7684\u5012\u6578\u56de\u5408\u6578-1\u3002",
+                    "card_set_id": 10000,
+                    "type": 3,
+                    "class": 6,
+                    "tribes": [
+                        0
+                    ],
+                    "cost": 1,
+                    "rarity": 2,
+                    "cv": "",
+                    "illustrator": "",
+                    "questions": [],
+                    "is_token": false,
+                    "is_include_rotation": true,
+                    "card_image_hash": "4f74a04f5bb4454384116077e2043677",
+                    "card_banner_image_hash": "7559cf0d198c44a58e2128239df3f7ee"
+                },
+                "evo": [],
+                "style_card_list": []
+            },
+            "90061110": {
+                "common": {
+                    "card_id": 90061110,
+                    "name": "\u795e\u8056\u7375\u9df9",
+                    "name_ruby": "\u795e\u8056\u7375\u9df9",
+                    "base_card_id": 90061110,
+                    "card_resource_id": 900611100,
+                    "atk": 2,
+                    "life": 2,
+                    "flavour_text": "\u5929\u4f7f\u6642\u5e38\u8f49\u5411\u58ae\u843d\uff0c\u6b64\u4e43\u5fc3\u5b58\u610f\u5fd7\u4e4b\u6545\u3002\n\u4e0d\u5177\u610f\u5fd7\u7684\u4f7f\u8005\u4e0d\u53d7\u8ff7\u60d1\uff0c\u4ea6\u4e0d\u6703\u52d5\u6416\u3002\n\u4e26\u6703\u7d14\u7cb9\u3001\u6a38\u5be6\u5730\u50b3\u9054\u4f86\u81ea\u5929\u754c\u7684\u6559\u8aa8\u3002",
+                    "skill_text": "\u3010<color=Keyword>\u75be\u99b3<\/color>\u3011",
+                    "card_set_id": 90000,
+                    "type": 1,
+                    "class": 6,
+                    "tribes": [
+                        0
+                    ],
+                    "cost": 3,
+                    "rarity": 1,
+                    "cv": "",
+                    "illustrator": "\u8a00\u72ac",
+                    "questions": [],
+                    "is_token": true,
+                    "is_include_rotation": false,
+                    "card_image_hash": "4ad289ce5ee34f63ace4f145a61c3350",
+                    "card_banner_image_hash": "914febb5f9e84700b163bdd9baa8f63c"
+                },
+                "evo": {
+                    "card_resource_id": 900611101,
+                    "flavour_text": "\u5929\u4f7f\u7684\u8a00\u8a9e\u906d\u5230\u8aa4\u89e3\uff0c\u4f7f\u4e16\u9593\u7d1b\u4e82\uff0c\u4eba\u985e\u76f8\u722d\u3002\n\u82e6\u65bc\u826f\u5fc3\u82db\u8cac\u7684\u5929\u4f7f\uff0c\u53d7\u60e1\u9b54\u6240\u60d1\uff0c\u5c0e\u81f4\u58ae\u843d\u3002\n\u795e\u70ba\u4e86\u4e0d\u518d\u91cd\u8e48\u8986\u8f4d\uff0c\u56e0\u800c\u5275\u9020\u65b0\u7684\u5929\u754c\u4f7f\u8005\u3002\n\u4e00\u500b\u66f4\u70ba\u7d14\u7cb9\uff0c\u4e14\u66f4\u70ba\u6a38\u5be6\u7684\u5b58\u5728\u3002",
+                    "skill_text": "\u3010<color=Keyword>\u75be\u99b3<\/color>\u3011",
+                    "card_image_hash": "151d95d9ba514d1b94b73b96e2fe8be9",
+                    "card_banner_image_hash": "31c46021fac540429b619d76cb8fce16"
+                },
+                "style_card_list": [
+                    {
+                        "hash": "c4ec49664f9b41f5b117976a435b70f5",
+                        "evo_hash": "00bd6c4c9bf2463a87f3289f6bfc06f5",
+                        "name": "",
+                        "name_ruby": "",
+                        "cv": "",
+                        "illustrator": "\u306d\u3058\u592a",
+                        "skill_text": "",
+                        "flavour_text": "",
+                        "evo_flavour_text": ""
+                    }
+                ]
+            },
+            "10161210": {
+                "common": {
+                    "card_id": 10161210,
+                    "name": "\u5e73\u975c\u7684\u6559\u6703",
+                    "name_ruby": "\u5e73\u975c\u7684\u6559\u6703",
+                    "base_card_id": 10161210,
+                    "card_resource_id": 101612100,
+                    "atk": 0,
+                    "life": 0,
+                    "flavour_text": "\u300c\u771f\u662f\u4ee4\u4eba\u4e0d\u6085\uff01\u90a3\u624d\u662f\u7570\u7aef\u7684\u6559\u6703\u554a\uff01\u300d\n\u2500\u2500\u5d07\u656c\u90aa\u795e\u7684\u53f8\u796d",
+                    "skill_text": "\u3010<color=Keyword>\u5012\u6578<\/color>_3\u3011\n\u3010<color=Keyword>\u8b1d\u5e55\u66f2<\/color>\u3011\u7531\u81ea\u5df1\u7684\u724c\u5806\u4e2d\u62bd\u53d62\u5f35\u5361\u7247\u3002\n<hr>\u6d88\u8cbb1\u3010<color=Keyword>\u7b56\u52d5<\/color>\u3011\u4f7f\u9019\u5f35\u5361\u7247\u7684\u5012\u6578\u56de\u5408\u6578-1\u3002",
+                    "card_set_id": 10001,
+                    "type": 3,
+                    "class": 6,
+                    "tribes": [
+                        0
+                    ],
+                    "cost": 1,
+                    "rarity": 1,
+                    "cv": "",
+                    "illustrator": "",
+                    "questions": [],
+                    "is_token": false,
+                    "is_include_rotation": true,
+                    "card_image_hash": "98588c7f2ebd4cd695f479f19cf497f5",
+                    "card_banner_image_hash": "9c689ecb28334f66963ef64aea0eb6a3"
+                },
+                "evo": [],
+                "style_card_list": [
+                    {
+                        "hash": "baba4fa920e24a7e9ca9ba028e3f33a7",
+                        "evo_hash": "",
+                        "name": "",
+                        "name_ruby": "",
+                        "cv": "\u8c4a\u7530\u840c\u7e6a",
+                        "illustrator": "Akefumi",
+                        "skill_text": "",
+                        "flavour_text": "\u300c\u8001\u5be6\u8aaa\uff0c\u5982\u679c\u90a3\u500b\u662f\u7570\u7aef\uff0c\u6211\u9084\u771f\u60f3\u5165\u6559\u5462\u2026\u2026\u300d\n\u2500\u2500\u90aa\u6559\u7684\u4f7f\u5f92",
+                        "evo_flavour_text": ""
+                    }
+                ]
+            },
+            "10171110": {
+                "common": {
+                    "card_id": 10171110,
+                    "name": "\u71b1\u5ff1\u7684\u767c\u660e\u5bb6\u2027\u4f0a\u4fd0\u601d",
+                    "name_ruby": "\u71b1\u5ff1\u7684\u767c\u660e\u5bb6\u2027\u4f0a\u4fd0\u601d",
+                    "base_card_id": 10171110,
+                    "card_resource_id": 101711100,
+                    "atk": 1,
+                    "life": 1,
+                    "flavour_text": "\u8352\u856a\u4f86\u5f97\u63aa\u624b\u4e0d\u53ca\u3002\u5f9e\u5929\u800c\u964d\u7684\u7d55\u671b\u4e4b\u5cf6\u4fb5\u8972\u6545\u9109\u3002\n\u4f46\u5373\u4f7f\u5931\u53bb\u5e0c\u671b\u2026\u2026\u4e5f\u80fd\u5920\u5275\u9020\u51fa\u5d84\u65b0\u7684\u4e8b\u7269\u3002\n\u70ba\u62b5\u6297\u541e\u566c\u57ce\u93ae\u7684\u5a01\u8105\uff0c\u6297\u722d\u7d44\u7e54\u5c31\u6b64\u6210\u7acb\u3002\n\u2500\u2500\u51fa\u81ea\u300c\u300e\u91d1\u5c6c\u90fd\u5e02\u300f\u7684\u6297\u722d\u7d44\u7e54\u300d 1",
+                    "skill_text": "\u3010<color=Keyword>\u8b1d\u5e55\u66f2<\/color>\u3011\u589e\u52a01\u5f35\u300e<color=Keyword>\u904e\u5f80\u4e4b\u6838<\/color>\u300f\u5230\u81ea\u5df1\u7684\u624b\u724c\u4e2d\u3002",
+                    "card_set_id": 10001,
+                    "type": 1,
+                    "class": 7,
+                    "tribes": [
+                        0
+                    ],
+                    "cost": 1,
+                    "rarity": 1,
+                    "cv": "\u8d64\u5d0e\u5343\u590f",
+                    "illustrator": "Gen",
+                    "questions": [],
+                    "is_token": false,
+                    "is_include_rotation": true,
+                    "card_image_hash": "8f37459080b54c68b4a5e489b71bcda1",
+                    "card_banner_image_hash": "66197c7b1ea84de59c86f54dce066ed6"
+                },
+                "evo": {
+                    "card_resource_id": 101711101,
+                    "flavour_text": "\u7576\u57ce\u93ae\u88ab\u70b8\u6389\u7684\u6642\u5019\uff0c\u771f\u7684\u662f\u5dee\u9ede\u5c31\u8981\u5931\u53bb\u6230\u610f\u4e86\u3002\n\u4f46\u591a\u8667\u6709\u6297\u722d\u7d44\u7e54\uff0c\u6211\u8ddf\u5927\u5bb6\u624d\u80fd\u8d70\u5f97\u4e0b\u53bb\uff01\n\u6211\u81ea\u5df1\u4e5f\u505a\u4e86\u6b66\u5668\uff0c\u60f3\u7167\u4eae\u6bcf\u500b\u4eba\u7684\u5fc3\uff01",
+                    "skill_text": "\u3010<color=Keyword>\u8b1d\u5e55\u66f2<\/color>\u3011\u589e\u52a01\u5f35\u300e<color=Keyword>\u904e\u5f80\u4e4b\u6838<\/color>\u300f\u5230\u81ea\u5df1\u7684\u624b\u724c\u4e2d\u3002",
+                    "card_image_hash": "3b137732345d4512a7671fc92bf353e3",
+                    "card_banner_image_hash": "aa694cff652f435abcecf98a664f1a95"
+                },
+                "style_card_list": []
+            },
+            "90071220": {
+                "common": {
+                    "card_id": 90071220,
+                    "name": "\u904e\u5f80\u4e4b\u6838",
+                    "name_ruby": "\u904e\u5f80\u4e4b\u6838",
+                    "base_card_id": 90071220,
+                    "card_resource_id": 900712200,
+                    "atk": 0,
+                    "life": 0,
+                    "flavour_text": "\u5c0d\u9670\u6697\u904e\u53bb\u4e26\u672a\u9003\u907f\uff0c\u906d\u5230\u7ba1\u7406\u7684\u6094\u609f\u4e4b\u907a\u7269\u3002\n\u6b64\u6a19\u793a\u672a\u4f86\u9b25\u722d\u4e4b\u9f52\u8f2a\uff0c\u4e43\u7167\u8000\u5e73\u7a69\u7684\u5149\u4e4b\u6e21\u8239\u3002\n\u2500\u2500\u51fa\u81ea\u300c\u6ec5\u4ea1\u8a18\u300d \u904e\u53bb\u7684\u9f52\u8f2a",
+                    "skill_text": "\u3010<color=Keyword>\u878d\u5408<\/color>\u3011\u5275\u9020\u7269\u2027\u8b77\u7b26\u5361\n\u8207\u9019\u5f35\u5361\u7247\u9032\u884c\u3010<color=Keyword>\u878d\u5408<\/color>\u3011\u6642\uff0c\u4f7f\u9019\u5f35\u5361\u7247\u8b8a\u8eab\u70ba\u300e<color=Keyword>\u5821\u58d8\u7684\u5275\u9020\u7269<\/color>\u300f\u3002\n<hr>\u7121\u6cd5\u4f7f\u7528\u9019\u5f35\u5361\u7247\u3002",
+                    "card_set_id": 90000,
+                    "type": 2,
+                    "class": 7,
+                    "tribes": [
+                        14
+                    ],
+                    "cost": 1,
+                    "rarity": 1,
+                    "cv": "",
+                    "illustrator": "AOGIRI",
+                    "questions": [],
+                    "is_token": true,
+                    "is_include_rotation": false,
+                    "card_image_hash": "370d281e311044c8a9f3ccf64c922e21",
+                    "card_banner_image_hash": "95f5185d203e490fbf8e6dbc4c567007"
+                },
+                "evo": [],
+                "style_card_list": []
+            },
+            "90072120": {
+                "common": {
+                    "card_id": 90072120,
+                    "name": "\u5821\u58d8\u7684\u5275\u9020\u7269",
+                    "name_ruby": "\u5821\u58d8\u7684\u5275\u9020\u7269",
+                    "base_card_id": 90072120,
+                    "card_resource_id": 900721200,
+                    "atk": 1,
+                    "life": 5,
+                    "flavour_text": "\u904e\u53bb\u7684\u907a\u61be\u5f88\u5feb\u4fbf\u906d\u4eba\u5011\u907a\u5fd8\u3002\n\u9f52\u8f2a\u7684\u7d00\u9304\u52a9\u9577\u9b25\u722d\uff0c\u4ee4\u8a31\u591a\u4eba\u56e0\u6b64\u55aa\u751f\u3002\n\u2500\u2500\u51fa\u81ea\u300c\u6ec5\u4ea1\u8a18\u300d \u9752\u4e4b\u7ae0",
+                    "skill_text": "\u3010<color=Keyword>\u878d\u5408<\/color>\u3011\u5275\u9020\u7269\u2027\u5361\u7247\n\u4f9d\u300c\u8207\u9019\u5f35\u5361\u7247\u3010<color=Keyword>\u878d\u5408<\/color>\u3011\u7684\u5361\u7247\u6d88\u8cbb\u4e4b\u5408\u8a08\u300d\u8b8a\u8eab\u70ba\u7279\u5b9a\u5361\u7247\u3002\n\u30001\u3000\u2192\u300e<color=Keyword>\u7834\u6ec5\u7684\u5275\u9020\u7269\u03b1<\/color>\u300f\n\u30002\u3000\u2192\u300e<color=Keyword>\u7834\u6ec5\u7684\u5275\u9020\u7269\u03b2<\/color>\u300f\n3\u4ee5\u4e0a\u2192\u300e<color=Keyword>\u7834\u6ec5\u7684\u5275\u9020\u7269\u03b3<\/color>\u300f\n<hr>\u3010<color=Keyword>\u5b88\u8b77<\/color>\u3011",
+                    "card_set_id": 90000,
+                    "type": 1,
+                    "class": 7,
+                    "tribes": [
+                        14
+                    ],
+                    "cost": 3,
+                    "rarity": 2,
+                    "cv": "",
+                    "illustrator": "AOGIRI",
+                    "questions": [],
+                    "is_token": true,
+                    "is_include_rotation": false,
+                    "card_image_hash": "f3aeefe57d4b473f8cdb58e61b7b6ef3",
+                    "card_banner_image_hash": "b34f2dab9f364443aaa4290d14c409c7"
+                },
+                "evo": {
+                    "card_resource_id": 900721201,
+                    "flavour_text": "\u53ea\u8981\u4eba\u5011\u4ecd\u4ef0\u8cf4\u5fae\u5149\uff0c\u6587\u660e\u7684\u672a\u4f86\u5c31\u4f9d\u7136\u4e0d\u898b\u5929\u65e5\u3002",
+                    "skill_text": "\u3010<color=Keyword>\u878d\u5408<\/color>\u3011\u5275\u9020\u7269\u2027\u5361\u7247\n\u4f9d\u300c\u8207\u9019\u5f35\u5361\u7247\u3010<color=Keyword>\u878d\u5408<\/color>\u3011\u7684\u5361\u7247\u6d88\u8cbb\u4e4b\u5408\u8a08\u300d\u8b8a\u8eab\u70ba\u7279\u5b9a\u5361\u7247\u3002\n\u30001\u3000\u2192\u300e<color=Keyword>\u7834\u6ec5\u7684\u5275\u9020\u7269\u03b1<\/color>\u300f\n\u30002\u3000\u2192\u300e<color=Keyword>\u7834\u6ec5\u7684\u5275\u9020\u7269\u03b2<\/color>\u300f\n3\u4ee5\u4e0a\u2192\u300e<color=Keyword>\u7834\u6ec5\u7684\u5275\u9020\u7269\u03b3<\/color>\u300f\n<hr>\u3010<color=Keyword>\u5b88\u8b77<\/color>\u3011",
+                    "card_image_hash": "c3822f389de34d79a35f435df30427ef",
+                    "card_banner_image_hash": "82e7fd925a3f45ecb1ba7fcd79893a4c"
+                },
+                "style_card_list": []
+            },
+            "90073110": {
+                "common": {
+                    "card_id": 90073110,
+                    "name": "\u7834\u6ec5\u7684\u5275\u9020\u7269\u03b1",
+                    "name_ruby": "\u7834\u6ec5\u7684\u5275\u9020\u7269\u03b1",
+                    "base_card_id": 90073110,
+                    "card_resource_id": 900731100,
+                    "atk": 3,
+                    "life": 5,
+                    "flavour_text": "\u7834\u6ec5\u7684\u8a95\u751f\uff0c\u5c07\u71b1\u80fd\u50b2\u6162\u5730\u541e\u566c\u3002\n\u76e1\u566c\u76ee\u5149\u6240\u53ca\u7684\u8cc7\u6e90\uff0c\u6700\u7d42\u9023\u71b1\u6e90\u4e5f\u906d\u63a0\u596a\u6b86\u76e1\u3002",
+                    "skill_text": "\u3010<color=Keyword>\u878d\u5408<\/color>\u3011\u7576\u300e<color=Keyword>\u7834\u6ec5\u7684\u5275\u9020\u7269\u03b2<\/color>\u300f\u6216\u300e<color=Keyword>\u7834\u6ec5\u7684\u5275\u9020\u7269\u03b3<\/color>\u300f\n\u8207\u9019\u5f35\u5361\u7247\u9032\u884c\u3010<color=Keyword>\u878d\u5408<\/color>\u3011\u6642\uff0c\u5982\u679c\u8207\u9019\u5f35\u5361\u7247\u3010<color=Keyword>\u878d\u5408<\/color>\u3011\u7684\u7a2e\u985e\u70ba2\uff0c\u5247\u6703\u4f7f\u9019\u5f35\u5361\u7247\u8b8a\u8eab\u70ba\u300e<color=Keyword>\u5353\u7d55\u7684\u5275\u9020\u7269\u03a9<\/color>\u300f\u3002\n<hr>\u81ea\u5df1\u7684\u56de\u5408\u7d50\u675f\u6642\uff0c\u56de\u5fa9\u81ea\u5df1\u7684\u4e3b\u6230\u80053\u9ede\u751f\u547d\u503c\u3002",
+                    "card_set_id": 90000,
+                    "type": 1,
+                    "class": 7,
+                    "tribes": [
+                        14
+                    ],
+                    "cost": 5,
+                    "rarity": 3,
+                    "cv": "",
+                    "illustrator": "\u30bf\u30c4\u30e4\u30ad",
+                    "questions": [
+                        {
+                            "question": "\u81ea\u5df1\u624b\u724c\u4e2d\u7684\u300e\u7834\u6ec5\u7684\u5275\u9020\u7269\u03b2\u300f\u8207\u300e\u7834\u6ec5\u7684\u5275\u9020\u7269\u03b1\u300f\u9032\u884c\u3010\u878d\u5408\u3011\u5f8c\uff0c\u65bc\u4e0b\u56de\u5408\u4f7f\u300e\u7834\u6ec5\u7684\u5275\u9020\u7269\u03b3\u300f\u8207\u8a72\u5f35\u300e\u7834\u6ec5\u7684\u5275\u9020\u7269\u03b1\u300f\u9032\u884c\u3010\u878d\u5408\u3011\u6642\uff0c\u6703\u8b8a\u8eab\u70ba\u300e\u5353\u7d55\u7684\u5275\u9020\u7269\u03a9\u300f\u55ce\uff1f",
+                            "answer": "\u6703\u8b8a\u8eab\u3002"
+                        }
+                    ],
+                    "is_token": true,
+                    "is_include_rotation": false,
+                    "card_image_hash": "6636c88252014018ac45a5d2ea02a69c",
+                    "card_banner_image_hash": "1adeaf7a32464448a94a43b846cd3838"
+                },
+                "evo": {
+                    "card_resource_id": 900731101,
+                    "flavour_text": "\u8cc7\u6e90\u6d88\u5931\uff0c\u751f\u547d\u6e1b\u5c11\uff0c\u661f\u8fb0\u505c\u6b62\u904b\u884c\u3002\n\u5982\u540c\u6240\u89f8\u78b0\u7684\u5927\u5730\u4e00\u822c\uff0c\u8af8\u591a\u8eab\u8ec0\u9010\u6f38\u5931\u6eab\u3002",
+                    "skill_text": "\u3010<color=Keyword>\u878d\u5408<\/color>\u3011\u7576\u300e<color=Keyword>\u7834\u6ec5\u7684\u5275\u9020\u7269\u03b2<\/color>\u300f\u6216\u300e<color=Keyword>\u7834\u6ec5\u7684\u5275\u9020\u7269\u03b3<\/color>\u300f\n\u8207\u9019\u5f35\u5361\u7247\u9032\u884c\u3010<color=Keyword>\u878d\u5408<\/color>\u3011\u6642\uff0c\u5982\u679c\u8207\u9019\u5f35\u5361\u7247\u3010<color=Keyword>\u878d\u5408<\/color>\u3011\u7684\u7a2e\u985e\u70ba2\uff0c\u5247\u6703\u4f7f\u9019\u5f35\u5361\u7247\u8b8a\u8eab\u70ba\u300e<color=Keyword>\u5353\u7d55\u7684\u5275\u9020\u7269\u03a9<\/color>\u300f\u3002\n<hr>\u81ea\u5df1\u7684\u56de\u5408\u7d50\u675f\u6642\uff0c\u56de\u5fa9\u81ea\u5df1\u7684\u4e3b\u6230\u80053\u9ede\u751f\u547d\u503c\u3002",
+                    "card_image_hash": "49abc11b6d964f709784677811d05222",
+                    "card_banner_image_hash": "acf986bdf8384e90893552f4eb54696c"
+                },
+                "style_card_list": []
+            },
+            "90073120": {
+                "common": {
+                    "card_id": 90073120,
+                    "name": "\u7834\u6ec5\u7684\u5275\u9020\u7269\u03b2",
+                    "name_ruby": "\u7834\u6ec5\u7684\u5275\u9020\u7269\u03b2",
+                    "base_card_id": 90073120,
+                    "card_resource_id": 900731200,
+                    "atk": 4,
+                    "life": 4,
+                    "flavour_text": "\u7834\u6ec5\u7684\u6210\u9577\uff0c\u5c07\u661f\u8fb0\u6fc0\u70c8\u5730\u7c89\u788e\u3002\n\u64f4\u5c55\u81f3\u5b87\u5b99\u7684\u722d\u9b25\uff0c\u6700\u7d42\u9023\u7e41\u661f\u4e5f\u906d\u6bc0\u6ec5\u3002",
+                    "skill_text": "\u81ea\u5df1\u7684\u56de\u5408\u7d50\u675f\u6642\uff0c\u7d66\u4e88\u6575\u65b9\u7684\u4e3b\u6230\u80053\u9ede\u50b7\u5bb3\u3002",
+                    "card_set_id": 90000,
+                    "type": 1,
+                    "class": 7,
+                    "tribes": [
+                        14
+                    ],
+                    "cost": 5,
+                    "rarity": 3,
+                    "cv": "",
+                    "illustrator": "\u30bf\u30c4\u30e4\u30ad",
+                    "questions": [],
+                    "is_token": true,
+                    "is_include_rotation": false,
+                    "card_image_hash": "636bc0f5cefc4f18b0e85eab0383f7ef",
+                    "card_banner_image_hash": "70523e18a4c64f2dbf4663a9c5e27243"
+                },
+                "evo": {
+                    "card_resource_id": 900731201,
+                    "flavour_text": "\u661f\u8fb0\u56db\u6563\uff0c\u91cd\u529b\u932f\u4e82\uff0c\u661f\u7cfb\u5b8c\u5168\u5931\u63a7\u3002\n\u4e00\u65e6\u7948\u9858\u4e4b\u661f\u4e5f\u4e0d\u5fa9\u5b58\u5728\uff0c\u8af8\u591a\u9858\u671b\u5c07\u88ab\u5b87\u5b99\u7c89\u788e\u3002",
+                    "skill_text": "\u81ea\u5df1\u7684\u56de\u5408\u7d50\u675f\u6642\uff0c\u7d66\u4e88\u6575\u65b9\u7684\u4e3b\u6230\u80053\u9ede\u50b7\u5bb3\u3002",
+                    "card_image_hash": "b42707675e644f1a903eb17a9f5b39ac",
+                    "card_banner_image_hash": "1e07cd9cc172421c89fd6a467790fdbf"
+                },
+                "style_card_list": []
+            },
+            "90073130": {
+                "common": {
+                    "card_id": 90073130,
+                    "name": "\u7834\u6ec5\u7684\u5275\u9020\u7269\u03b3",
+                    "name_ruby": "\u7834\u6ec5\u7684\u5275\u9020\u7269\u03b3",
+                    "base_card_id": 90073130,
+                    "card_resource_id": 900731300,
+                    "atk": 5,
+                    "life": 3,
+                    "flavour_text": "\u7834\u6ec5\u7684\u751f\u5b58\uff0c\u5c07\u661f\u5149\u8fc5\u901f\u5730\u6495\u88c2\u3002\n\u8db3\u4ee5\u8de8\u8d8a\u7dad\u5ea6\u7684\u52a0\u901f\uff0c\u6700\u7d42\u9023\u5b87\u5b99\u5149\u7dda\u4e5f\u906d\u626d\u66f2\u3002",
+                    "skill_text": "\u81ea\u5df1\u7684\u56de\u5408\u7d50\u675f\u6642\uff0c\u7d66\u4e88\u6575\u65b9\u6230\u5834\u4e0a\u5168\u90e8\u7684\u5f9e\u8005\u53613\u9ede\u50b7\u5bb3\u3002",
+                    "card_set_id": 90000,
+                    "type": 1,
+                    "class": 7,
+                    "tribes": [
+                        14
+                    ],
+                    "cost": 5,
+                    "rarity": 3,
+                    "cv": "",
+                    "illustrator": "\u30bf\u30c4\u30e4\u30ad",
+                    "questions": [],
+                    "is_token": true,
+                    "is_include_rotation": false,
+                    "card_image_hash": "71e1b70e31434df694b708effb9388fd",
+                    "card_banner_image_hash": "c249a85e28114222a1877b829041c698"
+                },
+                "evo": {
+                    "card_resource_id": 900731301,
+                    "flavour_text": "\u5b87\u5b99\u788e\u88c2\uff0c\u5149\u7dda\u626d\u66f2\uff0c\u661f\u8fb0\u8499\u4e0a\u5875\u57c3\u3002\n\u9023\u90a3\u5fd8\u537b\u5982\u4f55\u9589\u773c\u7684\u96d9\u76ee\uff0c\u773c\u4e2d\u4e5f\u770b\u4e0d\u898b\u4efb\u4f55\u4e8b\u7269\u3002",
+                    "skill_text": "\u81ea\u5df1\u7684\u56de\u5408\u7d50\u675f\u6642\uff0c\u7d66\u4e88\u6575\u65b9\u6230\u5834\u4e0a\u5168\u90e8\u7684\u5f9e\u8005\u53613\u9ede\u50b7\u5bb3\u3002",
+                    "card_image_hash": "3597d7b9423846818fb57443d4abdcd4",
+                    "card_banner_image_hash": "9cc1ecc0e5d245c4bfc7dfea099ad670"
+                },
+                "style_card_list": []
+            },
+            "90074110": {
+                "common": {
+                    "card_id": 90074110,
+                    "name": "\u5353\u7d55\u7684\u5275\u9020\u7269\u03a9",
+                    "name_ruby": "\u5353\u7d55\u7684\u5275\u9020\u7269\u03a9",
+                    "base_card_id": 90074110,
+                    "card_resource_id": 900741100,
+                    "atk": 10,
+                    "life": 10,
+                    "flavour_text": "\u6c5d\u662f\u7d42\u6975\u7684\u5be6\u73fe\u8005\uff0c\u662f\u6bc0\u6ec5\u6587\u660e\u3001\u7c89\u788e\u661f\u8fb0\u7684\u6b66\u88dd\u3002\n\u9a45\u52d5\u6a5f\u68b0\u6642\u7684\u7126\u71b1\uff0c\u5c31\u9023\u9280\u6cb3\u4e5f\u80fd\u7194\u89e3\u6b86\u76e1\u3002\n\u7834\u6ec5\u5149\u74b0\u5c07\u5c0e\u5411\u7d42\u7109\uff0c\u6ec5\u4ea1\u4e4b\u6839\u6e90\u65bc\u6b64\u7d50\u5408\u3002\n\u6c38\u7121\u6b62\u76e1\u7684\u6b98\u9177\uff0c\u5c07\u53cd\u8986\u5f80\u4f86\u5c1a\u672a\u6210\u719f\u7684\u6587\u660e\u3002",
+                    "skill_text": "\u3010<color=Keyword>\u5165\u5834\u66f2<\/color>\u3011\u7d66\u4e88\u6575\u65b9\u6230\u5834\u4e0a\u5168\u90e8\u7684\u5f9e\u8005\u53615\u9ede\u50b7\u5bb3\u3002\u56de\u5fa9\u81ea\u5df1\u7684\u4e3b\u6230\u80055\u9ede\u751f\u547d\u503c\u3002\n<hr>\u3010<color=Keyword>\u75be\u99b3<\/color>\u3011\n\u3010<color=Keyword>\u5b88\u8b77<\/color>\u3011\n\u3010<color=Keyword>\u5149\u7d0b<\/color>\u3011",
+                    "card_set_id": 90000,
+                    "type": 1,
+                    "class": 7,
+                    "tribes": [
+                        14
+                    ],
+                    "cost": 10,
+                    "rarity": 4,
+                    "cv": "\u4fdd\u6751\u771f",
+                    "illustrator": "\u30b7\u30e5\u30a4\u30c8\u30f3",
+                    "questions": [],
+                    "is_token": true,
+                    "is_include_rotation": false,
+                    "card_image_hash": "ed8f1a3fa63946249b4b869e393bec18",
+                    "card_banner_image_hash": "0c7d9581c8ca4667b458cc629853d1b9"
+                },
+                "evo": {
+                    "card_resource_id": 900741101,
+                    "flavour_text": "\u6c5d\u662f\u767d\u65e5\u7684\u57f7\u884c\u8005\uff0c\u662f\u6d17\u6ecc\u6587\u660e\u3001\u7167\u4eae\u5b87\u5b99\u7684\u6975\u5149\u3002\n\u9060\u96e2\u722d\u9b25\u6642\u7684\u6392\u71b1\uff0c\u6703\u7194\u89e3\u8513\u5ef6\u5b87\u5b99\u7684\u618e\u60e1\u3002\n\u6297\u62d2\u5bbf\u547d\u7684\u518d\u8d77\u65b0\u661f\uff0c\u5c07\u6703\u7c89\u788e\u6bc0\u6ec5\u7684\u6b0a\u80fd\u3002\n\u5c1a\u672a\u5230\u4f86\u7684\u548c\u5e73\uff0c\u5373\u5c07\u964d\u81e8\u65bc\u6368\u68c4\u904e\u932f\u7684\u6587\u660e\u3002",
+                    "skill_text": "\u3010<color=Keyword>\u5165\u5834\u66f2<\/color>\u3011\u7d66\u4e88\u6575\u65b9\u6230\u5834\u4e0a\u5168\u90e8\u7684\u5f9e\u8005\u53615\u9ede\u50b7\u5bb3\u3002\u56de\u5fa9\u81ea\u5df1\u7684\u4e3b\u6230\u80055\u9ede\u751f\u547d\u503c\u3002\n<hr>\u3010<color=Keyword>\u75be\u99b3<\/color>\u3011\n\u3010<color=Keyword>\u5b88\u8b77<\/color>\u3011\n\u3010<color=Keyword>\u5149\u7d0b<\/color>\u3011",
+                    "card_image_hash": "e6fb04b307f64e978d58fdb82fd5f093",
+                    "card_banner_image_hash": "93d159f6fc3d48d69e6cc32008ba54dc"
+                },
+                "style_card_list": []
+            },
+            "10171320": {
+                "common": {
+                    "card_id": 10171320,
+                    "name": "\u5275\u9020\u7269\u7684\u84c4\u80fd",
+                    "name_ruby": "\u5275\u9020\u7269\u7684\u84c4\u80fd",
+                    "base_card_id": 10171320,
+                    "card_resource_id": 101713200,
+                    "atk": 0,
+                    "life": 0,
+                    "flavour_text": "\u300c\u6709\u9019\u9ebc\u591a\u907a\u7269\u7684\u539f\u52d5\u529b\uff0c\u771f\u662f\u5e6b\u5927\u5fd9\u4e86\u5462\u3002\u300d\n\u300c\u662f\u554a\u3002\u9019\u4e0b\u5c31\u80fd\u53ea\u9760\u9019\u4e9b\u8077\u54e1\u7e7c\u7e8c\u9032\u884c\u5be6\u9a57\u4e86\u3002\u300d\n\u2500\u2500\u907a\u7269\u7814\u7a76\u8005\u8207\u7814\u7a76\u4e3b\u4efb",
+                    "skill_text": "\u589e\u52a01\u5f35\u300e<color=Keyword>\u672a\u4f86\u4e4b\u6838<\/color>\u300f\u82071\u5f35\u300e<color=Keyword>\u904e\u5f80\u4e4b\u6838<\/color>\u300f\u5230\u81ea\u5df1\u7684\u624b\u724c\u4e2d\u3002",
+                    "card_set_id": 10001,
+                    "type": 4,
+                    "class": 7,
+                    "tribes": [
+                        0
+                    ],
+                    "cost": 1,
+                    "rarity": 1,
+                    "cv": "",
+                    "illustrator": "",
+                    "questions": [],
+                    "is_token": false,
+                    "is_include_rotation": true,
+                    "card_image_hash": "c35e56976c654bf2909439a1b15f68f5",
+                    "card_banner_image_hash": "5b8714d230234d21b032761c1300f517"
+                },
+                "evo": [],
+                "style_card_list": []
+            },
+            "90071210": {
+                "common": {
+                    "card_id": 90071210,
+                    "name": "\u672a\u4f86\u4e4b\u6838",
+                    "name_ruby": "\u672a\u4f86\u4e4b\u6838",
+                    "base_card_id": 90071210,
+                    "card_resource_id": 900712100,
+                    "atk": 0,
+                    "life": 0,
+                    "flavour_text": "\u5c0d\u6587\u660e\u672a\u4f86\u8cbb\u76e1\u82e6\u5fc3\uff0c\u906d\u5230\u5229\u7528\u7684\u5e0c\u671b\u4e4b\u907a\u7269\u3002\n\u6b64\u63a8\u52d5\u9032\u6b65\u71b1\u6f6e\u4e4b\u9f52\u8f2a\uff0c\u4e43\u6587\u660e\u6240\u6c42\u7684\u661f\u4e4b\u6e21\u8239\u3002\n\u2500\u2500\u51fa\u81ea\u300c\u6ec5\u4ea1\u8a18\u300d \u672a\u4f86\u7684\u9f52\u8f2a",
+                    "skill_text": "\u3010<color=Keyword>\u878d\u5408<\/color>\u3011\u5275\u9020\u7269\u2027\u8b77\u7b26\u5361\n\u8207\u9019\u5f35\u5361\u7247\u9032\u884c\u3010<color=Keyword>\u878d\u5408<\/color>\u3011\u6642\uff0c\u4f7f\u9019\u5f35\u5361\u7247\u8b8a\u8eab\u70ba\u300e<color=Keyword>\u9032\u653b\u7684\u5275\u9020\u7269<\/color>\u300f\u3002\n<hr>\u7121\u6cd5\u4f7f\u7528\u9019\u5f35\u5361\u7247\u3002",
+                    "card_set_id": 90000,
+                    "type": 2,
+                    "class": 7,
+                    "tribes": [
+                        14
+                    ],
+                    "cost": 1,
+                    "rarity": 1,
+                    "cv": "",
+                    "illustrator": "AOGIRI",
+                    "questions": [],
+                    "is_token": true,
+                    "is_include_rotation": false,
+                    "card_image_hash": "90d765989a81479dac597558303cc6e9",
+                    "card_banner_image_hash": "9ea2cb00f1f949a89e9e56ae6c73df56"
+                },
+                "evo": [],
+                "style_card_list": []
+            },
+            "90072110": {
+                "common": {
+                    "card_id": 90072110,
+                    "name": "\u9032\u653b\u7684\u5275\u9020\u7269",
+                    "name_ruby": "\u9032\u653b\u7684\u5275\u9020\u7269",
+                    "base_card_id": 90072110,
+                    "card_resource_id": 900721100,
+                    "atk": 5,
+                    "life": 1,
+                    "flavour_text": "\u6c11\u773e\u53ad\u5026\u7b49\u5f85\u5c1a\u672a\u5230\u4f86\u7684\u9032\u6b65\uff0c\u958b\u59cb\u722d\u596a\u9f52\u8f2a\u3002\n\u9f52\u8f2a\u88ab\u5229\u7528\u65bc\u6b66\u529b\uff0c\u4f7f\u672a\u4f86\u6587\u660e\u906d\u5230\u626d\u66f2\u3002\n\u2500\u2500\u51fa\u81ea\u300c\u6ec5\u4ea1\u8a18\u300d \u8d64\u4e4b\u7ae0",
+                    "skill_text": "\u3010<color=Keyword>\u878d\u5408<\/color>\u3011\u5275\u9020\u7269\u2027\u5361\u7247\n\u4f9d\u300c\u8207\u9019\u5f35\u5361\u7247\u3010<color=Keyword>\u878d\u5408<\/color>\u3011\u7684\u5361\u7247\u6d88\u8cbb\u4e4b\u5408\u8a08\u300d\u8b8a\u8eab\u70ba\u7279\u5b9a\u5361\u7247\u3002\n\u30001\u3000\u2192\u300e<color=Keyword>\u7834\u6ec5\u7684\u5275\u9020\u7269\u03b1<\/color>\u300f\n\u30002\u3000\u2192\u300e<color=Keyword>\u7834\u6ec5\u7684\u5275\u9020\u7269\u03b2<\/color>\u300f\n3\u4ee5\u4e0a\u2192\u300e<color=Keyword>\u7834\u6ec5\u7684\u5275\u9020\u7269\u03b3<\/color>\u300f\n<hr>\u3010<color=Keyword>\u7a81\u9032<\/color>\u3011",
+                    "card_set_id": 90000,
+                    "type": 1,
+                    "class": 7,
+                    "tribes": [
+                        14
+                    ],
+                    "cost": 3,
+                    "rarity": 2,
+                    "cv": "",
+                    "illustrator": "AOGIRI",
+                    "questions": [],
+                    "is_token": true,
+                    "is_include_rotation": false,
+                    "card_image_hash": "932779fd310c446e908654aa27b77747",
+                    "card_banner_image_hash": "496102c0bf8c48a8bd8531cfccd1cb99"
+                },
+                "evo": {
+                    "card_resource_id": 900721101,
+                    "flavour_text": "\u9b25\u722d\u7c89\u788e\u5c0d\u548c\u5e73\u7684\u71b1\u60c5\uff0c\u7d93\u6b77\u7121\u6578\u6b72\u6708\u4f9d\u820a\u6301\u7e8c\u8457\u3002",
+                    "skill_text": "\u3010<color=Keyword>\u878d\u5408<\/color>\u3011\u5275\u9020\u7269\u2027\u5361\u7247\n\u4f9d\u300c\u8207\u9019\u5f35\u5361\u7247\u3010<color=Keyword>\u878d\u5408<\/color>\u3011\u7684\u5361\u7247\u6d88\u8cbb\u4e4b\u5408\u8a08\u300d\u8b8a\u8eab\u70ba\u7279\u5b9a\u5361\u7247\u3002\n\u30001\u3000\u2192\u300e<color=Keyword>\u7834\u6ec5\u7684\u5275\u9020\u7269\u03b1<\/color>\u300f\n\u30002\u3000\u2192\u300e<color=Keyword>\u7834\u6ec5\u7684\u5275\u9020\u7269\u03b2<\/color>\u300f\n3\u4ee5\u4e0a\u2192\u300e<color=Keyword>\u7834\u6ec5\u7684\u5275\u9020\u7269\u03b3<\/color>\u300f\n<hr>\u3010<color=Keyword>\u7a81\u9032<\/color>\u3011",
+                    "card_image_hash": "847b4ccab60a45d7b7d570cff30ac4c4",
+                    "card_banner_image_hash": "85d167a9668048cdbba3ad2d278481ae"
+                },
+                "style_card_list": []
+            },
+            "10272310": {
+                "common": {
+                    "card_id": 10272310,
+                    "name": "\u4f0a\u5361\u6d1b\u65af\u7684\u98db\u7fd4",
+                    "name_ruby": "\u4f0a\u5361\u6d1b\u65af\u7684\u98db\u7fd4",
+                    "base_card_id": 10272310,
+                    "card_resource_id": 102723100,
+                    "atk": 0,
+                    "life": 0,
+                    "flavour_text": "\u540d\u70ba\u300c\u4e0d\u53ef\u80fd\u300d\u7684\u592a\u967d\uff0c\u6700\u80fd\u5920\u71c3\u8d77\u767c\u660e\u5bb6\u7684\u9b25\u5fd7\u3002",
+                    "skill_text": "\u6307\u5b9a1\u5f35\u81ea\u5df1\u624b\u724c\u4e2d\u7684\u5275\u9020\u7269\u2027\u5f9e\u8005\u5361\u3002\u4f7f\u5176\u7372\u5f97\u3010<color=Keyword>\u7a81\u9032<\/color>\u3011\u8207\u300c\u3010<color=Keyword>\u8b1d\u5e55\u66f2<\/color>\u3011\u7531\u81ea\u5df1\u7684\u724c\u5806\u4e2d\u62bd\u53d61\u5f35\u5361\u7247\u300d\u3002",
+                    "card_set_id": 10002,
+                    "type": 4,
+                    "class": 7,
+                    "tribes": [
+                        0
+                    ],
+                    "cost": 1,
+                    "rarity": 2,
+                    "cv": "\u559c\u591a\u6751\u82f1\u68a8",
+                    "illustrator": "Gen",
+                    "questions": [],
+                    "is_token": false,
+                    "is_include_rotation": false,
+                    "card_image_hash": "c32198ae5dad41ab83d0e1f583429cc5",
+                    "card_banner_image_hash": "cff1fcfeadbf4028ad15b5d7cb4f0505"
+                },
+                "evo": [],
+                "style_card_list": []
+            },
+            "10001110": {
+                "common": {
+                    "card_id": 10001110,
+                    "name": "\u4e0d\u5c48\u7684\u528d\u9b25\u58eb",
+                    "name_ruby": "\u4e0d\u5c48\u7684\u528d\u9b25\u58eb",
+                    "base_card_id": 10001110,
+                    "card_resource_id": 100011100,
+                    "atk": 2,
+                    "life": 2,
+                    "flavour_text": "\u5728\u5145\u6eff\u7d1b\u722d\u7684\u4e16\u754c\u4e2d\uff0c\u552f\u6709\u81ea\u5df1\u7684\u529b\u91cf\u662f\u53ef\u9760\u7684\u3002\n\u52dd\u5229\u8207\u50b3\u5947\uff0c\u5168\u90fd\u53ea\u6709\u6211\u80fd\u5f97\u5230\u624b\u3002",
+                    "skill_text": "\u3010<color=Keyword>\u7206\u80fd\u5f37\u5316<\/color>_4\u3011\u4f7f\u9019\u5f35\u5361\u7247+3\/+3\u3002",
+                    "card_set_id": 10000,
+                    "type": 1,
+                    "class": 0,
+                    "tribes": [
+                        0
+                    ],
+                    "cost": 2,
+                    "rarity": 1,
+                    "cv": "\u677e\u5ca1\u798e\u4e1e",
+                    "illustrator": "tricky\u80e1\u5750",
+                    "questions": [],
+                    "is_token": false,
+                    "is_include_rotation": true,
+                    "card_image_hash": "8f726d216ea14aa4887075025c7f1578",
+                    "card_banner_image_hash": "8322825ac4c04936a725ebe4fb0fb624"
+                },
+                "evo": {
+                    "card_resource_id": 100011101,
+                    "flavour_text": "\u6c92\u6709\u7d1b\u722d\u7684\u4e16\u754c\uff0c\u624d\u662f\u6211\u60f3\u958b\u5275\u7684\u672a\u4f86\u3002\n\u53ef\u9760\u7684\u53ea\u6709\u81ea\u5df1\u3002\u6575\u4eba\u8207\u618e\u6068\uff0c\u5168\u90fd\u7531\u6211\u4f86\u625b\u3002",
+                    "skill_text": "\u3010<color=Keyword>\u7206\u80fd\u5f37\u5316<\/color>_4\u3011\u4f7f\u9019\u5f35\u5361\u7247+3\/+3\u3002",
+                    "card_image_hash": "3315baf63e984439b55540600cb8f935",
+                    "card_banner_image_hash": "e43f414da8a4479dbb0fd3bfa0b7ad62"
+                },
+                "style_card_list": []
+            },
+            "10001120": {
+                "common": {
+                    "card_id": 10001120,
+                    "name": "\u53ee\u5679\u5929\u4f7f\u2027\u8389\u4e9e",
+                    "name_ruby": "\u53ee\u5679\u5929\u4f7f\u2027\u8389\u4e9e",
+                    "base_card_id": 10001120,
+                    "card_resource_id": 100011200,
+                    "atk": 0,
+                    "life": 2,
+                    "flavour_text": "\u96d6\u7136\u4e00\u76f4\u62ff\u8457\u6703\u5f88\u91cd\uff0c\u4f46\u5fc3\u610f\u4e00\u5b9a\u80fd\u900f\u904e\u9418\u8072\u50b3\u905e\uff01\n\u8a00\u8a9e\u7121\u6cd5\u50b3\u9054\u5230\u7684\uff0c\u90fd\u8981\u7528\u9418\u97ff\u4f86\u88dc\u8db3\uff01\n\u53ee\u2500\u2500\u549a\u2500\u2500\u53ee\u2500\u2500\u549a\uff01",
+                    "skill_text": "\u3010<color=Keyword>\u5b88\u8b77<\/color>\u3011\n\u3010<color=Keyword>\u8b1d\u5e55\u66f2<\/color>\u3011\u7531\u81ea\u5df1\u7684\u724c\u5806\u4e2d\u62bd\u53d61\u5f35\u5361\u7247\u3002\n<hr><ev>\u3010<color=Keyword>\u9032\u5316\u6642<\/color>\u3011\u7531\u81ea\u5df1\u7684\u724c\u5806\u4e2d\u62bd\u53d61\u5f35\u5361\u7247\u3002<\/ev>",
+                    "card_set_id": 10000,
+                    "type": 1,
+                    "class": 0,
+                    "tribes": [
+                        0
+                    ],
+                    "cost": 2,
+                    "rarity": 1,
+                    "cv": "\u5927\u95dc\u82f1\u91cc",
+                    "illustrator": "\u306d\u3064\u304d",
+                    "questions": [],
+                    "is_token": false,
+                    "is_include_rotation": true,
+                    "card_image_hash": "8a463069eb3b448d8467c070345bd6eb",
+                    "card_banner_image_hash": "35d87541a37d476dae7518e7c4eafd78"
+                },
+                "evo": {
+                    "card_resource_id": 100011201,
+                    "flavour_text": "\u5e0c\u671b\u5927\u5bb6\u90fd\u80fd\u4fdd\u6301\u7b11\u5bb9\u7684\u5fc3\u610f\uff0c\u770b\u4f86\u662f\u50b3\u9054\u5230\u4e86\u5462\uff01\n\u592a\u958b\u5fc3\u4e86\uff0c\u518d\u6416\u97ff\u4e00\u6b21\u5427\uff01\u53ee\u2500\u2500\u549a\u2500\u2500\u53ee\u2500\u2500\u549a\uff01",
+                    "skill_text": "\u3010<color=Keyword>\u5b88\u8b77<\/color>\u3011\n\u3010<color=Keyword>\u8b1d\u5e55\u66f2<\/color>\u3011\u7531\u81ea\u5df1\u7684\u724c\u5806\u4e2d\u62bd\u53d61\u5f35\u5361\u7247\u3002\n<hr><ev>\u3010<color=Keyword>\u9032\u5316\u6642<\/color>\u3011\u7531\u81ea\u5df1\u7684\u724c\u5806\u4e2d\u62bd\u53d61\u5f35\u5361\u7247\u3002<\/ev>",
+                    "card_image_hash": "70cf6fee02e048c09ccec3448a1222b3",
+                    "card_banner_image_hash": "98bc7fb12cd74221a08a2c387ca28889"
+                },
+                "style_card_list": [
+                    {
+                        "hash": "8fae83a59318496e9ab04b3609947f8d",
+                        "evo_hash": "05f5d5171cca4d728e64769d1fd7b20c",
+                        "name": "",
+                        "name_ruby": "",
+                        "cv": "",
+                        "illustrator": "",
+                        "skill_text": "",
+                        "flavour_text": "",
+                        "evo_flavour_text": ""
+                    }
+                ]
+            },
+            "10101110": {
+                "common": {
+                    "card_id": 10101110,
+                    "name": "\u8caa\u5a6a\u7684\u667a\u5929\u4f7f\u2027\u9732\u6bd4",
+                    "name_ruby": "\u8caa\u5a6a\u7684\u667a\u5929\u4f7f\u2027\u9732\u6bd4",
+                    "base_card_id": 10101110,
+                    "card_resource_id": 101011100,
+                    "atk": 2,
+                    "life": 2,
+                    "flavour_text": "\u6c92\u6709\u5fc5\u8981\u70ba\u4e86\u80fd\u53bb\u5929\u754c\u800c\u505a\u4e00\u5806\u5584\u4e8b\u5566\uff01\n\u7562\u7adf\u5728\u5929\u754c\uff0c\u5373\u4f7f\u4f60\u52aa\u529b\u5de5\u4f5c\u4e5f\u62ff\u4e0d\u5230\u9322\u3002\n\u6211\u4f86\u6559\u4f60\u4e00\u4ef6\u91cd\u8981\u7684\u4e8b\u5427\u3002\n\u4fe1\u4ef0\u9019\u7a2e\u6771\u897f\u2026\u2026\u53ef\u662f\u4e0d\u503c\u9322\u7684\u5594\uff01",
+                    "skill_text": "\u3010<color=Keyword>\u5165\u5834\u66f2<\/color>\u3011\u6307\u5b9a1\u5f35\u81ea\u5df1\u624b\u724c\u4e2d\u7684\u5361\u7247\u3002\u4f7f\u5176\u8fd4\u56de\u724c\u5806\u4e2d\u3002\u7531\u81ea\u5df1\u7684\u724c\u5806\u4e2d\u62bd\u53d61\u5f35\u5361\u7247\u3002",
+                    "card_set_id": 10001,
+                    "type": 1,
+                    "class": 0,
+                    "tribes": [
+                        0
+                    ],
+                    "cost": 2,
+                    "rarity": 1,
+                    "cv": "\u85e4\u7530\u54b2",
+                    "illustrator": "LM7",
+                    "questions": [
+                        {
+                            "question": "\u81ea\u5df1\u7684\u624b\u724c\u4e2d\u53ea\u67091\u5f35\u300e\u8caa\u5a6a\u7684\u667a\u5929\u4f7f\u2027\u9732\u6bd4\u300f\u6642\uff0c\u4f7f\u7528\u8a72\u5361\u7247\u5f8c\uff0c\u9084\u6703\u767c\u52d5\u300e\u8caa\u5a6a\u7684\u667a\u5929\u4f7f\u2027\u9732\u6bd4\u300f\u7684\u3010\u5165\u5834\u66f2\u3011\u80fd\u529b\u55ce\uff1f",
+                            "answer": "\u6703\u767c\u52d5\u3002\u624b\u724c\u5c07\u4e0d\u6703\u8fd4\u56de\uff0c\u4f46\u4ecd\u6703\u5f9e\u724c\u5806\u4e2d\u62bd\u53d61\u5f35\u5361\u7247\u3002"
+                        },
+                        {
+                            "question": "\u900f\u904e\u300e\u8caa\u5a6a\u7684\u667a\u5929\u4f7f\u2027\u9732\u6bd4\u300f\u7684\u3010\u5165\u5834\u66f2\u3011\u80fd\u529b\uff0c\u4f7f\u81ea\u5df1\u624b\u724c\u4e2d\u56e0\u3010\u9b54\u529b\u589e\u5e45\u6642\u3011\u800c\u6d88\u8cbb\u8f49\u8b8a\u70ba5\u7684\u300e\u72c2\u7130\u6bc0\u6ec5\u8005\u300f\u8fd4\u56de\u724c\u5806\u5f8c\uff0c\u518d\u6b21\u62bd\u53d6\u5230\u8a72\u5f35\u300e\u72c2\u7130\u6bc0\u6ec5\u8005\u300f\u6642\uff0c\u5176\u6d88\u8cbb\u4ecd\u70ba5\u55ce\uff1f",
+                            "answer": "\u6d88\u8cbb\u4ecd\u70ba5\u3002\u5f9e\u624b\u724c\u8fd4\u56de\u724c\u5806\u7684\u5361\u7247\u4e0d\u6703\u5931\u53bb\u9644\u52a0\u6548\u679c\u3002"
+                        },
+                        {
+                            "question": "\u900f\u904e\u300e\u8caa\u5a6a\u7684\u667a\u5929\u4f7f\u2027\u9732\u6bd4\u300f\u7684\u3010\u5165\u5834\u66f2\u3011\u80fd\u529b\uff0c\u4f7f\u81ea\u5df1\u624b\u724c\u4e2d\u5df2\u7372\u5f97\u3010\u75be\u99b3\u3011\u7684\u300e\u9b54\u714c\u8a6d\u667a\u8005\u2027\u62c9\u65af\u63d0\u300f\u8fd4\u56de\u724c\u5806\u5f8c\uff0c\u518d\u6b21\u62bd\u53d6\u5230\u8a72\u5f35\u300e\u9b54\u714c\u8a6d\u667a\u8005\u2027\u62c9\u65af\u63d0\u300f\u6642\uff0c\u5176\u4ecd\u64c1\u6709\u3010\u75be\u99b3\u3011\u55ce\uff1f",
+                            "answer": "\u4ecd\u64c1\u6709\u3010\u75be\u99b3\u3011\u3002\u5f9e\u624b\u724c\u8fd4\u56de\u724c\u5806\u7684\u5361\u7247\u4e0d\u6703\u5931\u53bb\u9644\u52a0\u6548\u679c\u3002"
+                        }
+                    ],
+                    "is_token": false,
+                    "is_include_rotation": true,
+                    "card_image_hash": "183492eb78a049c68feb22e6ecce56c4",
+                    "card_banner_image_hash": "bd3f2461985846e1a017fab9ac6b4a89"
+                },
+                "evo": {
+                    "card_resource_id": 101011101,
+                    "flavour_text": "\u5373\u4f7f\u58ae\u843d\u4eba\u9593\uff0c\u5979\u7684\u7fbd\u7ffc\u4f9d\u820a\u9583\u8000\u8457\u5149\u8292\u3002\n\u5979\u4e0d\u5fd8\u5929\u4f7f\u7684\u672c\u5206\uff0c\u5411\u5730\u4e0a\u7684\u4eba\u5011\u5ee3\u50b3\u7bb4\u8a00\u3002\n\u300c\u9664\u4e86\u8981\u6211\u56de\u53bb\u5929\u754c\u5916\uff0c\u53ea\u8981\u7d66\u9322\u4ec0\u9ebc\u90fd\u597d\u8fa6\uff01\u300d",
+                    "skill_text": "\u3010<color=Keyword>\u5165\u5834\u66f2<\/color>\u3011\u6307\u5b9a1\u5f35\u81ea\u5df1\u624b\u724c\u4e2d\u7684\u5361\u7247\u3002\u4f7f\u5176\u8fd4\u56de\u724c\u5806\u4e2d\u3002\u7531\u81ea\u5df1\u7684\u724c\u5806\u4e2d\u62bd\u53d61\u5f35\u5361\u7247\u3002",
+                    "card_image_hash": "1af24452d81944d88e6ac56868677980",
+                    "card_banner_image_hash": "3c300563a5af4f98a802e1af70d640ef"
+                },
+                "style_card_list": []
+            },
+            "10103110": {
+                "common": {
+                    "card_id": 10103110,
+                    "name": "\u6a02\u6717\u5929\u5bae\u2027\u6590\u723e\u7279\u4e9e",
+                    "name_ruby": "\u6a02\u6717\u5929\u5bae\u2027\u6590\u723e\u7279\u4e9e",
+                    "base_card_id": 10103110,
+                    "card_resource_id": 101031100,
+                    "atk": 2,
+                    "life": 2,
+                    "flavour_text": "\u9752\u5e74\u8207\u5925\u4f34\u5011\u555f\u7a0b\u524d\u5f80\u3010\u72c2\u795e\u3011\u4e4b\u5bae\u3002\n\u5728\u65c5\u9014\u9032\u5165\u5c3e\u8072\u6642\uff0c\u4ed6\u3010\u5011\u5c07\u5584\u3011\u5fc3\u76f8\u9023\uff0c\n\u4e26\u4e00\u540c\u767c\u8a93\u2500\u2500\u8981\u5c07\u72c2\u3010\u795e\u6d88\u6ec5\u3011\u4ee5\u62ef\u6551\u5927\u5730\u3002\n\u2500\u2500\u51fa\u81ea\u300c\u5047\u9762\u7269\u8a9e\u300d 6",
+                    "skill_text": "<ev>\u3010<color=Keyword>\u9032\u5316\u6642<\/color>\u3011\u6307\u5b9a1\u5f35\u6575\u65b9\u6230\u5834\u4e0a\u7684\u5f9e\u8005\u5361\u3002\u5c07\u5176\u7834\u58de\u3002<\/ev>",
+                    "card_set_id": 10001,
+                    "type": 1,
+                    "class": 0,
+                    "tribes": [
+                        0
+                    ],
+                    "cost": 2,
+                    "rarity": 3,
+                    "cv": "\u8208\u6d25\u548c\u5e78",
+                    "illustrator": "ShuLa",
+                    "questions": [],
+                    "is_token": false,
+                    "is_include_rotation": true,
+                    "card_image_hash": "8b5cc62013c040b399622832dc09fb2b",
+                    "card_banner_image_hash": "5b6425b5ef4d42d4bea67fd02ce25b22"
+                },
+                "evo": {
+                    "card_resource_id": 101031101,
+                    "flavour_text": "\u5728\u897f\u65b9\u7684\u5927\u90fd\u5e02\uff0c\u6709\u500b\u6234\u8457\u9762\u5177\u7684\u9752\u5e74\u3002\n\u4ed6\u7121\u6182\u7121\u616e\u3001\u7b11\u5bb9\u723d\u6717\u537b\u53c8\u6697\u85cf\u8271\u96e3\u62b1\u8ca0\u3002\n\u800c\u5176\u771f\u5be6\u9762\u8c8c\u2500\u2500\u4e43\u5357\u6771\u4e4b\u5929\u3002",
+                    "skill_text": "<ev>\u3010<color=Keyword>\u9032\u5316\u6642<\/color>\u3011\u6307\u5b9a1\u5f35\u6575\u65b9\u6230\u5834\u4e0a\u7684\u5f9e\u8005\u5361\u3002\u5c07\u5176\u7834\u58de\u3002<\/ev>",
+                    "card_image_hash": "6ddcec3bfe724fbaaae541fd0f401a48",
+                    "card_banner_image_hash": "e486c2b010ef469d80008bf55e5b09cf"
+                },
+                "style_card_list": []
+            },
+            "10202110": {
+                "common": {
+                    "card_id": 10202110,
+                    "name": "\u5973\u50d5\u5929\u4f7f\u2027\u4f3d\u82ae\u5854",
+                    "name_ruby": "\u5973\u50d5\u5929\u4f7f\u2027\u4f3d\u82ae\u5854",
+                    "base_card_id": 10202110,
+                    "card_resource_id": 102021100,
+                    "atk": 2,
+                    "life": 2,
+                    "flavour_text": "\u4e00\u822c\u7684\u5929\u4f7f\u6216\u5973\u50d5\uff0c\u6703\u656c\u696d\u5730\u505a\u597d\u81ea\u5df1\u7684\u5de5\u4f5c\u3002\n\u800c\u65e2\u662f\u5929\u4f7f\u53c8\u662f\u5973\u50d5\u7684\u5979\uff0c\u53ea\u70ba\u4e86\u81ea\u8eab\u7684\u617e\u671b\u2500\u2500\n\u2500\u2500\u6eff\u61f7\u671f\u5f85\u5730\u5de5\u4f5c\uff0c\u7136\u5f8c\u628a\u4e8b\u60c5\u641e\u7838\u3002",
+                    "skill_text": "\u3010<color=Keyword>\u5165\u5834\u66f2<\/color>\u3011\u5982\u679c\u70ba\u5df2\u8d85\u9032\u5316\u89e3\u7981\u7684\u56de\u5408\uff0c\u5247\u6703\u4f7f\u9019\u5f35\u5361\u7247+0\/+3\u3002\n<hr>\u3010<color=Keyword>\u5b88\u8b77<\/color>\u3011",
+                    "card_set_id": 10002,
+                    "type": 1,
+                    "class": 0,
+                    "tribes": [
+                        0
+                    ],
+                    "cost": 2,
+                    "rarity": 2,
+                    "cv": "\u4e2d\u539f\u9ebb\u8863",
+                    "illustrator": "\u524d\u5c4b \u9032",
+                    "questions": [],
+                    "is_token": false,
+                    "is_include_rotation": false,
+                    "card_image_hash": "290a6b950ca546e3bcb4823426d6b364",
+                    "card_banner_image_hash": "7b0c17c7bd7e4731b6a5c263506f830c"
+                },
+                "evo": {
+                    "card_resource_id": 102021101,
+                    "flavour_text": "\u5979\u6628\u5929\u624d\u6253\u7834\u820a\u76e4\u5b50\u8b93\u6211\u518d\u5ea6\u50bb\u773c\uff0c\n\u73fe\u5728\u53c8\u5f04\u9ad2\u4e86\u50f9\u503c\u4e0d\u83f2\u7684\u756b\uff0c\u5bb3\u6211\u8981\u786c\u8457\u982d\u76ae\u5831\u544a\u3002\n\u300c\u4eca\u3001\u4eca\u5929\u4e0d\u7ba1\u600e\u6a23\u90fd\u6703\u88ab\u7f75\u5427\uff1f\u55da\u55da\u2026\u2026\u300d",
+                    "skill_text": "\u3010<color=Keyword>\u5165\u5834\u66f2<\/color>\u3011\u5982\u679c\u70ba\u5df2\u8d85\u9032\u5316\u89e3\u7981\u7684\u56de\u5408\uff0c\u5247\u6703\u4f7f\u9019\u5f35\u5361\u7247+0\/+3\u3002\n<hr>\u3010<color=Keyword>\u5b88\u8b77<\/color>\u3011",
+                    "card_image_hash": "c89990608b5e43beb134d3dd396642ce",
+                    "card_banner_image_hash": "a9d5f45a680a4745bc35ced161b5f899"
+                },
+                "style_card_list": [
+                    {
+                        "hash": "5686b311db8f4600bb7d96d812e36c83",
+                        "evo_hash": "ac64d69a136e487980220d94b7ba3d2b",
+                        "name": "",
+                        "name_ruby": "",
+                        "cv": "",
+                        "illustrator": "hajime",
+                        "skill_text": "",
+                        "flavour_text": "",
+                        "evo_flavour_text": ""
+                    }
+                ]
+            },
+            "10203120": {
+                "common": {
+                    "card_id": 10203120,
+                    "name": "\u96f7\u706b\u96d9\u795e\u2027\u798f\u5c3c\u52a0\u723e\uff06\u4e9e\u6587\u54c8\u723e",
+                    "name_ruby": "\u96f7\u706b\u96d9\u795e\u2027\u798f\u5c3c\u52a0\u723e\uff06\u4e9e\u6587\u54c8\u723e",
+                    "base_card_id": 10203120,
+                    "card_resource_id": 102031200,
+                    "atk": 2,
+                    "life": 2,
+                    "flavour_text": "\u300c\u5927\u54e5\u5728\u53eb\u4f60\u56c9\uff5e\uff01\u4e9e\u2026\u2026\u4e9e\u9054\u723e\u54e5\uff01\u300d\n\u300c\u9019\u6b21\u662f\u4e09\u4eba\u4e00\u8d77\u51fa\u4efb\u52d9\u8036\uff0c\u5927\u5bb6\u4e00\u8d77\u52a0\u6cb9\u5427\uff01\u300d\n\u300c\u597d\uff01\u2026\u2026\u55ef\uff1f\u4f60\u70ba\u4ec0\u9ebc\u8981\u628a\u81c9\u9830\u8cbc\u4e0a\u4f86\uff1f\u300d\n\u300c\u5594\uff0c\u62b1\u6b49\u3002\u770b\u4f86\u9019\u6a23\u7684\u8ddd\u96e2\u611f\u662f\u592a\u8fd1\u4e86\u9ede\u3002\u300d",
+                    "skill_text": "\u3010<color=Keyword>\u7206\u80fd\u5f37\u5316<\/color>_5\u3011\u4f7f\u9019\u5f35\u5361\u7247\u9032\u5316\u3002\n<hr>\u3010<color=Keyword>\u8b1d\u5e55\u66f2<\/color>\u3011\u5982\u679c\u9019\u5f35\u5361\u7247\u5df2\u9032\u5316\uff0c\u5247\u6703\u96a8\u6a5f\u7d66\u4e881\u5f35\u6575\u65b9\u6230\u5834\u4e0a\u7684\u5f9e\u8005\u53614\u9ede\u50b7\u5bb3\u3002",
+                    "card_set_id": 10002,
+                    "type": 1,
+                    "class": 0,
+                    "tribes": [
+                        0
+                    ],
+                    "cost": 2,
+                    "rarity": 3,
+                    "cv": "\u5409\u6c38\u62d3\u6597\/\u9f4b\u8cc0\u307f\u3064\u304d",
+                    "illustrator": "\u9bab\u533b\u5e2b",
+                    "questions": [],
+                    "is_token": false,
+                    "is_include_rotation": false,
+                    "card_image_hash": "038e117520724820b126bb81afa8c64d",
+                    "card_banner_image_hash": "0bf7217bc5b444118f494f53b60941b6"
+                },
+                "evo": {
+                    "card_resource_id": 102031201,
+                    "flavour_text": "\u300c\u62b1\u6b49\u665a\u51fa\u73fe\u4e86\u3002\u300e\u8868\u9762\u300f\u7684\u6211\u7d66\u5927\u5bb6\u6dfb\u9ebb\u7169\u4e86\u3002\u300d\n\u300c\u4e0d\u7ba1\u54ea\u500b\u4f60\u90fd\u5f88\u53ef\u9760\u5594\u3002\u90a3\u9ebc\uff0c\u53bb\u5b8c\u6210\u4f7f\u547d\u5427\u3002\u300d\n\u300c\u597d\uff0c\u7531\u6211\u64d4\u4efb\u5148\u92d2\u3002\u6211\u6703\u7528\u9019\u9053\u9583\u96fb\u8cab\u7a7f\u4e00\u5207\uff01\u300d\n\u300c\u90a3\u6211\u8ca0\u8cac\u63a9\u8b77\u3002\u5c31\u7528\u300e\u771f\u7130\u300f\u8b93\u4e00\u5207\u7121\u6240\u9041\u5f62\uff01\u300d",
+                    "skill_text": "\u3010<color=Keyword>\u7206\u80fd\u5f37\u5316<\/color>_5\u3011\u4f7f\u9019\u5f35\u5361\u7247\u9032\u5316\u3002\n<hr>\u3010<color=Keyword>\u8b1d\u5e55\u66f2<\/color>\u3011\u5982\u679c\u9019\u5f35\u5361\u7247\u5df2\u9032\u5316\uff0c\u5247\u6703\u96a8\u6a5f\u7d66\u4e881\u5f35\u6575\u65b9\u6230\u5834\u4e0a\u7684\u5f9e\u8005\u53614\u9ede\u50b7\u5bb3\u3002",
+                    "card_image_hash": "b18ce34d8bf24907a80782550311c920",
+                    "card_banner_image_hash": "87c40cfb74d4419b9eeebf81e668373c"
+                },
+                "style_card_list": []
+            }
+        },
+        "specific_effect_card_info": [],
+        "tribe_names": {
+            "0": "-",
+            "2": "\u58eb\u5175",
+            "3": "\u9b6f\u7c73\u90a3\u65af",
+            "4": "\u96f7\u7dad\u7fc1",
+            "5": "\u5996\u7cbe",
+            "6": "\u6b7b\u8005",
+            "8": "\u571f\u4e4b\u5370",
+            "11": "\u99ac\u7d0d\u6b77\u4e9e",
+            "12": "\u5de8\u50cf",
+            "13": "\u5f0f\u795e",
+            "14": "\u5275\u9020\u7269",
+            "15": "\u4eba\u5076",
+            "17": "\u6d77\u6d0b",
+            "20": "\u5f12\u6ec5\u8005"
+        },
+        "card_set_names": {
+            "10000": "\u57fa\u672c\u5361",
+            "10001": "\u50b3\u8aaa\u63ed\u5e55",
+            "10002": "\u7121\u9650\u9032\u5316"
+        },
+        "skill_names": {
+            "0": "",
+            "1": "\u5165\u5834\u66f2",
+            "2": "\u8b1d\u5e55\u66f2",
+            "3": "\u9032\u5316\u6642",
+            "4": "\u653b\u64ca\u6642",
+            "5": "\u5b88\u8b77",
+            "6": "\u75be\u99b3",
+            "7": "\u6f5b\u884c",
+            "8": "\u5fc5\u6bba",
+            "9": "\u5438\u8840",
+            "10": "\u89ba\u9192",
+            "12": "\u9b54\u529b\u589e\u5e45\u6642",
+            "13": "\u5012\u6578",
+            "14": "\u6b7b\u9748\u8853",
+            "15": "\u571f\u4e4b\u79d8\u8853",
+            "16": "\u7a81\u9032",
+            "17": "\u4ea4\u6230\u6642",
+            "18": "\u7206\u80fd\u5f37\u5316",
+            "19": "\u4ea1\u8005\u53ec\u9084",
+            "25": "\u878d\u5408",
+            "26": "\u5354\u4f5c",
+            "27": "\u571f\u4e4b\u5370",
+            "29": "\u9023\u64ca",
+            "30": "\u5a01\u61fe",
+            "31": "\u5149\u7d0b",
+            "32": "\u969c\u58c1",
+            "33": "\u8d85\u9032\u5316\u6642",
+            "34": "\u6a21\u5f0f",
+            "35": "\u7b56\u52d5",
+            "36": "\u7d0b\u7ae0",
+            "38": "\u555f\u793a\u9304\u724c\u7d44"
+        },
+        "skill_replace_text_names": {
+            "12": "\u9b54\u529b\u589e\u5e45"
+        },
+        "count": 275,
+        "sort_card_id_list": [
+            10201110,
+            10012110,
+            10112120,
+            10012310,
+            10111310,
+            10212310,
+            10021110,
+            10122110,
+            10031310,
+            10131320,
+            10031210,
+            10241120,
+            10041310,
+            10143210,
+            10242210,
+            10052110,
+            10251120,
+            10151310,
+            10262310,
+            10062210,
+            10161210,
+            10171110,
+            10171320,
+            10272310,
+            10001110,
+            10001120,
+            10101110,
+            10103110,
+            10202110,
+            10203120
+        ],
+        "stats_list": {
+            "atk": {
+                "min": 0,
+                "max": 13
+            },
+            "life": {
+                "min": 0,
+                "max": 13
+            },
+            "cost": {
+                "min": 0,
+                "max": 18
+            }
+        },
+        "result_error_code": null
+    }
+}

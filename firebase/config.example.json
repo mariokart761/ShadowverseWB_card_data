@@ -1,0 +1,4 @@
+{
+  "project_id": "your-firebase-project-id",
+  "service_account_key_path": "path/to/your/service-account-key.json"
+}

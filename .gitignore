@@ -1,0 +1,38 @@
+# 輸出檔案
+output/*.json
+
+# 日誌檔案
+logs/*.log
+
+# 資料庫配置檔案
+supabase/config.json
+firebase/config.json
+*.json
+!*.example.json
+!docs/*.json
+!firebase/firestore.*.json
+.env
+
+# Python 快取檔案
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 虛擬環境
+venv/
+env/
+.env
+
+# IDE 設定檔案
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 系統檔案
+.DS_Store
+Thumbs.db
+
+# 臨時檔案
+*.tmp
+*.temp

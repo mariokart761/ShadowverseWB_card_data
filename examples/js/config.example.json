@@ -1,0 +1,5 @@
+{
+  "project_id": "your-firebase-project-id",
+  "service_account_key_path": "../../firebase/your-service-account-key.json",
+  "database_url": "https://your-project-id-default-rtdb.firebaseio.com/"
+}

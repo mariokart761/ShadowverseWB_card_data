@@ -15,6 +15,12 @@ firebase/config.json
 !firebase/firestore.*.json
 .env
 
+# JavaScript/Node.js 相關檔案
+examples/js/config.json
+examples/js/node_modules/
+examples/js/package-lock.json
+examples/js/.env
+
 # Python 快取檔案
 __pycache__/
 *.py[cod]

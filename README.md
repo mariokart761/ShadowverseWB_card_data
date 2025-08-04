@@ -149,8 +149,11 @@ python firebase_sync.py
 # Supabase 查詢範例
 python examples/supabase_queries.py
 
-# Firebase 查詢範例
+# Firebase 查詢範例 (Python)
 python examples/firebase_queries.py
+
+# Firebase 查詢範例 (JavaScript)
+cd examples/js && node firebase_queries.js
 ```
 
 ## 使用方法
@@ -241,6 +244,7 @@ python shadowverse_crawler.py
 
 ## 功能特色
 
+### 爬蟲功能
 1. **多語言支援**: 支援 5 種語言（cht, chs, en, ja, ko）
 2. **完整資料收集**: 迭代所有 offset（每次間隔 30）直到沒有更多資料
 3. **資料合併**: 將所有批次的資料合併成完整的資料集
@@ -249,6 +253,18 @@ python shadowverse_crawler.py
 6. **錯誤處理**: 包含完整的錯誤處理和日誌記錄
 7. **進度追蹤**: 即時顯示爬取進度
 8. **分語言儲存**: 每種語言的資料分別儲存為獨立檔案
+
+### 資料庫整合
+1. **Supabase 支援**: PostgreSQL 關聯式資料庫，正規化設計
+2. **Firebase 支援**: Firestore NoSQL 文件資料庫，反正規化設計
+3. **多語言資料同步**: 支援將爬取的多語言資料同步到資料庫
+4. **異步處理**: 使用異步操作提升資料庫同步效能
+
+### 查詢範例
+1. **Python 查詢範例**: 完整的 Python 資料庫查詢範例
+2. **JavaScript 查詢範例**: Node.js Firebase 查詢範例
+3. **多語言名稱支援**: 自動 fallback 到其他語言
+4. **複合查詢**: 支援複雜的條件組合查詢
 
 ## 資料內容
 

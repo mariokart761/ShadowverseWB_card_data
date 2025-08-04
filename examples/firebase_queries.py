@@ -49,6 +49,34 @@ def initialize_firebase():
         print(f"Firebase 初始化失敗: {e}")
         return None
 
+def get_card_name(card_data: dict, language: str = 'cht') -> str:
+    """從卡片資料中獲取指定語言的名稱"""
+    name_field = f'names.{language}'
+    if name_field in card_data:
+        name_info = card_data[name_field]
+        if isinstance(name_info, dict):
+            name = name_info.get('name', '').strip()
+            if name:
+                return name
+    return '未知'
+
+def get_card_name_fallback(card_data: dict, preferred_lang: str = 'cht') -> str:
+    """從卡片資料中獲取名稱，如果首選語言不存在則嘗試其他語言"""
+    # 嘗試首選語言
+    name = get_card_name(card_data, preferred_lang)
+    if name != '未知':
+        return name
+    
+    # 嘗試其他語言，按優先順序
+    fallback_langs = ['cht', 'chs', 'en', 'ja', 'ko']
+    for lang in fallback_langs:
+        if lang != preferred_lang:
+            name = get_card_name(card_data, lang)
+            if name != '未知':
+                return f"{name} ({lang})"
+    
+    return '未知'
+
 def example_basic_queries():
     """基本查詢範例"""
     print("=== 基本查詢範例 ===")
@@ -115,8 +143,7 @@ def example_card_search():
         print("費用為 5 的卡片:")
         for card in cost_5_cards:
             card_data = card.to_dict()
-            names = card_data.get('names', {})
-            cht_name = names.get('cht', {}).get('name', '未知')
+            cht_name = get_card_name(card_data)
             print(f"  {cht_name} - 費用:{card_data.get('cost')} 攻擊:{card_data.get('atk')} 生命:{card_data.get('life')}")
         
         # 2. 查詢高攻擊力卡片
@@ -125,8 +152,7 @@ def example_card_search():
         print("\n高攻擊力卡片 (攻擊 >= 8):")
         for card in high_atk_cards:
             card_data = card.to_dict()
-            names = card_data.get('names', {})
-            cht_name = names.get('cht', {}).get('name', '未知')
+            cht_name = get_card_name(card_data)
             print(f"  {cht_name} - 攻擊:{card_data.get('atk')} 生命:{card_data.get('life')} 費用:{card_data.get('cost')}")
         
     except Exception as e:
@@ -149,8 +175,7 @@ def example_complex_queries():
         print("精靈職業費用 3 的卡片:")
         for card in elf_cost_3:
             card_data = card.to_dict()
-            names = card_data.get('names', {})
-            cht_name = names.get('cht', {}).get('name', '未知')
+            cht_name = get_card_name(card_data)
             print(f"  {cht_name} - 攻擊:{card_data.get('atk')} 生命:{card_data.get('life')}")
         
         # 2. 查詢非代幣卡片
@@ -159,20 +184,38 @@ def example_complex_queries():
         print("\n非代幣卡片:")
         for card in non_token_cards:
             card_data = card.to_dict()
-            names = card_data.get('names', {})
-            cht_name = names.get('cht', {}).get('name', '未知')
+            cht_name = get_card_name(card_data)
             print(f"  {cht_name} - 職業:{card_data.get('class')} 費用:{card_data.get('cost')}")
         
         # 3. 查詢包含特定種族的卡片
-        angel_cards = cards_ref.where('tribes', 'array_contains', 1).limit(5).get()
+        # 查詢更多卡片來找到有種族的卡片
+        all_cards = cards_ref.limit(100).get()
+        cards_with_tribes = [card for card in all_cards if card.to_dict().get('tribes', [])]
         
-        print("\n包含天使種族的卡片:")
-        for card in angel_cards:
-            card_data = card.to_dict()
-            names = card_data.get('names', {})
-            cht_name = names.get('cht', {}).get('name', '未知')
-            tribes = card_data.get('tribes', [])
-            print(f"  {cht_name} - 種族:{tribes}")
+        if cards_with_tribes:
+            # 收集所有種族ID並使用第一個進行查詢
+            found_tribes = set()
+            for card in cards_with_tribes:
+                tribes = card.to_dict().get('tribes', [])
+                if tribes:
+                    found_tribes.update(tribes)
+            
+            if found_tribes:
+                first_tribe = min(found_tribes)
+                # 從所有卡片中過濾包含該種族的卡片
+                tribe_cards = [card for card in all_cards 
+                             if first_tribe in card.to_dict().get('tribes', [])]
+                
+                print(f"\n包含種族 {first_tribe} 的卡片:")
+                for card in tribe_cards[:5]:  # 只顯示前5張
+                    card_data = card.to_dict()
+                    card_name = get_card_name_fallback(card_data)
+                    tribes = card_data.get('tribes', [])
+                    print(f"  {card_name} - 種族:{tribes}")
+            else:
+                print("\n未找到有效的種族資料")
+        else:
+            print("\n未找到有種族的卡片")
         
     except Exception as e:
         print(f"複合查詢時發生錯誤: {e}")
@@ -197,13 +240,11 @@ def example_multilingual_data():
             
             print(f"卡片 ID {card_id} 的多語言名稱:")
             
-            names = card_data.get('names', {})
             lang_names = {'cht': '繁體中文', 'chs': '簡體中文', 'en': '英文', 'ja': '日文', 'ko': '韓文'}
             
             for lang, lang_display in lang_names.items():
-                if lang in names:
-                    name_info = names[lang]
-                    name = name_info.get('name', '未知')
+                name = get_card_name(card_data, lang)
+                if name != '未知':
                     print(f"  {lang_display}: {name}")
             
             # 顯示卡片基本資訊
@@ -240,8 +281,7 @@ def example_subcollection_queries():
             if questions:
                 cards_with_questions += 1
                 card_data = card.to_dict()
-                names = card_data.get('names', {})
-                cht_name = names.get('cht', {}).get('name', '未知')
+                cht_name = get_card_name(card_data)
                 
                 print(f"卡片 {cht_name} 有問答資料:")
                 
@@ -366,8 +406,7 @@ def example_advanced_filtering():
         print("中費用卡片 (4-6費):")
         for card in mid_cost_cards:
             card_data = card.to_dict()
-            names = card_data.get('names', {})
-            cht_name = names.get('cht', {}).get('name', '未知')
+            cht_name = get_card_name(card_data)
             print(f"  {cht_name} - 費用:{card_data.get('cost')} 攻擊:{card_data.get('atk')}")
         
         # 2. 查詢輪替制中的高稀有度卡片
@@ -376,8 +415,7 @@ def example_advanced_filtering():
         print("\n輪替制中的傳說卡片:")
         for card in rotation_legendaries:
             card_data = card.to_dict()
-            names = card_data.get('names', {})
-            cht_name = names.get('cht', {}).get('name', '未知')
+            cht_name = get_card_name(card_data)
             print(f"  {cht_name} - 職業:{card_data.get('class')} 費用:{card_data.get('cost')}")
         
         # 3. 使用 in 查詢多個值
@@ -386,8 +424,7 @@ def example_advanced_filtering():
         print("\n中立和精靈卡片:")
         for card in neutral_and_elf:
             card_data = card.to_dict()
-            names = card_data.get('names', {})
-            cht_name = names.get('cht', {}).get('name', '未知')
+            cht_name = get_card_name(card_data)
             class_name = '中立' if card_data.get('class') == 0 else '精靈'
             print(f"  {cht_name} - {class_name}")
         

@@ -53,10 +53,11 @@ class FirebaseInitializer:
                 raise FileNotFoundError(f"找不到服務帳戶金鑰檔案: {service_account_path}")
             
             # 初始化 Firebase Admin SDK
-            cred = credentials.Certificate(service_account_path)
-            self.app = firebase_admin.initialize_app(cred, {
-                'projectId': config.get('project_id')
-            })
+            if not firebase_admin._apps:
+                cred = credentials.Certificate(service_account_path)
+                self.app = firebase_admin.initialize_app(cred, {
+                    'projectId': config.get('project_id')
+                })
             
             # 獲取 Firestore 客戶端
             self.db = firestore.client()

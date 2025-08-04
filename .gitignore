@@ -8,6 +8,8 @@ logs/*.log
 supabase/config.json
 firebase/config.json
 *.json
+*.rules
+.firebaserc
 !*.example.json
 !docs/*.json
 !firebase/firestore.*.json

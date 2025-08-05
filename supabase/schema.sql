@@ -1,5 +1,26 @@
 -- Shadowverse 卡牌資料庫結構
 
+-- 0. 系統Tips資訊表
+CREATE TABLE tips (
+    id SERIAL PRIMARY KEY,
+    title_cht TEXT,
+    title_chs TEXT,
+    title_en TEXT,
+    title_ja TEXT,
+    title_ko TEXT,
+    desc_cht TEXT,
+    desc_chs TEXT,
+    desc_en TEXT,
+    desc_ja TEXT,
+    desc_ko TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Tips表的索引
+CREATE INDEX idx_tips_title_cht ON tips(title_cht);
+CREATE INDEX idx_tips_title_en ON tips(title_en);
+
 -- 1. 卡包資訊表
 CREATE TABLE card_sets (
     id INTEGER PRIMARY KEY,
@@ -164,6 +185,7 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
+CREATE TRIGGER update_tips_updated_at BEFORE UPDATE ON tips FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_card_sets_updated_at BEFORE UPDATE ON card_sets FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_tribes_updated_at BEFORE UPDATE ON tribes FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_skills_updated_at BEFORE UPDATE ON skills FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
@@ -175,6 +197,7 @@ CREATE TRIGGER update_cards_updated_at BEFORE UPDATE ON cards FOR EACH ROW EXECU
 -- ALTER TABLE card_descriptions ENABLE ROW LEVEL SECURITY;
 
 -- 註解說明
+COMMENT ON TABLE tips IS '系統Tips資訊表';
 COMMENT ON TABLE cards IS '卡片主要資訊表';
 COMMENT ON TABLE card_names IS '卡片多語言名稱表';
 COMMENT ON TABLE card_descriptions IS '卡片多語言描述表';

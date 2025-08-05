@@ -132,6 +132,59 @@ class ShadowverseDatabaseSync:
         # 同步技能資料
         if 'skill_names' in card_data:
             await self._sync_skills(card_data['skill_names'], language)
+
+    async def _sync_tips_data(self, tips_data: List[Dict], language: str):
+        """同步Tips資料"""
+        logger.info(f"同步 {language} Tips資料...")
+        
+        try:
+            for tip in tips_data:
+                title = tip.get('title', '').strip()
+                desc = tip.get('desc', '').strip()
+                
+                if not title or not desc:
+                    continue
+                
+                # 檢查是否已存在相同標題的tip
+                existing_tip = await self.conn.fetchrow(
+                    f"SELECT id FROM tips WHERE title_{language} = $1",
+                    title
+                )
+                
+                if existing_tip:
+                    # 更新現有tip
+                    await self.conn.execute(f"""
+                        UPDATE tips 
+                        SET title_{language} = $1, desc_{language} = $2, updated_at = NOW()
+                        WHERE id = $3
+                    """, title, desc, existing_tip['id'])
+                    self.stats['updated'] += 1
+                else:
+                    # 檢查是否有其他語言的相同標題（用於合併多語言）
+                    similar_tip = await self.conn.fetchrow("""
+                        SELECT id FROM tips 
+                        WHERE title_cht = $1 OR title_chs = $1 OR title_en = $1 OR title_ja = $1 OR title_ko = $1
+                    """, title)
+                    
+                    if similar_tip:
+                        # 更新現有記錄的該語言欄位
+                        await self.conn.execute(f"""
+                            UPDATE tips 
+                            SET title_{language} = $1, desc_{language} = $2, updated_at = NOW()
+                            WHERE id = $3
+                        """, title, desc, similar_tip['id'])
+                        self.stats['updated'] += 1
+                    else:
+                        # 建立新tip記錄
+                        await self.conn.execute(f"""
+                            INSERT INTO tips (title_{language}, desc_{language})
+                            VALUES ($1, $2)
+                        """, title, desc)
+                        self.stats['inserted'] += 1
+                        
+        except Exception as e:
+            self.stats['errors'].append(f"同步Tips資料失敗: {str(e)}")
+            logger.error(f"同步Tips資料失敗: {e}")
     
     async def _sync_card_sets(self, card_sets: Dict[str, str], language: str):
         """同步卡包資料"""
@@ -415,6 +468,49 @@ class ShadowverseDatabaseSync:
             'errors': self.stats['errors'][:10]  # 只顯示前 10 個錯誤
         }
 
+async def sync_tips_data(config: DatabaseConfig, data_directory: str = 'output/tips_data'):
+    """同步所有語言的Tips資料"""
+    languages = ['cht', 'chs', 'en', 'ja', 'ko']
+    sync_results = {}
+    
+    logger.info("開始同步所有語言的Tips資料到資料庫...")
+    
+    for language in languages:
+        tips_file = os.path.join(data_directory, f'tips_data_{language}.json')
+        
+        if not os.path.exists(tips_file):
+            logger.warning(f"找不到 {language} 語言的Tips檔案: {tips_file}")
+            sync_results[language] = {'success': False, 'error': 'File not found'}
+            continue
+        
+        try:
+            with open(tips_file, 'r', encoding='utf-8') as f:
+                tips_data = json.load(f)
+            
+            sync = ShadowverseDatabaseSync(config)
+            await sync._connect_database()
+            
+            # 同步Tips資料
+            await sync._sync_tips_data(tips_data.get('tips', []), language)
+            
+            await sync._disconnect_database()
+            
+            sync_results[language] = {
+                'success': True,
+                'statistics': sync.get_sync_statistics()
+            }
+            
+            logger.info(f"{language} Tips同步結果: 成功")
+            
+        except Exception as e:
+            logger.error(f"{language} Tips同步失敗: {e}")
+            sync_results[language] = {'success': False, 'error': str(e)}
+        
+        # 語言間稍作休息
+        await asyncio.sleep(1)
+    
+    return sync_results
+
 async def sync_all_languages(config: DatabaseConfig, data_directory: str = 'output'):
     """同步所有語言的資料"""
     languages = ['cht', 'chs', 'en', 'ja', 'ko']
@@ -468,6 +564,13 @@ def load_config() -> DatabaseConfig:
 
 async def main():
     """主函數"""
+    import argparse
+    
+    parser = argparse.ArgumentParser(description='Shadowverse 資料庫同步工具')
+    parser.add_argument('--type', choices=['cards', 'tips', 'all'], default='all', 
+                       help='同步類型: cards=卡牌資料, tips=Tips資料, all=全部')
+    args = parser.parse_args()
+    
     try:
         # 載入配置
         config = load_config()
@@ -477,8 +580,49 @@ async def main():
             logger.info("可以建立 supabase/config.json 檔案或設定環境變數")
             return
         
-        # 開始同步
-        results = await sync_all_languages(config)
+        # 根據參數決定同步類型
+        if args.type in ['cards', 'all']:
+            # 同步卡牌資料
+            logger.info("開始同步卡牌資料...")
+            results = await sync_all_languages(config)
+            
+            # 顯示卡牌同步結果摘要
+            print("\n" + "="*60)
+            print("卡牌資料同步結果摘要")
+            print("="*60)
+            
+            for language, result in results.items():
+                status = "✅ 成功" if result['success'] else "❌ 失敗"
+                print(f"{language}: {status}")
+                
+                if result['success'] and 'statistics' in result:
+                    stats = result['statistics']
+                    print(f"  - 插入: {stats.get('inserted', 0)}")
+                    print(f"  - 更新: {stats.get('updated', 0)}")
+                    print(f"  - 成功率: {stats.get('success_rate', 0):.1f}%")
+                elif not result['success']:
+                    print(f"  - 錯誤: {result.get('error', '未知錯誤')}")
+        
+        if args.type in ['tips', 'all']:
+            # 同步Tips資料
+            logger.info("開始同步Tips資料...")
+            tips_results = await sync_tips_data(config)
+            
+            # 顯示Tips同步結果摘要
+            print("\n" + "="*60)
+            print("Tips資料同步結果摘要")
+            print("="*60)
+            
+            for language, result in tips_results.items():
+                status = "✅ 成功" if result['success'] else "❌ 失敗"
+                print(f"{language}: {status}")
+                
+                if result['success'] and 'statistics' in result:
+                    stats = result['statistics']
+                    print(f"  - 插入: {stats.get('inserted', 0)}")
+                    print(f"  - 更新: {stats.get('updated', 0)}")
+                elif not result['success']:
+                    print(f"  - 錯誤: {result.get('error', '未知錯誤')}")
         
         # 顯示結果摘要
         print("\n" + "="*60)

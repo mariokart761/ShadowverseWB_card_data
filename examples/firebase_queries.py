@@ -431,6 +431,106 @@ def example_advanced_filtering():
     except Exception as e:
         print(f"進階過濾時發生錯誤: {e}")
 
+def example_tips_queries():
+    """Tips查詢範例"""
+    print("\n=== Tips查詢範例 ===")
+    
+    db = initialize_firebase()
+    if not db:
+        return
+    
+    try:
+        tips_ref = db.collection('tips')
+        
+        # 1. 查詢Tips總數
+        tips_count = tips_ref.count().get()
+        print(f"資料庫中總共有 {tips_count[0][0].value} 條Tips")
+        
+        # 2. 搜尋包含特定關鍵字的Tips
+        keyword = "從者"
+        tips_docs = tips_ref.limit(50).get()  # 先獲取一批Tips
+        
+        matching_tips = []
+        for doc in tips_docs:
+            tip_data = doc.to_dict()
+            # 檢查繁體中文標題是否包含關鍵字
+            if 'title.cht' in tip_data and keyword in tip_data['title.cht']:
+                matching_tips.append(tip_data)
+        
+        print(f"\n包含 '{keyword}' 的Tips:")
+        for tip in matching_tips[:3]:  # 只顯示前3條
+            title = tip.get('title.cht', '未知標題')
+            desc = tip.get('desc.cht', '未知說明')
+            print(f"  標題: {title}")
+            print(f"  說明: {desc[:100]}{'...' if len(desc) > 100 else ''}")
+            print()
+        
+        # 3. 多語言Tips比較
+        tips_sample = tips_ref.limit(2).get()
+        
+        print("多語言Tips比較:")
+        for doc in tips_sample:
+            tip_data = doc.to_dict()
+            cht_title = tip_data.get('title.cht', '未知')
+            en_title = tip_data.get('title.en', '未知')
+            cht_desc = tip_data.get('desc.cht', '未知')
+            en_desc = tip_data.get('desc.en', '未知')
+            
+            print(f"  繁中標題: {cht_title}")
+            print(f"  英文標題: {en_title}")
+            print(f"  繁中說明: {cht_desc[:80]}...")
+            print(f"  英文說明: {en_desc[:80]}...")
+            print()
+        
+        # 4. 按索引排序的Tips
+        ordered_tips = tips_ref.order_by('index').limit(5).get()
+        
+        print("按索引排序的Tips (前5條):")
+        for doc in ordered_tips:
+            tip_data = doc.to_dict()
+            title = tip_data.get('title.cht', '未知標題')
+            desc = tip_data.get('desc.cht', '未知說明')
+            index = tip_data.get('index', 0)
+            print(f"  [{index:03d}] {title}: {desc[:60]}...")
+        
+        # 5. 搜尋特定遊戲概念的Tips
+        concepts = ["職業", "法術", "護符"]
+        all_tips = tips_ref.get()
+        
+        for concept in concepts:
+            found_tip = None
+            for doc in all_tips:
+                tip_data = doc.to_dict()
+                title = tip_data.get('title.cht', '')
+                desc = tip_data.get('desc.cht', '')
+                
+                if concept in title or concept in desc:
+                    found_tip = tip_data
+                    break
+            
+            if found_tip:
+                title = found_tip.get('title.cht', '未知標題')
+                desc = found_tip.get('desc.cht', '未知說明')
+                print(f"\n關於 '{concept}' 的Tips:")
+                print(f"  {title}: {desc}")
+        
+        # 6. 統計各語言的Tips數量
+        language_stats = {'cht': 0, 'chs': 0, 'en': 0, 'ja': 0, 'ko': 0}
+        
+        for doc in all_tips:
+            tip_data = doc.to_dict()
+            for lang in language_stats.keys():
+                if f'title.{lang}' in tip_data and tip_data[f'title.{lang}']:
+                    language_stats[lang] += 1
+        
+        print(f"\n各語言Tips統計:")
+        lang_names = {'cht': '繁體中文', 'chs': '簡體中文', 'en': '英文', 'ja': '日文', 'ko': '韓文'}
+        for lang, count in language_stats.items():
+            print(f"  {lang_names[lang]}: {count} 條")
+        
+    except Exception as e:
+        print(f"Tips查詢時發生錯誤: {e}")
+
 def main():
     """主函數"""
     print("Firebase Firestore 查詢範例")
@@ -449,6 +549,7 @@ def main():
     example_reference_data()
     example_sync_logs()
     example_advanced_filtering()
+    example_tips_queries()
     
     print("\n查詢範例執行完成！")
     print("\n注意事項:")

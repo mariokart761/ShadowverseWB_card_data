@@ -7,6 +7,7 @@
 ```
 SVWB_crawler/
 ├── shadowverse_simple_crawler.py  # 主要爬蟲腳本
+├── tips_data_crawler.py           # 系統Tips爬蟲腳本
 ├── supabase_sync.py               # Supabase 資料同步腳本
 ├── firebase_sync.py               # Firebase 資料同步腳本
 ├── setup_supabase.py              # Supabase 設定輔助程式
@@ -41,7 +42,13 @@ SVWB_crawler/
 │   ├── shadowverse_cards_chs.json # 簡體中文卡牌資料
 │   ├── shadowverse_cards_en.json  # 英文卡牌資料
 │   ├── shadowverse_cards_ja.json  # 日文卡牌資料
-│   └── shadowverse_cards_ko.json  # 韓文卡牌資料
+│   ├── shadowverse_cards_ko.json  # 韓文卡牌資料
+│   └── tips_data/                 # Tips資料目錄
+│       ├── tips_data_cht.json     # 繁體中文Tips資料
+│       ├── tips_data_chs.json     # 簡體中文Tips資料
+│       ├── tips_data_en.json      # 英文Tips資料
+│       ├── tips_data_ja.json      # 日文Tips資料
+│       └── tips_data_ko.json      # 韓文Tips資料
 └── logs/                          # 日誌檔案目錄
     ├── shadowverse_crawler.log    # 爬蟲執行日誌
     ├── supabase_sync.log          # Supabase 同步日誌
@@ -89,8 +96,14 @@ python supabase/init_supabase.py check
 # 建立資料庫結構
 python supabase/init_supabase.py init
 
-# 同步資料
-python supabase_sync.py
+# 同步卡牌資料
+python supabase_sync.py --type cards
+
+# 同步Tips資料
+python supabase_sync.py --type tips
+
+# 同步所有資料
+python supabase_sync.py --type all
 ```
 
 ### 🔥 Firebase (Firestore) 整合
@@ -128,8 +141,14 @@ python firebase/init_firebase.py init
 # 部署規則和索引 (需要 Firebase CLI)
 firebase deploy --only firestore:rules,firestore:indexes
 
-# 同步資料
-python firebase_sync.py
+# 同步卡牌資料
+python firebase_sync.py --type cards
+
+# 同步Tips資料
+python firebase_sync.py --type tips
+
+# 同步所有資料
+python firebase_sync.py --type all
 ```
 
 ### 資料庫結構比較
@@ -185,6 +204,21 @@ crawl_single_language('cht')
 # 爬取英文
 crawl_single_language('en')
 ```
+
+### 爬取系統Tips資料
+
+```bash
+# 爬取所有語言的Tips資料
+python tips_data_crawler.py
+
+# 爬取特定語言的Tips資料
+python tips_data_crawler.py --langs cht en
+
+# 顯示瀏覽器視窗（除錯用）
+python tips_data_crawler.py --no-headless
+```
+
+系統Tips資料會儲存在 `output/tips_data/` 目錄下，每種語言一個JSON檔案。
 
 ### 完整版爬蟲（進階）
 
@@ -268,6 +302,7 @@ python shadowverse_crawler.py
 
 ## 資料內容
 
+### 卡牌資料 (`shadowverse_cards_*.json`)
 - **cards**: 卡片關聯資訊
 - **card_details**: 詳細卡片資訊（包含普通和進化形態）
 - **specific_effect_card_info**: 特殊效果卡片資訊
@@ -276,6 +311,17 @@ python shadowverse_crawler.py
 - **skill_names**: 技能名稱對照表
 - **sort_card_id_list**: 完整的卡片 ID 排序列表
 - **stats_list**: 卡片數值統計
+
+### Tips資料 (`tips_data_*.json`)
+- **tips**: 遊戲系統Tips和說明
+  - **title**: Tips標題
+  - **desc**: Tips詳細說明
+- **language**: 語言代碼
+- **total**: Tips總數
+
+### 資料庫結構
+- **Supabase**: 正規化的關聯式資料庫結構，支援複雜查詢
+- **Firebase**: 反正規化的文件資料庫結構，支援即時同步
 
 ## 注意事項
 

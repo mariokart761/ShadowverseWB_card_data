@@ -419,6 +419,121 @@ async function exampleAdvancedFilters(db) {
 }
 
 /**
+ * Tips查詢範例
+ */
+async function exampleTipsQueries(db) {
+    console.log('\n=== Tips查詢範例 ===');
+    
+    try {
+        const tipsRef = db.collection('tips');
+        
+        // 1. 查詢Tips總數
+        const tipsCount = await tipsRef.count().get();
+        console.log(`資料庫中總共有 ${tipsCount.data().count} 條Tips`);
+        
+        // 2. 搜尋包含特定關鍵字的Tips
+        const keyword = '從者';
+        const tipsDocs = await tipsRef.limit(50).get(); // 先獲取一批Tips
+        
+        const matchingTips = [];
+        tipsDocs.forEach(doc => {
+            const tipData = doc.data();
+            // 檢查繁體中文標題是否包含關鍵字
+            if (tipData['title.cht'] && tipData['title.cht'].includes(keyword)) {
+                matchingTips.push(tipData);
+            }
+        });
+        
+        console.log(`\n包含 '${keyword}' 的Tips:`);
+        matchingTips.slice(0, 3).forEach(tip => { // 只顯示前3條
+            const title = tip['title.cht'] || '未知標題';
+            const desc = tip['desc.cht'] || '未知說明';
+            console.log(`  標題: ${title}`);
+            console.log(`  說明: ${desc.length > 100 ? desc.substring(0, 100) + '...' : desc}`);
+            console.log('');
+        });
+        
+        // 3. 多語言Tips比較
+        const tipsSample = await tipsRef.limit(2).get();
+        
+        console.log('多語言Tips比較:');
+        tipsSample.forEach(doc => {
+            const tipData = doc.data();
+            const chtTitle = tipData['title.cht'] || '未知';
+            const enTitle = tipData['title.en'] || '未知';
+            const chtDesc = tipData['desc.cht'] || '未知';
+            const enDesc = tipData['desc.en'] || '未知';
+            
+            console.log(`  繁中標題: ${chtTitle}`);
+            console.log(`  英文標題: ${enTitle}`);
+            console.log(`  繁中說明: ${chtDesc.substring(0, 80)}...`);
+            console.log(`  英文說明: ${enDesc.substring(0, 80)}...`);
+            console.log('');
+        });
+        
+        // 4. 按索引排序的Tips
+        const orderedTips = await tipsRef.orderBy('index').limit(5).get();
+        
+        console.log('按索引排序的Tips (前5條):');
+        orderedTips.forEach(doc => {
+            const tipData = doc.data();
+            const title = tipData['title.cht'] || '未知標題';
+            const desc = tipData['desc.cht'] || '未知說明';
+            const index = tipData['index'] || 0;
+            console.log(`  [${index.toString().padStart(3, '0')}] ${title}: ${desc.substring(0, 60)}...`);
+        });
+        
+        // 5. 搜尋特定遊戲概念的Tips
+        const concepts = ['職業', '法術', '護符'];
+        const allTips = await tipsRef.get();
+        
+        for (const concept of concepts) {
+            let foundTip = null;
+            
+            allTips.forEach(doc => {
+                if (foundTip) return; // 已找到就跳過
+                
+                const tipData = doc.data();
+                const title = tipData['title.cht'] || '';
+                const desc = tipData['desc.cht'] || '';
+                
+                if (title.includes(concept) || desc.includes(concept)) {
+                    foundTip = tipData;
+                }
+            });
+            
+            if (foundTip) {
+                const title = foundTip['title.cht'] || '未知標題';
+                const desc = foundTip['desc.cht'] || '未知說明';
+                console.log(`\n關於 '${concept}' 的Tips:`);
+                console.log(`  ${title}: ${desc}`);
+            }
+        }
+        
+        // 6. 統計各語言的Tips數量
+        const languageStats = {cht: 0, chs: 0, en: 0, ja: 0, ko: 0};
+        
+        allTips.forEach(doc => {
+            const tipData = doc.data();
+            Object.keys(languageStats).forEach(lang => {
+                if (tipData[`title.${lang}`] && tipData[`title.${lang}`].trim()) {
+                    languageStats[lang]++;
+                }
+            });
+        });
+        
+        console.log('\n各語言Tips統計:');
+        const langNames = {cht: '繁體中文', chs: '簡體中文', en: '英文', ja: '日文', ko: '韓文'};
+        Object.entries(languageStats).forEach(([lang, count]) => {
+            console.log(`  ${langNames[lang]}: ${count} 條`);
+        });
+        
+    } catch (error) {
+        console.error('Tips查詢時發生錯誤:', error.message);
+    }
+}
+
+/**
  * 主函數
  */
 async function main() {
@@ -438,6 +553,7 @@ async function main() {
         await exampleReferenceData(db);
         await exampleSyncLogs(db);
         await exampleAdvancedFilters(db);
+        await exampleTipsQueries(db);
 
         console.log('\n查詢範例執行完成！');
         console.log('\n注意事項:');
@@ -469,5 +585,6 @@ export {
     exampleMultilingualData,
     exampleReferenceData,
     exampleSyncLogs,
-    exampleAdvancedFilters
+    exampleAdvancedFilters,
+    exampleTipsQueries
 };

@@ -52,6 +52,8 @@ class ShadowverseFirebaseSync:
             'total_cards': 0,
             'successful_cards': 0,
             'failed_cards': 0,
+            'inserted': 0,
+            'updated': 0,
             'errors': []
         }
         self.stats_lock = Lock()
@@ -256,6 +258,142 @@ class ShadowverseFirebaseSync:
             batch.commit()
         
         logger.info(f"同步了 {len(skills)} 個技能")
+
+    def _generate_tip_doc_id(self, title: str, language: str, index: int) -> str:
+        """生成改進的 tip 文檔ID"""
+        import re
+        
+        # 1. 清理標題，只保留字母、數字、中文字符和基本標點
+        cleaned_title = re.sub(r'[^\w\u4e00-\u9fff\s\-_]', '', title)
+        
+        # 2. 將多個空格替換為單個下劃線
+        cleaned_title = re.sub(r'\s+', '_', cleaned_title.strip())
+        
+        # 3. 移除連續的下劃線
+        cleaned_title = re.sub(r'_+', '_', cleaned_title)
+        
+        # 4. 限制長度，避免過長的文檔ID
+        max_title_length = 30
+        if len(cleaned_title) > max_title_length:
+            # 保持中文字符的完整性
+            truncated = cleaned_title[:max_title_length]
+            # 如果截斷位置是中文字符的中間，向前調整
+            while len(truncated) > 0 and ord(truncated[-1]) > 127:
+                if len(truncated) < max_title_length:
+                    break
+                truncated = truncated[:-1]
+            cleaned_title = truncated
+        
+        # 5. 生成最終的文檔ID: 序號_標題_語言
+        # 使用3位數字前綴確保排序
+        doc_id = f"{index:03d}_{cleaned_title}_{language}"
+        
+        # 6. 最終清理，確保沒有以下劃線開始或結束
+        doc_id = doc_id.strip('_')
+        
+        return doc_id
+
+    def _generate_base_tip_doc_id(self, title: str, index: int) -> str:
+        """生成基礎 tip 文檔ID（不包含語言後綴，用於多語言合併）"""
+        import re
+        
+        # 1. 清理標題，只保留字母、數字、中文字符和基本標點
+        cleaned_title = re.sub(r'[^\w\u4e00-\u9fff\s\-_]', '', title)
+        
+        # 2. 將多個空格替換為單個下劃線
+        cleaned_title = re.sub(r'\s+', '_', cleaned_title.strip())
+        
+        # 3. 移除連續的下劃線
+        cleaned_title = re.sub(r'_+', '_', cleaned_title)
+        
+        # 4. 限制長度
+        max_title_length = 30
+        if len(cleaned_title) > max_title_length:
+            truncated = cleaned_title[:max_title_length]
+            while len(truncated) > 0 and ord(truncated[-1]) > 127:
+                if len(truncated) < max_title_length:
+                    break
+                truncated = truncated[:-1]
+            cleaned_title = truncated
+        
+        # 5. 生成基礎文檔ID: 序號_標題（不包含語言）
+        doc_id = f"{index:03d}_{cleaned_title}"
+        
+        # 6. 最終清理
+        doc_id = doc_id.strip('_')
+        
+        return doc_id
+
+    def _sync_tips_data(self, tips_data: List[Dict], language: str):
+        """同步Tips資料到Firebase"""
+        logger.info(f"開始同步 {language} Tips資料...")
+        
+        try:
+            tips_ref = self.db.collection('tips')
+            batch = self.db.batch()
+            batch_count = 0
+            
+            for index, tip in enumerate(tips_data, 1):
+                title = tip.get('title', '').strip()
+                desc = tip.get('desc', '').strip()
+                
+                if not title or not desc:
+                    continue
+                
+                # 改進的文檔ID命名方法
+                doc_id = self._generate_tip_doc_id(title, language, index)
+                
+                # 檢查是否已存在相同標題的文檔（不同語言版本）
+                base_doc_id = self._generate_base_tip_doc_id(title, index)
+                existing_doc = None
+                
+                # 先嘗試找到基礎文檔ID
+                try:
+                    existing_doc = tips_ref.document(base_doc_id).get()
+                except:
+                    # 如果基礎文檔不存在，嘗試當前語言的文檔ID
+                    try:
+                        existing_doc = tips_ref.document(doc_id).get()
+                    except:
+                        pass
+                
+                # 使用基礎文檔ID（不包含語言後綴）來合併多語言
+                final_doc_id = base_doc_id
+                
+                tip_data = {
+                    f'title.{language}': title,
+                    f'desc.{language}': desc,
+                    'updatedAt': firestore.SERVER_TIMESTAMP,
+                    'index': index  # 添加索引用於排序
+                }
+                
+                if existing_doc and existing_doc.exists:
+                    # 更新現有文檔
+                    batch.update(tips_ref.document(final_doc_id), tip_data)
+                    self.stats['updated'] += 1
+                else:
+                    # 建立新文檔
+                    tip_data['createdAt'] = firestore.SERVER_TIMESTAMP
+                    batch.set(tips_ref.document(final_doc_id), tip_data)
+                    self.stats['inserted'] += 1
+                
+                batch_count += 1
+                
+                # 每500個操作提交一次批次
+                if batch_count >= 500:
+                    batch.commit()
+                    batch = self.db.batch()
+                    batch_count = 0
+            
+            # 提交剩餘的批次
+            if batch_count > 0:
+                batch.commit()
+            
+            logger.info(f"同步了 {len(tips_data)} 個Tips")
+            
+        except Exception as e:
+            logger.error(f"同步Tips資料失敗: {e}")
+            self.stats['errors'].append(f"同步Tips失敗: {str(e)}")
     
     def _sync_cards_data(self, card_data: Dict, language: str):
         """同步卡片資料"""
@@ -484,8 +622,63 @@ class ShadowverseFirebaseSync:
             'successful_cards': self.stats['successful_cards'],
             'failed_cards': self.stats['failed_cards'],
             'success_rate': (self.stats['successful_cards'] / max(self.stats['total_cards'], 1)) * 100,
+            'inserted': self.stats['inserted'],
+            'updated': self.stats['updated'],
             'errors': self.stats['errors'][:10]  # 只顯示前 10 個錯誤
         }
+
+def sync_tips_data(config: FirebaseConfig, data_directory: str = 'output/tips_data') -> Dict[str, Any]:
+    """同步所有語言的Tips資料"""
+    languages = ['cht', 'chs', 'en', 'ja', 'ko']
+    sync_results = {}
+    
+    logger.info("開始同步所有語言的Tips資料到 Firebase...")
+    
+    # 創建單一的同步實例，用於所有語言
+    sync = ShadowverseFirebaseSync(config)
+    
+    for language in languages:
+        tips_file = os.path.join(data_directory, f'tips_data_{language}.json')
+        
+        if not os.path.exists(tips_file):
+            logger.warning(f"找不到 {language} 語言的Tips檔案: {tips_file}")
+            sync_results[language] = {'success': False, 'error': 'File not found'}
+            continue
+        
+        try:
+            with open(tips_file, 'r', encoding='utf-8') as f:
+                tips_data = json.load(f)
+            
+            # 記錄同步前的統計數據
+            before_inserted = sync.stats['inserted']
+            before_updated = sync.stats['updated']
+            
+            # 同步Tips資料
+            sync._sync_tips_data(tips_data.get('tips', []), language)
+            
+            # 計算此語言的統計數據
+            language_inserted = sync.stats['inserted'] - before_inserted
+            language_updated = sync.stats['updated'] - before_updated
+            
+            sync_results[language] = {
+                'success': True,
+                'statistics': {
+                    'inserted': language_inserted,
+                    'updated': language_updated,
+                    'total_tips': len(tips_data.get('tips', []))
+                }
+            }
+            
+            logger.info(f"{language} Tips同步結果: 成功 (插入: {language_inserted}, 更新: {language_updated})")
+            
+        except Exception as e:
+            logger.error(f"{language} Tips同步失敗: {e}")
+            sync_results[language] = {'success': False, 'error': str(e)}
+        
+        # 語言間稍作休息
+        time.sleep(1)
+    
+    return sync_results
 
 def sync_all_languages(config: FirebaseConfig, data_directory: str = 'output') -> Dict[str, Any]:
     """同步所有語言的資料"""
@@ -538,6 +731,13 @@ def load_config() -> FirebaseConfig:
 
 def main():
     """主函數"""
+    import argparse
+    
+    parser = argparse.ArgumentParser(description='Shadowverse Firebase 同步工具')
+    parser.add_argument('--type', choices=['cards', 'tips', 'all'], default='all', 
+                       help='同步類型: cards=卡牌資料, tips=Tips資料, all=全部')
+    args = parser.parse_args()
+    
     try:
         # 載入配置
         config = load_config()
@@ -551,26 +751,94 @@ def main():
             logger.error(f"找不到服務帳戶金鑰檔案: {config.service_account_key_path}")
             return
         
-        # 開始同步
-        results = sync_all_languages(config)
+        # 初始化結果變數
+        results = {}
+        tips_results = {}
+        
+        # 根據參數決定同步類型
+        if args.type in ['cards', 'all']:
+            # 同步卡牌資料
+            logger.info("開始同步卡牌資料...")
+            results = sync_all_languages(config)
+            
+            # 顯示卡牌同步結果摘要
+            print("\n" + "="*60)
+            print("卡牌資料同步結果摘要")
+            print("="*60)
+            
+            for language, result in results.items():
+                status = "✅ 成功" if result['success'] else "❌ 失敗"
+                print(f"{language}: {status}")
+                
+                if result['success'] and 'statistics' in result:
+                    stats = result['statistics']
+                    print(f"  - 插入: {stats.get('inserted', 0)}")
+                    print(f"  - 更新: {stats.get('updated', 0)}")
+                    print(f"  - 成功率: {stats.get('success_rate', 0):.1f}%")
+                elif not result['success']:
+                    print(f"  - 錯誤: {result.get('error', '未知錯誤')}")
+        
+        if args.type in ['tips', 'all']:
+            # 同步Tips資料
+            logger.info("開始同步Tips資料...")
+            tips_results = sync_tips_data(config)
+            
+            # 顯示Tips同步結果摘要
+            print("\n" + "="*60)
+            print("Tips資料同步結果摘要")
+            print("="*60)
+            
+            for language, result in tips_results.items():
+                status = "✅ 成功" if result['success'] else "❌ 失敗"
+                print(f"{language}: {status}")
+                
+                if result['success'] and 'statistics' in result:
+                    stats = result['statistics']
+                    print(f"  - 總Tips數: {stats.get('total_tips', 0)}")
+                    print(f"  - 插入: {stats.get('inserted', 0)}")
+                    print(f"  - 更新: {stats.get('updated', 0)}")
+                elif not result['success']:
+                    print(f"  - 錯誤: {result.get('error', '未知錯誤')}")
         
         # 顯示結果摘要
         print("\n" + "="*60)
         print("Firebase 資料同步完成摘要")
         print("="*60)
         
-        for language, result in results.items():
-            status = "✓ 成功" if result['success'] else "✗ 失敗"
-            print(f"{language.upper()}: {status}")
-            
-            if result['success'] and 'statistics' in result:
-                stats = result['statistics']
-                print(f"  總卡片數: {stats['total_cards']}")
-                print(f"  成功: {stats['successful_cards']}")
-                print(f"  失敗: {stats['failed_cards']}")
-                print(f"  成功率: {stats['success_rate']:.1f}%")
-            
-            print()
+        # 合併所有結果
+        all_results = {}
+        if results:
+            all_results.update(results)
+        if tips_results:
+            # 為 tips 結果添加標識
+            for lang, result in tips_results.items():
+                key = f"{lang}_tips"
+                all_results[key] = result
+        
+        if all_results:
+            for key, result in all_results.items():
+                display_name = key.replace('_tips', ' (Tips)').upper()
+                status = "✓ 成功" if result['success'] else "✗ 失敗"
+                print(f"{display_name}: {status}")
+                
+                if result['success'] and 'statistics' in result:
+                    stats = result['statistics']
+                    if '_tips' in key:
+                        # Tips 同步統計
+                        print(f"  插入: {stats.get('inserted', 0)}")
+                        print(f"  更新: {stats.get('updated', 0)}")
+                    else:
+                        # 卡牌同步統計
+                        print(f"  總卡片數: {stats.get('total_cards', 0)}")
+                        print(f"  成功: {stats.get('successful_cards', 0)}")
+                        print(f"  失敗: {stats.get('failed_cards', 0)}")
+                        print(f"  成功率: {stats.get('success_rate', 0):.1f}%")
+                elif not result['success']:
+                    print(f"  錯誤: {result.get('error', '未知錯誤')}")
+                
+                print()
+        else:
+            print("沒有執行任何同步操作")
         
         logger.info("所有語言資料同步完成")
         

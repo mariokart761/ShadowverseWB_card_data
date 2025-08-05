@@ -212,6 +212,68 @@ def example_card_details():
     except Exception as e:
         print(f"查詢卡片詳細資訊時發生錯誤: {e}")
 
+def example_tips_queries():
+    """Tips查詢範例"""
+    print("\n=== Tips查詢範例 ===")
+    
+    supabase = create_supabase_client()
+    if not supabase:
+        return
+    
+    try:
+        # 1. 查詢Tips總數
+        result = supabase.table('tips').select('id', count='exact').execute()
+        print(f"資料庫中總共有 {len(result.data)} 條Tips")
+        
+        # 2. 搜尋包含特定關鍵字的Tips (繁體中文)
+        keyword = "從者"
+        result = supabase.table('tips').select(
+            'title_cht, desc_cht'
+        ).ilike('title_cht', f'%{keyword}%').execute()
+        
+        print(f"\n包含 '{keyword}' 的Tips:")
+        for tip in result.data[:3]:  # 只顯示前3條
+            print(f"  標題: {tip['title_cht']}")
+            print(f"  說明: {tip['desc_cht'][:100]}{'...' if len(tip['desc_cht']) > 100 else ''}")
+            print()
+        
+        # 3. 多語言Tips比較
+        result = supabase.table('tips').select(
+            'title_cht, title_en, desc_cht, desc_en'
+        ).not_.is_('title_cht', 'null').not_.is_('title_en', 'null').limit(2).execute()
+        
+        print("多語言Tips比較:")
+        for tip in result.data:
+            print(f"  繁中標題: {tip['title_cht']}")
+            print(f"  英文標題: {tip['title_en']}")
+            print(f"  繁中說明: {tip['desc_cht'][:80]}...")
+            print(f"  英文說明: {tip['desc_en'][:80]}...")
+            print()
+        
+        # 4. 按標題長度排序的Tips
+        result = supabase.table('tips').select(
+            'title_cht, desc_cht'
+        ).not_.is_('title_cht', 'null').order('title_cht').limit(5).execute()
+        
+        print("按標題排序的Tips (前5條):")
+        for tip in result.data:
+            print(f"  {tip['title_cht']}: {tip['desc_cht'][:60]}...")
+        
+        # 5. 搜尋特定遊戲概念的Tips
+        concepts = ["職業", "法術", "護符"]
+        for concept in concepts:
+            result = supabase.table('tips').select(
+                'title_cht, desc_cht'
+            ).or_(f'title_cht.ilike.%{concept}%,desc_cht.ilike.%{concept}%').limit(1).execute()
+            
+            if result.data:
+                tip = result.data[0]
+                print(f"\n關於 '{concept}' 的Tips:")
+                print(f"  {tip['title_cht']}: {tip['desc_cht']}")
+        
+    except Exception as e:
+        print(f"Tips查詢時發生錯誤: {e}")
+
 def main():
     """主函數"""
     print("Supabase 資料庫查詢範例")
@@ -227,6 +289,7 @@ def main():
     example_multilingual_comparison()
     example_advanced_queries()
     example_card_details()
+    example_tips_queries()
     
     print("\n查詢範例執行完成！")
 

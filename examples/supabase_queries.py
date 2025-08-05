@@ -99,7 +99,7 @@ def example_multilingual_comparison():
         return
     
     try:
-        # 獲取第一張非代幣卡片的多語言名稱
+        # 獲取第一張非isToken卡片的多語言名稱
         card_result = supabase.table('cards').select('id').eq('is_token', False).limit(1).execute()
         
         if card_result.data:

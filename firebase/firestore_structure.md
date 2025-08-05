@@ -232,7 +232,7 @@ cards_ref.where('tribes', 'array_contains', 1).get()
 # 查詢特定職業和稀有度的卡片
 cards_ref.where('class', '==', 1).where('rarity', '==', 4).get()
 
-# 查詢非代幣且在輪替制的卡片
+# 查詢非isToken且在輪替制的卡片
 cards_ref.where('isToken', '==', False).where('isIncludeRotation', '==', True).get()
 ```
 

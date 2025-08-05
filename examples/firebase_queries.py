@@ -178,10 +178,10 @@ def example_complex_queries():
             cht_name = get_card_name(card_data)
             print(f"  {cht_name} - 攻擊:{card_data.get('atk')} 生命:{card_data.get('life')}")
         
-        # 2. 查詢非代幣卡片
+        # 2. 查詢非isToken卡片
         non_token_cards = cards_ref.where('isToken', '==', False).limit(5).get()
         
-        print("\n非代幣卡片:")
+        print("\n非isToken卡片:")
         for card in non_token_cards:
             card_data = card.to_dict()
             cht_name = get_card_name(card_data)

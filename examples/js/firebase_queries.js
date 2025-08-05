@@ -188,8 +188,8 @@ async function exampleComplexQueries(db) {
             console.log(`  ${cardName} - 攻擊:${cardData.atk} 生命:${cardData.life}`);
         });
 
-        // 2. 非代幣卡片
-        console.log('\n非代幣卡片:');
+        // 2. 非isToken卡片
+        console.log('\n非isToken卡片:');
         const nonTokenCards = await cardsRef.where('isToken', '==', false).limit(5).get();
         
         nonTokenCards.forEach(doc => {

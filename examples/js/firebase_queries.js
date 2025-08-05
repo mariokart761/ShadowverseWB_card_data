@@ -454,7 +454,8 @@ async function main() {
 }
 
 // 如果直接執行此腳本，則運行主函數
-if (import.meta.url === `file://${process.argv[1]}`) {
+// 檢查是否為直接執行（不是被 import）
+if (process.argv[1] && process.argv[1].endsWith('firebase_queries.js')) {
     main().catch(console.error);
 }
 

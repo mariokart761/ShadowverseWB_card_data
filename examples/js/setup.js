@@ -196,6 +196,6 @@ async function main() {
 }
 
 // 如果直接執行此腳本，則運行設置
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1] && process.argv[1].endsWith('setup.js')) {
     main().catch(console.error);
 }

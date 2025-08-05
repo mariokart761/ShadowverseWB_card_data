@@ -193,6 +193,6 @@ async function runTests() {
 }
 
 // 如果直接執行此腳本，則運行測試
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1] && process.argv[1].endsWith('test_queries.js')) {
     runTests().catch(console.error);
 }

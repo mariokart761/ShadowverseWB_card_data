@@ -442,7 +442,24 @@ class ShadowverseFirebaseSync:
                 card_data = self._prepare_card_data(card_id, card_info, language)
                 
                 card_ref = self.db.collection('cards').document(str(card_id))
-                batch.set(card_ref, card_data, merge=True)
+                
+                # 檢查卡片是否已存在來決定是插入還是更新
+                try:
+                    existing_doc = card_ref.get()
+                    if existing_doc.exists:
+                        # 更新現有卡片
+                        batch.set(card_ref, card_data, merge=True)
+                        with self.stats_lock:
+                            self.stats['updated'] += 1
+                    else:
+                        # 插入新卡片
+                        batch.set(card_ref, card_data)
+                        with self.stats_lock:
+                            self.stats['inserted'] += 1
+                except Exception as doc_check_error:
+                    # 如果無法檢查文檔存在性，默認使用merge模式
+                    logger.warning(f"無法檢查卡片 {card_id} 是否存在，使用merge模式: {doc_check_error}")
+                    batch.set(card_ref, card_data, merge=True)
                 
                 with self.stats_lock:
                     self.stats['successful_cards'] += 1

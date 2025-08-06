@@ -15,7 +15,7 @@ cards/
 │   ├── baseCardId: number
 │   ├── cardResourceId: number
 │   ├── cardSetId: number
-│   ├── type: number (1:從者, 2:護符, 3:建築物, 4:法術)
+│   ├── type: number (1:從者, 2:法術, 3:護符)
 │   ├── class: number (0:中立, 1:精靈, ...)
 │   ├── cost: number
 │   ├── atk: number
@@ -23,8 +23,6 @@ cards/
 │   ├── rarity: number (1:銅, 2:銀, 3:金, 4:虹)
 │   ├── isToken: boolean
 │   ├── isIncludeRotation: boolean
-│   ├── cardImageHash: string
-│   ├── cardBannerImageHash: string
 │   ├── createdAt: timestamp
 │   ├── updatedAt: timestamp
 │   ├── names: {
@@ -33,6 +31,13 @@ cards/
 │   │   ├── en: { name: string, nameRuby: string }
 │   │   ├── ja: { name: string, nameRuby: string }
 │   │   └── ko: { name: string, nameRuby: string }
+│   │   }
+│   ├── images: {
+│   │   ├── cht: { cardImageHash: string, cardBannerImageHash: string }
+│   │   ├── chs: { cardImageHash: string, cardBannerImageHash: string }
+│   │   ├── en: { cardImageHash: string, cardBannerImageHash: string }
+│   │   ├── ja: { cardImageHash: string, cardBannerImageHash: string }
+│   │   └── ko: { cardImageHash: string, cardBannerImageHash: string }
 │   │   }
 │   ├── descriptions: {
 │   │   ├── cht: {
@@ -46,8 +51,13 @@ cards/
 │   │   }
 │   ├── evolution: {
 │   │   ├── cardResourceId: number
-│   │   ├── cardImageHash: string
-│   │   └── cardBannerImageHash: string
+│   │   ├── images: {
+│   │   │   ├── cht: { cardImageHash: string, cardBannerImageHash: string }
+│   │   │   ├── chs: { cardImageHash: string, cardBannerImageHash: string }
+│   │   │   ├── en: { cardImageHash: string, cardBannerImageHash: string }
+│   │   │   ├── ja: { cardImageHash: string, cardBannerImageHash: string }
+│   │   │   └── ko: { cardImageHash: string, cardBannerImageHash: string }
+│   │   │   }
 │   │   }
 │   ├── tribes: [number] (種族ID陣列)
 │   ├── relatedCards: [number] (相關卡片ID陣列)
@@ -105,7 +115,18 @@ skills/
 │   └── updatedAt: timestamp
 ```
 
-### 5. syncLogs (同步記錄集合)
+### 5. cardSortOrders (卡片排序集合)
+```
+cardSortOrders/
+├── {language}/
+│   ├── language: string
+│   ├── cardIds: array<number> (排序後的卡片ID列表)
+│   ├── totalCards: number
+│   ├── createdAt: timestamp
+│   └── updatedAt: timestamp
+```
+
+### 6. syncLogs (同步記錄集合)
 ```
 syncLogs/
 ├── {logId}/
@@ -158,7 +179,10 @@ styles/
    - `isToken` (升序) + `isIncludeRotation` (升序)
    - `names.cht.name` (升序) - 用於名稱搜尋
 
-2. `syncLogs` 集合:
+2. `cardSortOrders` 集合:
+   - `language` (升序) + `updatedAt` (降序)
+
+3. `syncLogs` 集合:
    - `language` (升序) + `createdAt` (降序)
    - `syncStatus` (升序) + `createdAt` (降序)
 

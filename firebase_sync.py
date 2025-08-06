@@ -98,6 +98,10 @@ class ShadowverseFirebaseSync:
             # 同步卡片資料
             self._sync_cards_data(card_data, language)
             
+            # 同步卡片排序資料
+            if 'sort_card_id_list' in card_data:
+                self._sync_card_sort_order(card_data['sort_card_id_list'], language)
+            
             # 更新同步記錄
             self._update_sync_log(sync_log_ref, 'success')
             
@@ -258,6 +262,37 @@ class ShadowverseFirebaseSync:
             batch.commit()
         
         logger.info(f"同步了 {len(skills)} 個技能")
+
+    def _sync_card_sort_order(self, sort_card_id_list: List[int], language: str):
+        """同步卡片排序資料"""
+        logger.info(f"同步 {language} 卡片排序資料...")
+        
+        try:
+            # 創建或更新卡片排序文檔
+            sort_order_ref = self.db.collection('cardSortOrders').document(language)
+            
+            sort_data = {
+                'language': language,
+                'cardIds': sort_card_id_list,
+                'totalCards': len(sort_card_id_list),
+                'updatedAt': firestore.SERVER_TIMESTAMP
+            }
+            
+            # 檢查是否已存在
+            existing_doc = sort_order_ref.get()
+            if existing_doc.exists:
+                # 更新現有文檔
+                sort_order_ref.update(sort_data)
+                logger.info(f"更新了 {language} 語言的卡片排序資料 ({len(sort_card_id_list)} 張卡片)")
+            else:
+                # 建立新文檔
+                sort_data['createdAt'] = firestore.SERVER_TIMESTAMP
+                sort_order_ref.set(sort_data)
+                logger.info(f"建立了 {language} 語言的卡片排序資料 ({len(sort_card_id_list)} 張卡片)")
+            
+        except Exception as e:
+            logger.error(f"同步 {language} 卡片排序資料失敗: {e}")
+            self.stats['errors'].append(f"同步卡片排序失敗: {str(e)}")
 
     def _generate_tip_doc_id(self, title: str, language: str, index: int) -> str:
         """生成改進的 tip 文檔ID"""
@@ -497,8 +532,6 @@ class ShadowverseFirebaseSync:
             'rarity': common.get('rarity'),
             'isToken': common.get('is_token', False),
             'isIncludeRotation': common.get('is_include_rotation', False),
-            'cardImageHash': common.get('card_image_hash'),
-            'cardBannerImageHash': common.get('card_banner_image_hash'),
             'updatedAt': firestore.SERVER_TIMESTAMP
         }
         
@@ -511,6 +544,16 @@ class ShadowverseFirebaseSync:
                 'name': common.get('name', ''),
                 'nameRuby': common.get('name_ruby', '')
             }
+        
+        # 多語言圖片
+        if common.get('card_image_hash') or common.get('card_banner_image_hash'):
+            image_data = {}
+            if common.get('card_image_hash'):
+                image_data['cardImageHash'] = common.get('card_image_hash')
+            if common.get('card_banner_image_hash'):
+                image_data['cardBannerImageHash'] = common.get('card_banner_image_hash')
+            if image_data:
+                card_data[f'images.{language}'] = image_data
         
         # 多語言描述 (普通形態)
         if any([common.get('flavour_text'), common.get('skill_text'), 
@@ -537,10 +580,16 @@ class ShadowverseFirebaseSync:
             evolution_data = {}
             if evo.get('card_resource_id'):
                 evolution_data['cardResourceId'] = evo.get('card_resource_id')
-            if evo.get('card_image_hash'):
-                evolution_data['cardImageHash'] = evo.get('card_image_hash')
-            if evo.get('card_banner_image_hash'):
-                evolution_data['cardBannerImageHash'] = evo.get('card_banner_image_hash')
+            
+            # 進化圖片
+            if evo.get('card_image_hash') or evo.get('card_banner_image_hash'):
+                evo_image_data = {}
+                if evo.get('card_image_hash'):
+                    evo_image_data['cardImageHash'] = evo.get('card_image_hash')
+                if evo.get('card_banner_image_hash'):
+                    evo_image_data['cardBannerImageHash'] = evo.get('card_banner_image_hash')
+                if evo_image_data:
+                    evolution_data[f'images.{language}'] = evo_image_data
             
             if evolution_data:
                 card_data['evolution'] = evolution_data

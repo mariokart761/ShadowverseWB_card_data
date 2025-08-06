@@ -73,6 +73,10 @@ class ShadowverseDatabaseSync:
             # 同步卡片資料
             await self._sync_cards_data(card_data, language)
             
+            # 同步卡片排序資料
+            if 'sort_card_id_list' in card_data:
+                await self._sync_card_sort_order(card_data['sort_card_id_list'], language)
+            
             # 更新同步記錄
             await self._update_sync_log(sync_log_id, 'success')
             
@@ -245,6 +249,33 @@ class ShadowverseDatabaseSync:
                     
             except Exception as e:
                 logger.error(f"同步技能 {skill_id} 失敗: {e}")
+
+    async def _sync_card_sort_order(self, sort_card_id_list: List[int], language: str):
+        """同步卡片排序資料"""
+        logger.info(f"同步 {language} 卡片排序資料...")
+        
+        try:
+            # 檢查是否已存在該語言的排序記錄
+            existing = self.supabase.table('card_sort_orders').select('id').eq('language', language).execute()
+            
+            sort_data = {
+                'language': language,
+                'card_ids': sort_card_id_list,
+                'total_cards': len(sort_card_id_list)
+            }
+            
+            if existing.data:
+                # 更新現有記錄
+                self.supabase.table('card_sort_orders').update(sort_data).eq('language', language).execute()
+                logger.info(f"更新了 {language} 語言的卡片排序資料 ({len(sort_card_id_list)} 張卡片)")
+            else:
+                # 建立新記錄
+                self.supabase.table('card_sort_orders').insert(sort_data).execute()
+                logger.info(f"建立了 {language} 語言的卡片排序資料 ({len(sort_card_id_list)} 張卡片)")
+            
+        except Exception as e:
+            logger.error(f"同步 {language} 卡片排序資料失敗: {e}")
+            self.stats['errors'].append(f"同步卡片排序失敗: {str(e)}")
     
     async def _sync_cards_data(self, card_data: Dict, language: str):
         """同步卡片資料"""
@@ -294,23 +325,27 @@ class ShadowverseDatabaseSync:
         # 2. 同步卡片名稱
         await self._upsert_card_name(card_id, common, language)
         
-        # 3. 同步卡片描述 (普通形態)
+        # 3. 同步卡片圖片
+        await self._upsert_card_images(card_id, common, language)
+        
+        # 4. 同步卡片描述 (普通形態)
         await self._upsert_card_description(card_id, common, language, 'common')
         
-        # 4. 同步卡片描述 (進化形態)
+        # 5. 同步卡片進化資訊和描述
         if evo:
             await self._upsert_card_evolution(card_id, evo)
+            await self._upsert_card_evolution_images(card_id, evo, language)
             await self._upsert_card_description(card_id, evo, language, 'evo')
         
-        # 5. 同步種族關聯
+        # 6. 同步種族關聯
         if 'tribes' in common:
             await self._sync_card_tribes(card_id, common['tribes'])
         
-        # 6. 同步問答
+        # 7. 同步問答
         if 'questions' in common:
             await self._sync_card_questions(card_id, common['questions'], language)
         
-        # 7. 同步風格變體
+        # 8. 同步風格變體
         if 'style_card_list' in card_info:
             await self._sync_card_styles(card_id, card_info['style_card_list'])
     
@@ -328,9 +363,7 @@ class ShadowverseDatabaseSync:
             'life': common.get('life'),
             'rarity': common.get('rarity'),
             'is_token': common.get('is_token', False),
-            'is_include_rotation': common.get('is_include_rotation', False),
-            'card_image_hash': common.get('card_image_hash'),
-            'card_banner_image_hash': common.get('card_banner_image_hash')
+            'is_include_rotation': common.get('is_include_rotation', False)
         }
         
         # 移除 None 值
@@ -349,6 +382,35 @@ class ShadowverseDatabaseSync:
                 
         except Exception as e:
             raise Exception(f"同步卡片主要資訊失敗: {e}")
+    
+    async def _upsert_card_images(self, card_id: str, common: Dict, language: str):
+        """更新或插入卡片圖片資訊"""
+        if not common.get('card_image_hash') and not common.get('card_banner_image_hash'):
+            return
+            
+        image_data = {
+            'card_id': int(card_id),
+            'language': language,
+            'card_image_hash': common.get('card_image_hash'),
+            'card_banner_image_hash': common.get('card_banner_image_hash')
+        }
+        
+        # 移除 None 值
+        image_data = {k: v for k, v in image_data.items() if v is not None}
+        
+        try:
+            # 檢查是否已存在
+            existing = self.supabase.table('card_images').select('card_id').eq('card_id', int(card_id)).eq('language', language).execute()
+            
+            if existing.data:
+                # 更新現有記錄
+                self.supabase.table('card_images').update(image_data).eq('card_id', int(card_id)).eq('language', language).execute()
+            else:
+                # 建立新記錄
+                self.supabase.table('card_images').insert(image_data).execute()
+                
+        except Exception as e:
+            raise Exception(f"同步卡片圖片資訊失敗: {e}")
     
     async def _upsert_card_name(self, card_id: str, common: Dict, language: str):
         """更新或插入卡片名稱"""
@@ -386,9 +448,7 @@ class ShadowverseDatabaseSync:
         """更新或插入卡片進化資訊"""
         evo_data = {
             'card_id': int(card_id),
-            'card_resource_id': evo.get('card_resource_id'),
-            'card_image_hash': evo.get('card_image_hash'),
-            'card_banner_image_hash': evo.get('card_banner_image_hash')
+            'card_resource_id': evo.get('card_resource_id')
         }
         
         # 移除 None 值
@@ -398,6 +458,26 @@ class ShadowverseDatabaseSync:
             self.supabase.table('card_evolutions').upsert(evo_data).execute()
         except Exception as e:
             raise Exception(f"同步卡片進化資訊失敗: {e}")
+    
+    async def _upsert_card_evolution_images(self, card_id: str, evo: Dict, language: str):
+        """更新或插入卡片進化圖片資訊"""
+        if not evo or (not evo.get('card_image_hash') and not evo.get('card_banner_image_hash')):
+            return
+            
+        evo_image_data = {
+            'card_id': int(card_id),
+            'language': language,
+            'card_image_hash': evo.get('card_image_hash'),
+            'card_banner_image_hash': evo.get('card_banner_image_hash')
+        }
+        
+        # 移除 None 值
+        evo_image_data = {k: v for k, v in evo_image_data.items() if v is not None}
+        
+        try:
+            self.supabase.table('card_evolution_images').upsert(evo_image_data).execute()
+        except Exception as e:
+            raise Exception(f"同步卡片進化圖片資訊失敗: {e}")
     
     async def _sync_card_tribes(self, card_id: str, tribes: List[int]):
         """同步卡片種族關聯"""

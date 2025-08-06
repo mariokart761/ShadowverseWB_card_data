@@ -1,8 +1,14 @@
 # 輸出檔案
 output/*.json
 
-# 日誌檔案
-logs/*.log
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
 # 資料庫配置檔案
 supabase/config.json
@@ -20,6 +26,7 @@ examples/js/config.json
 examples/js/node_modules/
 examples/js/package-lock.json
 examples/js/.env
+
 
 # Python 快取檔案
 __pycache__/

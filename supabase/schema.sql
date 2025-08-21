@@ -48,7 +48,7 @@ CREATE TABLE svwb_data.cards (
     atk INTEGER,
     life INTEGER,
     cost INTEGER NOT NULL,
-    type INTEGER NOT NULL, -- 1=從者, 2=法術, 3=護符
+    type INTEGER NOT NULL, -- 1=從者, 2=護符(無倒數), 3=護符(有倒數), 4=法術
     class INTEGER NOT NULL, -- 職業
     rarity INTEGER NOT NULL, -- 1=青銅, 2=白銀, 3=黃金, 4=虹彩
     card_set_id INTEGER NOT NULL REFERENCES svwb_data.card_sets(id),

@@ -1,7 +1,6 @@
 # Shadowverse 多語言卡牌資料爬蟲
 
 這個專案包含用於爬取 Shadowverse 卡牌遊戲資料的 Python 腳本，支援多語言爬取。
-註：Supabase 有更新，使用 Supabase 請先參考 `docs/Supabase操作指南.md`
 
 ## 專案結構
 
@@ -11,7 +10,6 @@ SVWB_crawler/
 ├── tips_data_crawler.py           # 系統Tips爬蟲腳本
 ├── supabase_sync.py               # Supabase 資料同步腳本
 ├── firebase_sync.py               # Firebase 資料同步腳本
-├── setup_supabase.py              # Supabase 設定輔助程式
 ├── setup_firebase.py              # Firebase 設定輔助程式
 ├── test_crawler.py                # 測試腳本
 ├── run.py                         # 互動式啟動腳本
@@ -20,12 +18,9 @@ SVWB_crawler/
 ├── requirements.txt               # Python 套件相依性
 ├── README.md                      # 說明文件
 ├── .gitignore                     # Git 忽略檔案
-├── CHANGELOG.md                   # 更新日誌
 ├── supabase/                      # Supabase 相關檔案
 │   ├── schema.sql                 # 資料庫結構定義
-│   ├── init_supabase.py           # 資料庫初始化腳本
-│   ├── config.example.json        # 配置檔案範例
-│   └── env.example                # 環境變數範例
+│   └── config.example.json        # 配置檔案範例
 ├── firebase/                      # Firebase 相關檔案
 │   ├── firestore_structure.md     # Firestore 資料結構說明
 │   ├── init_firebase.py           # Firebase 初始化腳本
@@ -36,7 +31,6 @@ SVWB_crawler/
 │   └── response.example.json      # API 回應格式範例
 ├── examples/                      # 範例程式
 │   ├── example_usage.py           # 爬蟲使用範例
-│   ├── supabase_queries.py        # Supabase 查詢範例
 │   └── firebase_queries.py        # Firebase 查詢範例
 ├── output/                        # 輸出檔案目錄
 │   ├── shadowverse_cards_cht.json # 繁體中文卡牌資料
@@ -52,7 +46,6 @@ SVWB_crawler/
 │       └── tips_data_ko.json      # 韓文Tips資料
 └── logs/                          # 日誌檔案目錄
     ├── shadowverse_crawler.log    # 爬蟲執行日誌
-    ├── supabase_sync.log          # Supabase 同步日誌
     └── firebase_sync.log          # Firebase 同步日誌
 ```
 
@@ -72,40 +65,7 @@ pip install -r requirements.txt
 
 #### 設定 Supabase
 
-1. 在 [Supabase](https://supabase.com) 建立新專案
-2. 複製 `supabase/config.example.json` 為 `supabase/config.json`
-3. 填入您的 Supabase 連線資訊：
-   ```json
-   {
-     "supabase_url": "https://your-project.supabase.co",
-     "supabase_key": "your-supabase-anon-key",
-     "database_url": "postgresql://postgres:your-password@db.your-project.supabase.co:5432/postgres"
-   }
-   ```
-
-#### 快速設定
-```bash
-# 自動設定 Supabase
-python setup_supabase.py
-```
-
-#### 手動設定
-```bash
-# 檢查資料庫連線
-python supabase/init_supabase.py check
-
-# 建立資料庫結構
-python supabase/init_supabase.py init
-
-# 同步卡牌資料
-python supabase_sync.py --type cards
-
-# 同步Tips資料
-python supabase_sync.py --type tips
-
-# 同步所有資料
-python supabase_sync.py --type all
-```
+- 請參考`docs/Supabase操作指南.md`
 
 ### 🔥 Firebase (Firestore) 整合
 
@@ -152,23 +112,9 @@ python firebase_sync.py --type tips
 python firebase_sync.py --type all
 ```
 
-### 資料庫結構比較
-
-| 特性 | Supabase (PostgreSQL) | Firebase (Firestore) |
-|------|----------------------|----------------------|
-| 資料庫類型 | 關聯式 (SQL) | NoSQL 文件資料庫 |
-| 查詢能力 | 強大的 SQL 查詢 | 有限的查詢功能 |
-| 即時同步 | 支援 | 原生支援 |
-| 擴展性 | 垂直擴展 | 自動水平擴展 |
-| 成本 | 按使用量計費 | 按讀寫操作計費 |
-| 離線支援 | 無 | 原生支援 |
-
 ### 查詢範例
 
 ```bash
-# Supabase 查詢範例
-python examples/supabase_queries.py
-
 # Firebase 查詢範例 (Python)
 python examples/firebase_queries.py
 
@@ -194,18 +140,6 @@ python shadowverse_simple_crawler.py
 
 這會自動爬取所有支援的語言（cht, chs, en, ja, ko）並分別儲存。
 
-### 爬取特定語言
-
-```python
-from shadowverse_simple_crawler import crawl_single_language
-
-# 爬取繁體中文
-crawl_single_language('cht')
-
-# 爬取英文
-crawl_single_language('en')
-```
-
 ### 爬取系統Tips資料
 
 ```bash
@@ -220,14 +154,6 @@ python tips_data_crawler.py --no-headless
 ```
 
 系統Tips資料會儲存在 `output/tips_data/` 目錄下，每種語言一個JSON檔案。
-
-### 完整版爬蟲（進階）
-
-```bash
-python shadowverse_crawler.py
-```
-
-這個版本使用 Selenium，需要安裝 Chrome 瀏覽器和 ChromeDriver。
 
 ## 支援語言
 
@@ -255,22 +181,109 @@ python shadowverse_crawler.py
     "user_id": 0,
     "user_name": "",
     "is_login": false,
-    "csrf_token": "..."
+    "csrf_token": "ce8626e7-7878-46c8-b2a4-393ee4c3e9bf"
   },
   "data": {
-    "cards": { ... },
-    "card_details": { ... },
-    "specific_effect_card_info": [ ... ],
-    "tribe_names": { ... },
-    "card_set_names": { ... },
-    "skill_names": { ... },
-    "skill_replace_text_names": { ... },
-    "count": 275,
-    "sort_card_id_list": [ ... ],
+    "cards": {
+      "10112120": {
+        "related_card_ids": [
+          90011110
+        ],
+        "specific_effect_card_ids": []
+      },
+      "10111310": {
+        "related_card_ids": [
+          90011110
+        ],
+        "specific_effect_card_ids": []
+      }
+    },
+    "card_details": {
+      "10201110": {
+        "common": {
+          "card_id": 10201110,
+          "name": "雙刃哥布林",
+          "name_ruby": "雙刃哥布林",
+          "base_card_id": 10201110,
+          "card_resource_id": 102011100,
+          "atk": 1,
+          "life": 1,
+          "flavour_text": "人們首次發現到拿著兩把相同武器的哥布林。\n由於在魔物中有許多會隨著環境而進化的物種，\n因此研究者們開始議論紛紛，這是否也是進化徵兆。",
+          "skill_text": "【<color=Keyword>入場曲</color>】如果自己戰場上有已超進化的從者卡，則會指定1張敵方戰場上的從者卡。給予其4點傷害。",
+          "card_set_id": 10002,
+          "type": 1,
+          "class": 0,
+          "tribes": [
+            0
+          ],
+          "cost": 1,
+          "rarity": 1,
+          "cv": "江口拓也",
+          "illustrator": "tricky胡坐",
+          "questions": [],
+          "is_token": false,
+          "is_include_rotation": false,
+          "card_image_hash": "0a8181b6031d489c9b3d1d14466bef44",
+          "card_banner_image_hash": "aca2639fc5674ba097d94dda4c321979"
+        },
+        "evo": {
+          "card_resource_id": 102011101,
+          "flavour_text": "比起只有一把武器，拿兩把會更厲害喔！\n這樣就能一次切兩個水果了！\n方便又好吃喔──！",
+          "skill_text": "【<color=Keyword>入場曲</color>】如果自己戰場上有已超進化的從者卡，則會指定1張敵方戰場上的從者卡。給予其4點傷害。",
+          "card_image_hash": "1b254af517af482f9e43424dfd0c5879",
+          "card_banner_image_hash": "20caecab73814e389845426df4f1ed6f"
+        },
+        "style_card_list": []
+      }
+    },
+    "specific_effect_card_info": [
+      "10233312",
+      "10263312",
+      "10204122",
+      "10124132"
+    ],
+    "tribe_names": {
+      "0": "-",
+      "2": "士兵",
+      "3": "魯米那斯",
+      "4": "雷維翁",
+      "5": "妖精"
+    },
+    "card_set_names": {
+      "10000": "基本卡",
+      "10001": "傳說揭幕",
+      "10002": "無限進化"
+    },
+    "skill_names": {
+      "0": "",
+      "1": "入場曲",
+      "2": "謝幕曲",
+      "3": "進化時",
+      "4": "攻擊時",
+      "5": "守護"
+    },
+    "skill_replace_text_names": {
+      "12": "魔力增幅"
+    },
+    "count": 327,
+    "sort_card_id_list": [
+      10201110,
+      10012110,
+      10112120
+    ],
     "stats_list": {
-      "atk": {"min": 0, "max": 13},
-      "life": {"min": 0, "max": 13},
-      "cost": {"min": 0, "max": 18}
+      "atk": {
+        "min": 0,
+        "max": 13
+      },
+      "life": {
+        "min": 0,
+        "max": 13
+      },
+      "cost": {
+        "min": 0,
+        "max": 18
+      }
     },
     "result_error_code": null
   }
@@ -290,7 +303,7 @@ python shadowverse_crawler.py
 8. **分語言儲存**: 每種語言的資料分別儲存為獨立檔案
 
 ### 資料庫整合
-1. **Supabase 支援**: PostgreSQL 關聯式資料庫，正規化設計
+1. **Supabase 支援**: PostgreSQL 關聯式資料庫
 2. **Firebase 支援**: Firestore NoSQL 文件資料庫，反正規化設計
 3. **多語言資料同步**: 支援將爬取的多語言資料同步到資料庫
 4. **異步處理**: 使用異步操作提升資料庫同步效能
@@ -301,7 +314,7 @@ python shadowverse_crawler.py
 3. **多語言名稱支援**: 自動 fallback 到其他語言
 4. **複合查詢**: 支援複雜的條件組合查詢
 
-## 資料內容
+## 資料內容概述
 
 ### 卡牌資料 (`shadowverse_cards_*.json`)
 - **cards**: 卡片關聯資訊
@@ -320,16 +333,10 @@ python shadowverse_crawler.py
 - **language**: 語言代碼
 - **total**: Tips總數
 
-### 資料庫結構
-- **Supabase**: 正規化的關聯式資料庫結構，支援複雜查詢
-- **Firebase**: 反正規化的文件資料庫結構，支援即時同步
-
 ## 注意事項
 
 1. 請適當控制爬取頻率，避免對伺服器造成過大負擔
 2. 腳本會自動處理請求失敗和重試
-3. 建議使用簡化版爬蟲，除非需要處理 JavaScript 渲染的內容
-4. 輸出的 JSON 檔案可能會很大（數 MB），請確保有足夠的磁碟空間
 
 ## 故障排除
 
@@ -339,5 +346,3 @@ python shadowverse_crawler.py
 2. 目標網站是否可以正常存取
 3. 是否有防火牆或代理設定阻擋請求
 4. Python 套件是否正確安裝
-
-日誌檔案 `shadowverse_crawler.log` 會記錄詳細的執行資訊，可用於故障排除。

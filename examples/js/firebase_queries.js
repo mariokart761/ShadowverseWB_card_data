@@ -110,7 +110,7 @@ async function exampleBasicQueries(db) {
 
         // 2. 各職業卡片數量 (取樣)
         console.log('\n各職業卡片數量 (前10張):');
-        const classNames = ['中立', '精靈', '皇家護衛', '巫師', '龍族', '死靈法師', '主教', '復仇者'];
+        const classNames = ['中立', '精靈', '皇家護衛', '巫師', '龍族', '夜魔', '主教', '復仇者'];
         
         for (let i = 0; i < classNames.length; i++) {
             const classCards = await cardsRef.where('class', '==', i).limit(10).get();

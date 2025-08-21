@@ -96,7 +96,8 @@ class ShadowverseFirebaseSync:
             self._sync_reference_data(card_data, language)
             
             # 同步卡片資料
-            self._sync_cards_data(card_data, language)
+            sort_card_id_list = card_data.get('sort_card_id_list', [])
+            self._sync_cards_data(card_data, language, sort_card_id_list)
             
             # 同步卡片排序資料
             if 'sort_card_id_list' in card_data:
@@ -430,7 +431,7 @@ class ShadowverseFirebaseSync:
             logger.error(f"同步Tips資料失敗: {e}")
             self.stats['errors'].append(f"同步Tips失敗: {str(e)}")
     
-    def _sync_cards_data(self, card_data: Dict, language: str):
+    def _sync_cards_data(self, card_data: Dict, language: str, sort_card_id_list: List[int]):
         """同步卡片資料"""
         if 'card_details' not in card_data:
             logger.warning(f"{language} 資料中沒有 card_details")
@@ -454,7 +455,8 @@ class ShadowverseFirebaseSync:
                     self._sync_card_batch, 
                     batch_ids, 
                     card_details, 
-                    language
+                    language,
+                    sort_card_id_list
                 )
                 futures.append(future)
             
@@ -467,14 +469,14 @@ class ShadowverseFirebaseSync:
                 except Exception as e:
                     logger.error(f"批次處理失敗: {e}")
     
-    def _sync_card_batch(self, card_ids: List[str], card_details: Dict, language: str):
+    def _sync_card_batch(self, card_ids: List[str], card_details: Dict, language: str, sort_card_id_list: List[int]):
         """同步一批卡片"""
         batch = self.db.batch()
         
         for card_id in card_ids:
             try:
                 card_info = card_details[card_id]
-                card_data = self._prepare_card_data(card_id, card_info, language)
+                card_data = self._prepare_card_data(card_id, card_info, language, sort_card_id_list)
                 
                 card_ref = self.db.collection('cards').document(str(card_id))
                 
@@ -513,14 +515,18 @@ class ShadowverseFirebaseSync:
             with self.stats_lock:
                 self.stats['failed_cards'] += len(card_ids)
     
-    def _prepare_card_data(self, card_id: str, card_info: Dict, language: str) -> Dict:
+    def _prepare_card_data(self, card_id: str, card_info: Dict, language: str, sort_card_id_list: List[int]) -> Dict:
         """準備卡片資料"""
         common = card_info.get('common', {})
         evo = card_info.get('evo', {})
         
+        # 檢查卡牌是否在 sort_card_id_list 中，如果不在則標記為 relatedOnly
+        card_id_int = int(card_id)
+        related_only = card_id_int not in sort_card_id_list
+        
         # 基本卡片資料
         card_data = {
-            'id': int(card_id),
+            'id': card_id_int,
             'baseCardId': common.get('base_card_id'),
             'cardResourceId': common.get('card_resource_id'),
             'cardSetId': common.get('card_set_id'),
@@ -532,6 +538,7 @@ class ShadowverseFirebaseSync:
             'rarity': common.get('rarity'),
             'isToken': common.get('is_token', False),
             'isIncludeRotation': common.get('is_include_rotation', False),
+            'relatedOnly': related_only,
             'updatedAt': firestore.SERVER_TIMESTAMP
         }
         

@@ -107,7 +107,7 @@ def example_basic_queries():
         print("\n各職業卡片數量 (前10張):")
         classes = {
             0: '中立', 1: '精靈', 2: '皇家護衛', 3: '巫師', 
-            4: '龍族', 5: '死靈法師', 6: '主教', 7: '復仇者'
+            4: '龍族', 5: '夜魔', 6: '主教', 7: '復仇者'
         }
         
         for class_id, class_name in classes.items():

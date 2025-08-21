@@ -15,7 +15,7 @@ cards/
 │   ├── baseCardId: number
 │   ├── cardResourceId: number
 │   ├── cardSetId: number
-│   ├── type: number (1:從者, 2:法術, 3:護符)
+│   ├── type: number (1:從者, 2:護符(無倒數), 3:護符, 4:法術)
 │   ├── class: number (0:中立, 1:精靈, ...)
 │   ├── cost: number
 │   ├── atk: number
@@ -23,6 +23,7 @@ cards/
 │   ├── rarity: number (1:銅, 2:銀, 3:金, 4:虹)
 │   ├── isToken: boolean
 │   ├── isIncludeRotation: boolean
+│   ├── relatedOnly: boolean (true: 關聯或延伸卡牌，不能直接放入卡組)
 │   ├── createdAt: timestamp
 │   ├── updatedAt: timestamp
 │   ├── names: {

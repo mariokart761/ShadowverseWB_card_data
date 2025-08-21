@@ -1,6 +1,7 @@
 # Shadowverse 多語言卡牌資料爬蟲
 
 這個專案包含用於爬取 Shadowverse 卡牌遊戲資料的 Python 腳本，支援多語言爬取。
+註：Supabase 有更新，使用 Supabase 請先參考 `docs/Supabase操作指南.md`
 
 ## 專案結構
 

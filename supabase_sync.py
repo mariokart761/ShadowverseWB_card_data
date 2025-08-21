@@ -1,734 +1,632 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-Shadowverse 卡牌資料庫同步腳本
-將爬取的 JSON 資料同步到 Supabase 資料庫
+Shadowverse 卡片資料同步至 Supabase 腳本
+支援多語言卡片資料和提示資料同步
+修正版本：正確指定 schema 以避免 42P01 錯誤
 """
 
 import json
 import os
-import logging
-import time
-from datetime import datetime
-from typing import Dict, List, Any, Optional, Tuple
-from dataclasses import dataclass
-import asyncio
+import sys
+from typing import Dict, List, Any, Optional
+from pathlib import Path
 
 try:
     from supabase import create_client, Client
-    import asyncpg
 except ImportError:
-    print("請先安裝必要套件: pip install supabase asyncpg")
-    exit(1)
+    print("請先安裝 supabase-py: pip install supabase")
+    sys.exit(1)
 
-# 設定日誌
-os.makedirs('logs', exist_ok=True)
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('logs/supabase_sync.log', encoding='utf-8'),
-        logging.StreamHandler()
-    ]
-)
-logger = logging.getLogger(__name__)
-
-@dataclass
-class DatabaseConfig:
-    """資料庫配置"""
-    supabase_url: str
-    supabase_key: str
-    database_url: str  # PostgreSQL 連線字串 (用於直接 SQL 操作)
-
-class ShadowverseDatabaseSync:
-    """Shadowverse 資料庫同步器"""
-    
-    def __init__(self, config: DatabaseConfig):
-        self.config = config
-        self.supabase: Client = create_client(config.supabase_url, config.supabase_key)
-        self.stats = {
-            'total_cards': 0,
-            'successful_cards': 0,
-            'failed_cards': 0,
-            'errors': []
-        }
-    
-    async def sync_language_data(self, language: str, json_file_path: str) -> bool:
-        """同步單一語言的資料"""
-        logger.info(f"開始同步 {language} 語言資料...")
+class ShadowverseDataSync:
+    def __init__(self):
+        """初始化同步器"""
+        self.supabase: Optional[Client] = None
+        self.schema_name = 'svwb_data'  # 指定 schema 名稱
+        self.load_config()
         
-        # 記錄同步開始
-        sync_log_id = await self._create_sync_log(language)
+    def load_config(self):
+        """從配置文件載入 Supabase 連線資訊"""
+        config_path = Path("supabase/config.json")
+        
+        if not config_path.exists():
+            print(f"配置文件不存在: {config_path}")
+            print("請創建配置文件，格式如下:")
+            print("""
+{
+    "supabase_url": "https://your-project.supabase.co",
+    "supabase_key": "your-service-role-key"
+}
+            """)
+            sys.exit(1)
         
         try:
-            # 讀取 JSON 資料
-            with open(json_file_path, 'r', encoding='utf-8') as f:
+            with open(config_path, 'r', encoding='utf-8') as f:
+                config = json.load(f)
+            
+            required_keys = ['supabase_url', 'supabase_key']
+            for key in required_keys:
+                if key not in config:
+                    print(f"配置文件缺少必要參數: {key}")
+                    sys.exit(1)
+            
+            # 創建 Supabase 客戶端
+            self.supabase = create_client(config['supabase_url'], config['supabase_key'])
+            print(f"✓ 成功連接到 Supabase: {config['supabase_url']}")
+            
+        except json.JSONDecodeError as e:
+            print(f"配置文件格式錯誤: {e}")
+            sys.exit(1)
+        except Exception as e:
+            print(f"載入配置失敗: {e}")
+            sys.exit(1)
+    
+    def _get_table(self, table_name: str):
+        """獲取指定 schema 的表引用"""
+        return self.supabase.schema(self.schema_name).table(table_name)
+    
+    def sync_card_data(self, language_code: str):
+        """同步卡片資料"""
+        card_file_path = Path(f"output/shadowverse_cards_{language_code}.json")
+        
+        if not card_file_path.exists():
+            print(f"卡片資料文件不存在: {card_file_path}")
+            return False
+        
+        try:
+            with open(card_file_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
             
-            card_data = data.get('data', {})
+            print(f"\n開始同步 {language_code} 語言卡片資料...")
             
-            # 同步基礎資料 (卡包、種族、技能)
-            await self._sync_reference_data(card_data, language)
+            # 同步基礎數據
+            self._sync_card_sets(data.get('data', {}).get('card_set_names', {}), language_code)
+            self._sync_tribes(data.get('data', {}).get('tribe_names', {}), language_code)
+            self._sync_skills(data.get('data', {}).get('skill_names', {}), 
+                            data.get('data', {}).get('skill_replace_text_names', {}), language_code)
             
-            # 同步卡片資料
-            await self._sync_cards_data(card_data, language)
+            # 同步卡片詳細資料
+            card_details = data.get('data', {}).get('card_details', {})
+            cards_data = data.get('data', {}).get('cards', {})
             
-            # 同步卡片排序資料
-            if 'sort_card_id_list' in card_data:
-                await self._sync_card_sort_order(card_data['sort_card_id_list'], language)
+            self._sync_cards(card_details, cards_data, language_code)
             
-            # 更新同步記錄
-            await self._update_sync_log(sync_log_id, 'success')
-            
-            logger.info(f"{language} 語言資料同步完成")
+            print(f"✓ {language_code} 語言卡片資料同步完成")
             return True
             
         except Exception as e:
-            logger.error(f"同步 {language} 語言資料時發生錯誤: {e}")
-            await self._update_sync_log(sync_log_id, 'failed', str(e))
+            print(f"✗ 同步 {language_code} 語言卡片資料失敗: {e}")
             return False
     
-    async def _create_sync_log(self, language: str) -> int:
-        """建立同步記錄"""
-        try:
-            result = self.supabase.table('data_sync_logs').insert({
-                'language': language,
-                'sync_status': 'running',
-                'started_at': datetime.now().isoformat()
-            }).execute()
-            
-            return result.data[0]['id']
-        except Exception as e:
-            logger.error(f"建立同步記錄失敗: {e}")
-            return 0
-    
-    async def _update_sync_log(self, log_id: int, status: str, error_message: str = None):
-        """更新同步記錄"""
-        try:
-            update_data = {
-                'sync_status': status,
-                'total_cards': self.stats['total_cards'],
-                'successful_cards': self.stats['successful_cards'],
-                'failed_cards': self.stats['failed_cards'],
-                'completed_at': datetime.now().isoformat()
-            }
-            
-            if error_message:
-                update_data['error_message'] = error_message
-            
-            self.supabase.table('data_sync_logs').update(update_data).eq('id', log_id).execute()
-            
-        except Exception as e:
-            logger.error(f"更新同步記錄失敗: {e}")
-    
-    async def _sync_reference_data(self, card_data: Dict, language: str):
-        """同步參考資料 (卡包、種族、技能)"""
-        logger.info(f"同步 {language} 參考資料...")
+    def _sync_card_sets(self, card_sets: Dict[str, str], language_code: str):
+        """同步卡組系列資料"""
+        if not card_sets:
+            return
         
-        # 同步卡包資料
-        if 'card_set_names' in card_data:
-            await self._sync_card_sets(card_data['card_set_names'], language)
+        print(f"  同步卡組系列資料...")
         
-        # 同步種族資料
-        if 'tribe_names' in card_data:
-            await self._sync_tribes(card_data['tribe_names'], language)
-        
-        # 同步技能資料
-        if 'skill_names' in card_data:
-            await self._sync_skills(card_data['skill_names'], language)
-
-    async def _sync_tips_data(self, tips_data: List[Dict], language: str):
-        """同步Tips資料"""
-        logger.info(f"同步 {language} Tips資料...")
-        
-        try:
-            for tip in tips_data:
-                title = tip.get('title', '').strip()
-                desc = tip.get('desc', '').strip()
-                
-                if not title or not desc:
-                    continue
-                
-                # 檢查是否已存在相同標題的tip
-                existing_tip = await self.conn.fetchrow(
-                    f"SELECT id FROM tips WHERE title_{language} = $1",
-                    title
-                )
-                
-                if existing_tip:
-                    # 更新現有tip
-                    await self.conn.execute(f"""
-                        UPDATE tips 
-                        SET title_{language} = $1, desc_{language} = $2, updated_at = NOW()
-                        WHERE id = $3
-                    """, title, desc, existing_tip['id'])
-                    self.stats['updated'] += 1
-                else:
-                    # 檢查是否有其他語言的相同標題（用於合併多語言）
-                    similar_tip = await self.conn.fetchrow("""
-                        SELECT id FROM tips 
-                        WHERE title_cht = $1 OR title_chs = $1 OR title_en = $1 OR title_ja = $1 OR title_ko = $1
-                    """, title)
-                    
-                    if similar_tip:
-                        # 更新現有記錄的該語言欄位
-                        await self.conn.execute(f"""
-                            UPDATE tips 
-                            SET title_{language} = $1, desc_{language} = $2, updated_at = NOW()
-                            WHERE id = $3
-                        """, title, desc, similar_tip['id'])
-                        self.stats['updated'] += 1
-                    else:
-                        # 建立新tip記錄
-                        await self.conn.execute(f"""
-                            INSERT INTO tips (title_{language}, desc_{language})
-                            VALUES ($1, $2)
-                        """, title, desc)
-                        self.stats['inserted'] += 1
-                        
-        except Exception as e:
-            self.stats['errors'].append(f"同步Tips資料失敗: {str(e)}")
-            logger.error(f"同步Tips資料失敗: {e}")
-    
-    async def _sync_card_sets(self, card_sets: Dict[str, str], language: str):
-        """同步卡包資料"""
         for set_id, set_name in card_sets.items():
             try:
+                set_id_int = int(set_id)
+                
                 # 檢查是否已存在
-                existing = self.supabase.table('card_sets').select('id').eq('id', int(set_id)).execute()
+                existing = self._get_table('card_sets').select('*').eq('id', set_id_int).execute()
                 
                 if existing.data:
-                    # 更新現有記錄
-                    self.supabase.table('card_sets').update({
-                        f'name_{language}': set_name
-                    }).eq('id', int(set_id)).execute()
+                    # 更新多語言名稱
+                    current_name = existing.data[0].get('name', {})
+                    current_name[language_code] = set_name
+                    
+                    self._get_table('card_sets').update({
+                        'name': current_name
+                    }).eq('id', set_id_int).execute()
                 else:
-                    # 建立新記錄
-                    self.supabase.table('card_sets').insert({
-                        'id': int(set_id),
-                        f'name_{language}': set_name
+                    # 新增
+                    self._get_table('card_sets').insert({
+                        'id': set_id_int,
+                        'name': {language_code: set_name}
                     }).execute()
                     
             except Exception as e:
-                logger.error(f"同步卡包 {set_id} 失敗: {e}")
+                print(f"    ✗ 同步卡組系列 {set_id} 失敗: {e}")
     
-    async def _sync_tribes(self, tribes: Dict[str, str], language: str):
-        """同步種族資料"""
+    def _sync_tribes(self, tribes: Dict[str, str], language_code: str):
+        """同步部族資料"""
+        if not tribes:
+            return
+        
+        print(f"  同步部族資料...")
+        
         for tribe_id, tribe_name in tribes.items():
             try:
-                existing = self.supabase.table('tribes').select('id').eq('id', int(tribe_id)).execute()
+                tribe_id_int = int(tribe_id)
+                
+                # 檢查是否已存在
+                existing = self._get_table('tribes').select('*').eq('id', tribe_id_int).execute()
                 
                 if existing.data:
-                    self.supabase.table('tribes').update({
-                        f'name_{language}': tribe_name
-                    }).eq('id', int(tribe_id)).execute()
+                    # 更新多語言名稱
+                    current_name = existing.data[0].get('name', {})
+                    current_name[language_code] = tribe_name
+                    
+                    self._get_table('tribes').update({
+                        'name': current_name
+                    }).eq('id', tribe_id_int).execute()
                 else:
-                    self.supabase.table('tribes').insert({
-                        'id': int(tribe_id),
-                        f'name_{language}': tribe_name
+                    # 新增
+                    self._get_table('tribes').insert({
+                        'id': tribe_id_int,
+                        'name': {language_code: tribe_name}
                     }).execute()
                     
             except Exception as e:
-                logger.error(f"同步種族 {tribe_id} 失敗: {e}")
+                print(f"    ✗ 同步部族 {tribe_id} 失敗: {e}")
     
-    async def _sync_skills(self, skills: Dict[str, str], language: str):
+    def _sync_skills(self, skills: Dict[str, str], skill_replace_texts: Dict[str, str], language_code: str):
         """同步技能資料"""
+        if not skills:
+            return
+        
+        print(f"  同步技能資料...")
+        
         for skill_id, skill_name in skills.items():
             try:
-                existing = self.supabase.table('skills').select('id').eq('id', int(skill_id)).execute()
+                skill_id_int = int(skill_id)
+                
+                # 檢查是否已存在
+                existing = self._get_table('skills').select('*').eq('id', skill_id_int).execute()
+                
+                replace_text = skill_replace_texts.get(skill_id, "")
                 
                 if existing.data:
-                    self.supabase.table('skills').update({
-                        f'name_{language}': skill_name
-                    }).eq('id', int(skill_id)).execute()
+                    # 更新多語言名稱
+                    current_name = existing.data[0].get('name', {})
+                    current_name[language_code] = skill_name
+                    
+                    current_replace = existing.data[0].get('replace_text', {})
+                    if replace_text:
+                        current_replace[language_code] = replace_text
+                    
+                    self._get_table('skills').update({
+                        'name': current_name,
+                        'replace_text': current_replace
+                    }).eq('id', skill_id_int).execute()
                 else:
-                    self.supabase.table('skills').insert({
-                        'id': int(skill_id),
-                        f'name_{language}': skill_name
+                    # 新增
+                    replace_data = {language_code: replace_text} if replace_text else {}
+                    self._get_table('skills').insert({
+                        'id': skill_id_int,
+                        'name': {language_code: skill_name},
+                        'replace_text': replace_data
                     }).execute()
                     
             except Exception as e:
-                logger.error(f"同步技能 {skill_id} 失敗: {e}")
-
-    async def _sync_card_sort_order(self, sort_card_id_list: List[int], language: str):
-        """同步卡片排序資料"""
-        logger.info(f"同步 {language} 卡片排序資料...")
-        
-        try:
-            # 檢查是否已存在該語言的排序記錄
-            existing = self.supabase.table('card_sort_orders').select('id').eq('language', language).execute()
-            
-            sort_data = {
-                'language': language,
-                'card_ids': sort_card_id_list,
-                'total_cards': len(sort_card_id_list)
-            }
-            
-            if existing.data:
-                # 更新現有記錄
-                self.supabase.table('card_sort_orders').update(sort_data).eq('language', language).execute()
-                logger.info(f"更新了 {language} 語言的卡片排序資料 ({len(sort_card_id_list)} 張卡片)")
-            else:
-                # 建立新記錄
-                self.supabase.table('card_sort_orders').insert(sort_data).execute()
-                logger.info(f"建立了 {language} 語言的卡片排序資料 ({len(sort_card_id_list)} 張卡片)")
-            
-        except Exception as e:
-            logger.error(f"同步 {language} 卡片排序資料失敗: {e}")
-            self.stats['errors'].append(f"同步卡片排序失敗: {str(e)}")
+                print(f"    ✗ 同步技能 {skill_id} 失敗: {e}")
     
-    async def _sync_cards_data(self, card_data: Dict, language: str):
+    def _sync_cards(self, card_details: Dict[str, Any], cards_data: Dict[str, Any], language_code: str):
         """同步卡片資料"""
-        if 'card_details' not in card_data:
-            logger.warning(f"{language} 資料中沒有 card_details")
+        if not card_details:
             return
         
-        card_details = card_data['card_details']
-        self.stats['total_cards'] = len(card_details)
+        print(f"  同步卡片資料... (共 {len(card_details)} 張)")
         
-        logger.info(f"開始同步 {self.stats['total_cards']} 張卡片...")
-        
-        # 批次處理卡片
-        batch_size = 50
-        card_ids = list(card_details.keys())
-        
-        for i in range(0, len(card_ids), batch_size):
-            batch_ids = card_ids[i:i + batch_size]
-            await self._sync_card_batch(batch_ids, card_details, language)
-            
-            # 顯示進度
-            progress = min(i + batch_size, len(card_ids))
-            logger.info(f"已處理 {progress}/{len(card_ids)} 張卡片")
-            
-            # 稍作休息避免過度請求
-            await asyncio.sleep(0.1)
-    
-    async def _sync_card_batch(self, card_ids: List[str], card_details: Dict, language: str):
-        """同步一批卡片"""
-        for card_id in card_ids:
+        processed = 0
+        for card_id, card_info in card_details.items():
             try:
-                await self._sync_single_card(card_id, card_details[card_id], language)
-                self.stats['successful_cards'] += 1
+                card_id_int = int(card_id)
+                common = card_info.get('common', {})
+                evo = card_info.get('evo', {})
+                
+                if not common:
+                    continue
+                
+                # 判斷是否為關聯卡牌
+                card_set_id = common.get('card_set_id')
+                is_related_only = card_set_id == 90000
+                
+                # 準備卡片基本資料
+                card_data = {
+                    'card_id': card_id_int,
+                    'base_card_id': common.get('base_card_id', card_id_int),
+                    'card_resource_id': common.get('card_resource_id'),
+                    'name': {language_code: common.get('name', '')},
+                    'name_ruby': {language_code: common.get('name_ruby', '')},
+                    'atk': common.get('atk'),
+                    'life': common.get('life'),
+                    'cost': common.get('cost', 0),
+                    'type': common.get('type', 1),
+                    'class': common.get('class', 0),
+                    'rarity': common.get('rarity', 1),
+                    'card_set_id': card_set_id if not is_related_only else None,  # 關聯卡牌設為 NULL
+                    'cv': {language_code: common.get('cv', '')},
+                    'illustrator': common.get('illustrator', ''),
+                    'is_token': common.get('is_token', False),
+                    'is_include_rotation': common.get('is_include_rotation', True),
+                    'related_only': is_related_only,  # 新增：標記是否僅作為關聯卡牌
+                    'card_image_hash': common.get('card_image_hash', ''),
+                    'card_banner_image_hash': common.get('card_banner_image_hash', ''),
+                    'evo_card_resource_id': evo.get('card_resource_id') if evo else None,
+                    'evo_card_image_hash': evo.get('card_image_hash', '') if evo else '',
+                    'evo_card_banner_image_hash': evo.get('card_banner_image_hash', '') if evo else ''
+                }
+                
+                # 檢查是否已存在
+                existing = self._get_table('cards').select('*').eq('card_id', card_id_int).execute()
+                
+                if existing.data:
+                    # 更新多語言字段
+                    current_card = existing.data[0]
+                    current_name = current_card.get('name', {})
+                    current_name[language_code] = common.get('name', '')
+                    
+                    current_ruby = current_card.get('name_ruby', {})
+                    current_ruby[language_code] = common.get('name_ruby', '')
+                    
+                    current_cv = current_card.get('cv', {})
+                    current_cv[language_code] = common.get('cv', '')
+                    
+                    update_data = {
+                        'name': current_name,
+                        'name_ruby': current_ruby,
+                        'cv': current_cv
+                    }
+                    
+                    # 更新其他非語言相關字段（如果需要）
+                    for field in ['atk', 'life', 'cost', 'type', 'class', 'rarity', 'card_set_id', 
+                                'illustrator', 'is_token', 'is_include_rotation', 'card_image_hash',
+                                'card_banner_image_hash', 'evo_card_resource_id', 'evo_card_image_hash', 
+                                'evo_card_banner_image_hash']:
+                        if card_data[field] is not None:
+                            update_data[field] = card_data[field]
+                    
+                    self._get_table('cards').update(update_data).eq('card_id', card_id_int).execute()
+                else:
+                    # 新增
+                    self._get_table('cards').insert(card_data).execute()
+                
+                # 同步卡片文字內容
+                self._sync_card_texts(card_id_int, common, evo, language_code)
+                
+                # 同步部族關係
+                if language_code == 'cht':  # 只在中文繁體時同步部族關係（避免重複）
+                    self._sync_card_tribes(card_id_int, common.get('tribes', []))
+                
+                # 同步相關卡片
+                if language_code == 'cht':  # 只在中文繁體時同步相關卡片
+                    card_relations = cards_data.get(card_id, {})
+                    self._sync_card_relations(card_id_int, card_relations)
+                
+                # 同步問答
+                questions = common.get('questions', [])
+                if questions:
+                    self._sync_card_questions(card_id_int, questions, language_code)
+                
+                processed += 1
+                if processed % 50 == 0:
+                    print(f"    已處理 {processed}/{len(card_details)} 張卡片")
+                    
             except Exception as e:
-                logger.error(f"同步卡片 {card_id} 失敗: {e}")
-                self.stats['failed_cards'] += 1
-                self.stats['errors'].append(f"Card {card_id}: {str(e)}")
+                print(f"    ✗ 同步卡片 {card_id} 失敗: {e}")
+        
+        print(f"    ✓ 完成處理 {processed} 張卡片")
     
-    async def _sync_single_card(self, card_id: str, card_info: Dict, language: str):
-        """同步單張卡片"""
-        common = card_info.get('common', {})
-        evo = card_info.get('evo', {})
-        
-        # 1. 同步卡片主要資訊
-        await self._upsert_card_main_info(card_id, common)
-        
-        # 2. 同步卡片名稱
-        await self._upsert_card_name(card_id, common, language)
-        
-        # 3. 同步卡片圖片
-        await self._upsert_card_images(card_id, common, language)
-        
-        # 4. 同步卡片描述 (普通形態)
-        await self._upsert_card_description(card_id, common, language, 'common')
-        
-        # 5. 同步卡片進化資訊和描述
-        if evo:
-            await self._upsert_card_evolution(card_id, evo)
-            await self._upsert_card_evolution_images(card_id, evo, language)
-            await self._upsert_card_description(card_id, evo, language, 'evo')
-        
-        # 6. 同步種族關聯
-        if 'tribes' in common:
-            await self._sync_card_tribes(card_id, common['tribes'])
-        
-        # 7. 同步問答
-        if 'questions' in common:
-            await self._sync_card_questions(card_id, common['questions'], language)
-        
-        # 8. 同步風格變體
-        if 'style_card_list' in card_info:
-            await self._sync_card_styles(card_id, card_info['style_card_list'])
-    
-    async def _upsert_card_main_info(self, card_id: str, common: Dict):
-        """更新或插入卡片主要資訊"""
-        card_data = {
-            'id': int(card_id),
-            'base_card_id': common.get('base_card_id'),
-            'card_resource_id': common.get('card_resource_id'),
-            'card_set_id': common.get('card_set_id'),
-            'type': common.get('type'),
-            'class': common.get('class'),
-            'cost': common.get('cost'),
-            'atk': common.get('atk'),
-            'life': common.get('life'),
-            'rarity': common.get('rarity'),
-            'is_token': common.get('is_token', False),
-            'is_include_rotation': common.get('is_include_rotation', False)
+    def _sync_card_texts(self, card_id: int, common: Dict, evo: Dict, language_code: str):
+        """同步卡片文字內容"""
+        text_data = {
+            'card_id': card_id,
+            'language': language_code,
+            'skill_text': common.get('skill_text', ''),
+            'flavour_text': common.get('flavour_text', ''),
+            'evo_skill_text': evo.get('skill_text', '') if evo else '',
+            'evo_flavour_text': evo.get('flavour_text', '') if evo else ''
         }
         
-        # 移除 None 值
-        card_data = {k: v for k, v in card_data.items() if v is not None}
+        # 檢查是否已存在
+        existing = self._get_table('card_texts').select('*').eq('card_id', card_id).eq('language', language_code).execute()
         
-        try:
-            # 檢查是否已存在
-            existing = self.supabase.table('cards').select('id').eq('id', int(card_id)).execute()
-            
-            if existing.data:
-                # 更新現有記錄
-                self.supabase.table('cards').update(card_data).eq('id', int(card_id)).execute()
-            else:
-                # 建立新記錄
-                self.supabase.table('cards').insert(card_data).execute()
-                
-        except Exception as e:
-            raise Exception(f"同步卡片主要資訊失敗: {e}")
+        if existing.data:
+            # 更新
+            self._get_table('card_texts').update(text_data).eq('card_id', card_id).eq('language', language_code).execute()
+        else:
+            # 新增
+            self._get_table('card_texts').insert(text_data).execute()
     
-    async def _upsert_card_images(self, card_id: str, common: Dict, language: str):
-        """更新或插入卡片圖片資訊"""
-        if not common.get('card_image_hash') and not common.get('card_banner_image_hash'):
+    def _sync_card_tribes(self, card_id: int, tribes: List[int]):
+        """同步卡片部族關係"""
+        if not tribes:
             return
-            
-        image_data = {
-            'card_id': int(card_id),
-            'language': language,
-            'card_image_hash': common.get('card_image_hash'),
-            'card_banner_image_hash': common.get('card_banner_image_hash')
-        }
         
-        # 移除 None 值
-        image_data = {k: v for k, v in image_data.items() if v is not None}
+        # 刪除舊的關係
+        self._get_table('card_tribes').delete().eq('card_id', card_id).execute()
         
-        try:
-            # 檢查是否已存在
-            existing = self.supabase.table('card_images').select('card_id').eq('card_id', int(card_id)).eq('language', language).execute()
-            
-            if existing.data:
-                # 更新現有記錄
-                self.supabase.table('card_images').update(image_data).eq('card_id', int(card_id)).eq('language', language).execute()
-            else:
-                # 建立新記錄
-                self.supabase.table('card_images').insert(image_data).execute()
-                
-        except Exception as e:
-            raise Exception(f"同步卡片圖片資訊失敗: {e}")
-    
-    async def _upsert_card_name(self, card_id: str, common: Dict, language: str):
-        """更新或插入卡片名稱"""
-        name_data = {
-            'card_id': int(card_id),
-            'language': language,
-            'name': common.get('name', ''),
-            'name_ruby': common.get('name_ruby', '')
-        }
-        
-        try:
-            # 使用 upsert (PostgreSQL 的 ON CONFLICT)
-            self.supabase.table('card_names').upsert(name_data).execute()
-        except Exception as e:
-            raise Exception(f"同步卡片名稱失敗: {e}")
-    
-    async def _upsert_card_description(self, card_id: str, card_info: Dict, language: str, form: str):
-        """更新或插入卡片描述"""
-        desc_data = {
-            'card_id': int(card_id),
-            'language': language,
-            'form': form,
-            'flavour_text': card_info.get('flavour_text', ''),
-            'skill_text': card_info.get('skill_text', ''),
-            'cv': card_info.get('cv', ''),
-            'illustrator': card_info.get('illustrator', '')
-        }
-        
-        try:
-            self.supabase.table('card_descriptions').upsert(desc_data).execute()
-        except Exception as e:
-            raise Exception(f"同步卡片描述失敗: {e}")
-    
-    async def _upsert_card_evolution(self, card_id: str, evo: Dict):
-        """更新或插入卡片進化資訊"""
-        evo_data = {
-            'card_id': int(card_id),
-            'card_resource_id': evo.get('card_resource_id')
-        }
-        
-        # 移除 None 值
-        evo_data = {k: v for k, v in evo_data.items() if v is not None}
-        
-        try:
-            self.supabase.table('card_evolutions').upsert(evo_data).execute()
-        except Exception as e:
-            raise Exception(f"同步卡片進化資訊失敗: {e}")
-    
-    async def _upsert_card_evolution_images(self, card_id: str, evo: Dict, language: str):
-        """更新或插入卡片進化圖片資訊"""
-        if not evo or (not evo.get('card_image_hash') and not evo.get('card_banner_image_hash')):
-            return
-            
-        evo_image_data = {
-            'card_id': int(card_id),
-            'language': language,
-            'card_image_hash': evo.get('card_image_hash'),
-            'card_banner_image_hash': evo.get('card_banner_image_hash')
-        }
-        
-        # 移除 None 值
-        evo_image_data = {k: v for k, v in evo_image_data.items() if v is not None}
-        
-        try:
-            self.supabase.table('card_evolution_images').upsert(evo_image_data).execute()
-        except Exception as e:
-            raise Exception(f"同步卡片進化圖片資訊失敗: {e}")
-    
-    async def _sync_card_tribes(self, card_id: str, tribes: List[int]):
-        """同步卡片種族關聯"""
-        try:
-            # 先刪除現有關聯
-            self.supabase.table('card_tribes').delete().eq('card_id', int(card_id)).execute()
-            
-            # 插入新關聯
-            for tribe_id in tribes:
-                if tribe_id != 0:  # 0 通常表示無種族
-                    self.supabase.table('card_tribes').insert({
-                        'card_id': int(card_id),
+        # 新增關係
+        for tribe_id in tribes:
+            if tribe_id > 0:  # 跳過 0 (無部族)
+                try:
+                    self._get_table('card_tribes').insert({
+                        'card_id': card_id,
                         'tribe_id': tribe_id
                     }).execute()
-                    
-        except Exception as e:
-            raise Exception(f"同步卡片種族關聯失敗: {e}")
+                except Exception as e:
+                    # 可能是外鍵約束錯誤，忽略不存在的部族 ID
+                    print(f"    警告: 部族 ID {tribe_id} 不存在，跳過")
     
-    async def _sync_card_questions(self, card_id: str, questions: List[Dict], language: str):
+    def _sync_card_relations(self, card_id: int, relations: Dict):
+        """同步卡片關係"""
+        # 刪除舊的關係
+        self._get_table('card_relations').delete().eq('card_id', card_id).execute()
+        
+        # 新增相關卡片
+        related_cards = relations.get('related_card_ids', [])
+        for related_id in related_cards:
+            try:
+                self._get_table('card_relations').insert({
+                    'card_id': card_id,
+                    'related_card_id': related_id,
+                    'relation_type': 'related'
+                }).execute()
+            except Exception as e:
+                # 忽略關係錯誤
+                pass
+        
+        # 新增特效卡片
+        specific_effect_cards = relations.get('specific_effect_card_ids', [])
+        for effect_id in specific_effect_cards:
+            try:
+                self._get_table('card_relations').insert({
+                    'card_id': card_id,
+                    'related_card_id': effect_id,
+                    'relation_type': 'specific_effect'
+                }).execute()
+            except Exception as e:
+                # 忽略關係錯誤
+                pass
+    
+    def _sync_card_questions(self, card_id: int, questions: List[Dict], language_code: str):
         """同步卡片問答"""
+        # 刪除舊的問答（該語言）
+        self._get_table('card_questions').delete().eq('card_id', card_id).eq('language', language_code).execute()
+        
+        # 新增問答
+        for qa in questions:
+            self._get_table('card_questions').insert({
+                'card_id': card_id,
+                'language': language_code,
+                'question': qa.get('question', ''),
+                'answer': qa.get('answer', '')
+            }).execute()
+    
+    def sync_tips_data(self, language_code: str):
+        """同步提示資料"""
+        tips_file_path = Path(f"output/tips_data/tips_data_{language_code}.json")
+        
+        if not tips_file_path.exists():
+            print(f"提示資料文件不存在: {tips_file_path}")
+            return False
+        
         try:
-            # 先刪除該語言的現有問答
-            self.supabase.table('card_questions').delete().eq('card_id', int(card_id)).eq('language', language).execute()
+            with open(tips_file_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
             
-            # 插入新問答
-            for q in questions:
-                self.supabase.table('card_questions').insert({
-                    'card_id': int(card_id),
-                    'language': language,
-                    'question': q.get('question', ''),
-                    'answer': q.get('answer', '')
+            print(f"\n開始同步 {language_code} 語言提示資料...")
+            
+            tips = data.get('tips', [])
+            if not tips:
+                print(f"  無提示資料")
+                return True
+            
+            # 刪除舊的提示資料（該語言）
+            self._get_table('tips').delete().eq('language', language_code).execute()
+            
+            # 新增提示資料
+            for i, tip in enumerate(tips):
+                self._get_table('tips').insert({
+                    'language': language_code,
+                    'title': tip.get('title', ''),
+                    'description': tip.get('desc', ''),
+                    'sort_order': i + 1
                 }).execute()
-                
-        except Exception as e:
-            raise Exception(f"同步卡片問答失敗: {e}")
-    
-    async def _sync_card_styles(self, card_id: str, styles: List[Dict]):
-        """同步卡片風格變體"""
-        try:
-            # 先刪除現有風格
-            self.supabase.table('card_styles').delete().eq('card_id', int(card_id)).execute()
             
-            # 插入新風格
-            for style in styles:
-                self.supabase.table('card_styles').insert({
-                    'card_id': int(card_id),
-                    'hash': style.get('hash', ''),
-                    'evo_hash': style.get('evo_hash', ''),
-                    'name': style.get('name', ''),
-                    'name_ruby': style.get('name_ruby', ''),
-                    'cv': style.get('cv', ''),
-                    'illustrator': style.get('illustrator', ''),
-                    'skill_text': style.get('skill_text', ''),
-                    'flavour_text': style.get('flavour_text', ''),
-                    'evo_flavour_text': style.get('evo_flavour_text', '')
-                }).execute()
-                
+            print(f"✓ {language_code} 語言提示資料同步完成 (共 {len(tips)} 條)")
+            return True
+            
         except Exception as e:
-            raise Exception(f"同步卡片風格變體失敗: {e}")
+            print(f"✗ 同步 {language_code} 語言提示資料失敗: {e}")
+            return False
     
-    def get_sync_statistics(self) -> Dict[str, Any]:
-        """獲取同步統計資訊"""
-        return {
-            'total_cards': self.stats['total_cards'],
-            'successful_cards': self.stats['successful_cards'],
-            'failed_cards': self.stats['failed_cards'],
-            'success_rate': (self.stats['successful_cards'] / max(self.stats['total_cards'], 1)) * 100,
-            'errors': self.stats['errors'][:10]  # 只顯示前 10 個錯誤
-        }
-
-async def sync_tips_data(config: DatabaseConfig, data_directory: str = 'output/tips_data'):
-    """同步所有語言的Tips資料"""
-    languages = ['cht', 'chs', 'en', 'ja', 'ko']
-    sync_results = {}
-    
-    logger.info("開始同步所有語言的Tips資料到資料庫...")
-    
-    for language in languages:
-        tips_file = os.path.join(data_directory, f'tips_data_{language}.json')
+    def sync_all_languages(self, languages: List[str] = None):
+        """同步所有語言的資料"""
+        if languages is None:
+            languages = ['cht', 'chs', 'en', 'ja', 'ko']
         
-        if not os.path.exists(tips_file):
-            logger.warning(f"找不到 {language} 語言的Tips檔案: {tips_file}")
-            sync_results[language] = {'success': False, 'error': 'File not found'}
-            continue
+        print("=== 開始同步 Shadowverse 資料到 Supabase ===")
+        
+        success_count = 0
+        total_count = len(languages) * 2  # 卡片 + 提示
+        
+        for lang in languages:
+            print(f"\n--- 處理 {lang.upper()} 語言 ---")
+            
+            # 同步卡片資料
+            if self.sync_card_data(lang):
+                success_count += 1
+            
+            # 同步提示資料
+            if self.sync_tips_data(lang):
+                success_count += 1
+        
+        print(f"\n=== 同步完成 ===")
+        print(f"成功: {success_count}/{total_count}")
+        
+        if success_count == total_count:
+            print("✓ 所有資料同步成功")
+            return True
+        else:
+            print(f"✗ {total_count - success_count} 項同步失敗")
+            return False
+    
+    def validate_data_integrity(self):
+        """驗證資料完整性"""
+        print("\n=== 驗證資料完整性 ===")
         
         try:
-            with open(tips_file, 'r', encoding='utf-8') as f:
-                tips_data = json.load(f)
+            # 檢查卡片數量
+            cards_result = self._get_table('cards').select('card_id').execute()
+            cards_count = len(cards_result.data) if cards_result.data else 0
+            print(f"卡片總數: {cards_count}")
             
-            sync = ShadowverseDatabaseSync(config)
-            await sync._connect_database()
+            # 檢查各語言的文字內容
+            languages = ['cht', 'chs', 'en', 'ja', 'ko']
+            for lang in languages:
+                texts_result = self._get_table('card_texts').select('id').eq('language', lang).execute()
+                tips_result = self._get_table('tips').select('id').eq('language', lang).execute()
+                
+                texts_count = len(texts_result.data) if texts_result.data else 0
+                tips_count = len(tips_result.data) if tips_result.data else 0
+                
+                print(f"{lang.upper()} - 卡片文字: {texts_count}, 提示: {tips_count}")
             
-            # 同步Tips資料
-            await sync._sync_tips_data(tips_data.get('tips', []), language)
+            # 檢查關係資料
+            tribes_result = self._get_table('card_tribes').select('id').execute()
+            relations_result = self._get_table('card_relations').select('id').execute()
+            questions_result = self._get_table('card_questions').select('id').execute()
             
-            await sync._disconnect_database()
+            tribes_count = len(tribes_result.data) if tribes_result.data else 0
+            relations_count = len(relations_result.data) if relations_result.data else 0
+            questions_count = len(questions_result.data) if questions_result.data else 0
             
-            sync_results[language] = {
-                'success': True,
-                'statistics': sync.get_sync_statistics()
-            }
+            print(f"部族關係: {tribes_count}")
+            print(f"卡片關係: {relations_count}")
+            print(f"問答: {questions_count}")
             
-            logger.info(f"{language} Tips同步結果: 成功")
+            print("✓ 資料完整性檢查完成")
+            return True
             
         except Exception as e:
-            logger.error(f"{language} Tips同步失敗: {e}")
-            sync_results[language] = {'success': False, 'error': str(e)}
-        
-        # 語言間稍作休息
-        await asyncio.sleep(1)
+            print(f"✗ 資料完整性檢查失敗: {e}")
+            return False
     
-    return sync_results
+    def clean_database(self):
+        """清理資料庫（警告：會刪除所有資料）"""
+        print("\n=== 清理資料庫 ===")
+        
+        confirm = input("⚠️  這將刪除所有同步的資料，確定要繼續嗎？(yes/no): ")
+        if confirm.lower() != 'yes':
+            print("操作已取消")
+            return False
+        
+        try:
+            # 刪除順序很重要，先刪除有外鍵約束的表
+            tables_to_clean = [
+                'card_questions',
+                'card_relations', 
+                'card_tribes',
+                'card_texts',
+                'cards',
+                'tips'
+            ]
+            
+            for table in tables_to_clean:
+                # 使用 neq 來刪除所有記錄，因為 id 欄位可能不存在於所有表中
+                try:
+                    result = self._get_table(table).delete().gte('created_at', '1970-01-01').execute()
+                    print(f"✓ 已清理 {table}")
+                except Exception as e:
+                    print(f"✗ 清理 {table} 失敗: {e}")
+            
+            print("✓ 資料庫清理完成")
+            return True
+            
+        except Exception as e:
+            print(f"✗ 資料庫清理失敗: {e}")
+            return False
+    
+    def test_connection(self):
+        """測試 Supabase 連線和 schema 存取"""
+        print("\n=== 測試連線和 schema 存取 ===")
+        
+        try:
+            # 測試 schema 存取
+            result = self._get_table('card_sets').select('id').limit(1).execute()
+            print(f"✓ 成功存取 {self.schema_name}.card_sets")
+            
+            # 測試其他主要表
+            test_tables = ['tribes', 'skills', 'cards', 'card_texts', 'tips']
+            for table in test_tables:
+                try:
+                    result = self._get_table(table).select('*').limit(1).execute()
+                    print(f"✓ 成功存取 {self.schema_name}.{table}")
+                except Exception as e:
+                    print(f"✗ 無法存取 {self.schema_name}.{table}: {e}")
+            
+            return True
+            
+        except Exception as e:
+            print(f"✗ 連線測試失敗: {e}")
+            print("\n可能的解決方案:")
+            print("1. 確認 schema 'svwb_data' 已正確創建")
+            print("2. 確認使用的是 service_role key 而非 anon key")
+            print("3. 確認 RLS 政策已正確設置")
+            return False
 
-async def sync_all_languages(config: DatabaseConfig, data_directory: str = 'output'):
-    """同步所有語言的資料"""
-    languages = ['cht', 'chs', 'en', 'ja', 'ko']
-    sync_results = {}
-    
-    logger.info("開始同步所有語言的卡牌資料到資料庫...")
-    
-    for language in languages:
-        json_file = os.path.join(data_directory, f'shadowverse_cards_{language}.json')
-        
-        if not os.path.exists(json_file):
-            logger.warning(f"找不到 {language} 語言的資料檔案: {json_file}")
-            sync_results[language] = {'success': False, 'error': 'File not found'}
-            continue
-        
-        sync = ShadowverseDatabaseSync(config)
-        success = await sync.sync_language_data(language, json_file)
-        
-        sync_results[language] = {
-            'success': success,
-            'statistics': sync.get_sync_statistics()
-        }
-        
-        logger.info(f"{language} 同步結果: {'成功' if success else '失敗'}")
-        
-        # 語言間稍作休息
-        await asyncio.sleep(1)
-    
-    return sync_results
 
-def load_config() -> DatabaseConfig:
-    """載入資料庫配置"""
-    config_file = 'supabase/config.json'
-    
-    if os.path.exists(config_file):
-        with open(config_file, 'r', encoding='utf-8') as f:
-            config_data = json.load(f)
-        
-        return DatabaseConfig(
-            supabase_url=config_data['supabase_url'],
-            supabase_key=config_data['supabase_key'],
-            database_url=config_data['database_url']
-        )
-    else:
-        # 從環境變數載入
-        return DatabaseConfig(
-            supabase_url=os.getenv('SUPABASE_URL', ''),
-            supabase_key=os.getenv('SUPABASE_KEY', ''),
-            database_url=os.getenv('DATABASE_URL', '')
-        )
-
-async def main():
-    """主函數"""
+def main():
+    """主程式"""
     import argparse
     
-    parser = argparse.ArgumentParser(description='Shadowverse 資料庫同步工具')
-    parser.add_argument('--type', choices=['cards', 'tips', 'all'], default='all', 
-                       help='同步類型: cards=卡牌資料, tips=Tips資料, all=全部')
+    parser = argparse.ArgumentParser(description='同步 Shadowverse 資料到 Supabase')
+    parser.add_argument('--languages', '-l', nargs='+', default=['cht', 'chs', 'en', 'ja', 'ko'],
+                       help='要同步的語言代碼 (預設: cht chs en ja ko)')
+    parser.add_argument('--cards-only', action='store_true', help='只同步卡片資料')
+    parser.add_argument('--tips-only', action='store_true', help='只同步提示資料')
+    parser.add_argument('--validate', action='store_true', help='驗證資料完整性')
+    parser.add_argument('--clean', action='store_true', help='清理資料庫（危險操作）')
+    parser.add_argument('--test', action='store_true', help='測試連線和 schema 存取')
+    
     args = parser.parse_args()
     
+    # 創建同步器實例
+    sync = ShadowverseDataSync()
+    
     try:
-        # 載入配置
-        config = load_config()
-        
-        if not config.supabase_url or not config.supabase_key:
-            logger.error("請設定 Supabase 連線資訊")
-            logger.info("可以建立 supabase/config.json 檔案或設定環境變數")
-            return
-        
-        # 根據參數決定同步類型
-        if args.type in ['cards', 'all']:
-            # 同步卡牌資料
-            logger.info("開始同步卡牌資料...")
-            results = await sync_all_languages(config)
+        if args.test:
+            # 測試連線
+            sync.test_connection()
+        elif args.clean:
+            # 清理資料庫
+            sync.clean_database()
+        elif args.validate:
+            # 驗證資料完整性
+            sync.validate_data_integrity()
+        elif args.cards_only:
+            # 只同步卡片資料
+            success_count = 0
+            for lang in args.languages:
+                if sync.sync_card_data(lang):
+                    success_count += 1
+            print(f"\n卡片資料同步完成: {success_count}/{len(args.languages)} 成功")
+        elif args.tips_only:
+            # 只同步提示資料
+            success_count = 0
+            for lang in args.languages:
+                if sync.sync_tips_data(lang):
+                    success_count += 1
+            print(f"\n提示資料同步完成: {success_count}/{len(args.languages)} 成功")
+        else:
+            # 同步所有資料
+            success = sync.sync_all_languages(args.languages)
             
-            # 顯示卡牌同步結果摘要
-            print("\n" + "="*60)
-            print("卡牌資料同步結果摘要")
-            print("="*60)
-            
-            for language, result in results.items():
-                status = "✅ 成功" if result['success'] else "❌ 失敗"
-                print(f"{language}: {status}")
-                
-                if result['success'] and 'statistics' in result:
-                    stats = result['statistics']
-                    print(f"  - 插入: {stats.get('inserted', 0)}")
-                    print(f"  - 更新: {stats.get('updated', 0)}")
-                    print(f"  - 成功率: {stats.get('success_rate', 0):.1f}%")
-                elif not result['success']:
-                    print(f"  - 錯誤: {result.get('error', '未知錯誤')}")
-        
-        if args.type in ['tips', 'all']:
-            # 同步Tips資料
-            logger.info("開始同步Tips資料...")
-            tips_results = await sync_tips_data(config)
-            
-            # 顯示Tips同步結果摘要
-            print("\n" + "="*60)
-            print("Tips資料同步結果摘要")
-            print("="*60)
-            
-            for language, result in tips_results.items():
-                status = "✅ 成功" if result['success'] else "❌ 失敗"
-                print(f"{language}: {status}")
-                
-                if result['success'] and 'statistics' in result:
-                    stats = result['statistics']
-                    print(f"  - 插入: {stats.get('inserted', 0)}")
-                    print(f"  - 更新: {stats.get('updated', 0)}")
-                elif not result['success']:
-                    print(f"  - 錯誤: {result.get('error', '未知錯誤')}")
-        
-        # 顯示結果摘要
-        print("\n" + "="*60)
-        print("資料庫同步完成摘要")
-        print("="*60)
-        
-        for language, result in results.items():
-            status = "✓ 成功" if result['success'] else "✗ 失敗"
-            print(f"{language.upper()}: {status}")
-            
-            if result['success'] and 'statistics' in result:
-                stats = result['statistics']
-                print(f"  總卡片數: {stats['total_cards']}")
-                print(f"  成功: {stats['successful_cards']}")
-                print(f"  失敗: {stats['failed_cards']}")
-                print(f"  成功率: {stats['success_rate']:.1f}%")
-            
-            print()
-        
-        logger.info("所有語言資料同步完成")
-        
+            # 可選：同步完成後驗證資料
+            if success:
+                print("\n自動驗證資料完整性...")
+                sync.validate_data_integrity()
+    
     except KeyboardInterrupt:
-        logger.info("使用者中斷同步程序")
+        print("\n\n操作被用戶中斷")
+        sys.exit(1)
     except Exception as e:
-        logger.error(f"同步過程中發生錯誤: {e}")
-        raise
+        print(f"\n✗ 程式執行失敗: {e}")
+        sys.exit(1)
 
-if __name__ == "__main__":
-    asyncio.run(main())
+
+if __name__ == '__main__':
+    main()

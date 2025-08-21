@@ -1,244 +1,300 @@
--- Shadowverse 卡牌資料庫結構
+-- 創建 schema
+CREATE SCHEMA IF NOT EXISTS svwb_data;
 
--- 0. 系統Tips資訊表
-CREATE TABLE tips (
-    id SERIAL PRIMARY KEY,
-    title_cht TEXT,
-    title_chs TEXT,
-    title_en TEXT,
-    title_ja TEXT,
-    title_ko TEXT,
-    desc_cht TEXT,
-    desc_chs TEXT,
-    desc_en TEXT,
-    desc_ja TEXT,
-    desc_ko TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
+-- 設置語言枚舉類型
+CREATE TYPE svwb_data.language_code AS ENUM ('cht', 'chs', 'en', 'ja', 'ko');
 
--- Tips表的索引
-CREATE INDEX idx_tips_title_cht ON tips(title_cht);
-CREATE INDEX idx_tips_title_en ON tips(title_en);
+-- 卡片類型枚舉
+CREATE TYPE svwb_data.card_type AS ENUM ('follower', 'spell', 'amulet');
 
--- 1. 卡包資訊表
-CREATE TABLE card_sets (
+-- 卡片職業枚舉
+CREATE TYPE svwb_data.card_class AS ENUM ('neutral', 'forestcraft', 'swordcraft', 'runecraft', 'dragoncraft', 'shadowcraft', 'bloodcraft', 'havencraft', 'portalcraft');
+
+-- 卡片稀有度枚舉
+CREATE TYPE svwb_data.card_rarity AS ENUM ('bronze', 'silver', 'gold', 'legendary');
+
+-- 卡組系列表
+CREATE TABLE svwb_data.card_sets (
     id INTEGER PRIMARY KEY,
-    name_cht TEXT,
-    name_chs TEXT,
-    name_en TEXT,
-    name_ja TEXT,
-    name_ko TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    name JSONB NOT NULL DEFAULT '{}', -- 多語言名稱 {"cht": "基本卡", "en": "Basic", ...}
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 2. 種族資訊表
-CREATE TABLE tribes (
+-- 部族表
+CREATE TABLE svwb_data.tribes (
     id INTEGER PRIMARY KEY,
-    name_cht TEXT,
-    name_chs TEXT,
-    name_en TEXT,
-    name_ja TEXT,
-    name_ko TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    name JSONB NOT NULL DEFAULT '{}', -- 多語言名稱
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 3. 技能資訊表
-CREATE TABLE skills (
+-- 技能表
+CREATE TABLE svwb_data.skills (
     id INTEGER PRIMARY KEY,
-    name_cht TEXT,
-    name_chs TEXT,
-    name_en TEXT,
-    name_ja TEXT,
-    name_ko TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    name JSONB NOT NULL DEFAULT '{}', -- 多語言名稱
+    replace_text JSONB DEFAULT '{}', -- 替換文字
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 4. 卡片主表
-CREATE TABLE cards (
-    id BIGINT PRIMARY KEY,
-    base_card_id BIGINT,
-    card_resource_id BIGINT,
-    card_set_id INTEGER REFERENCES card_sets(id),
-    type INTEGER, -- 1:從者, 2:護符, 3:建築物, 4:法術
-    class INTEGER, -- 0:中立, 1:精靈, 2:皇家護衛, 3:巫師, 4:龍族, 5:死靈法師, 6:主教, 7:復仇者
-    cost INTEGER,
+-- 卡片主表
+CREATE TABLE svwb_data.cards (
+    card_id BIGINT PRIMARY KEY,
+    base_card_id BIGINT NOT NULL,
+    card_resource_id BIGINT NOT NULL,
+    name JSONB NOT NULL DEFAULT '{}', -- 多語言名稱
+    name_ruby JSONB DEFAULT '{}', -- 多語言振假名
     atk INTEGER,
     life INTEGER,
-    rarity INTEGER, -- 1:銅, 2:銀, 3:金, 4:虹
-    is_token BOOLEAN DEFAULT FALSE,
-    is_include_rotation BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
--- 5. 卡片多語言圖片表
-CREATE TABLE card_images (
-    card_id BIGINT REFERENCES cards(id) ON DELETE CASCADE,
-    language VARCHAR(3), -- cht, chs, en, ja, ko
-    card_image_hash TEXT,
-    card_banner_image_hash TEXT,
-    PRIMARY KEY (card_id, language)
-);
-
--- 6. 卡片多語言名稱表
-CREATE TABLE card_names (
-    card_id BIGINT REFERENCES cards(id) ON DELETE CASCADE,
-    language VARCHAR(3), -- cht, chs, en, ja, ko
-    name TEXT NOT NULL,
-    name_ruby TEXT,
-    PRIMARY KEY (card_id, language)
-);
-
--- 7. 卡片多語言描述表
-CREATE TABLE card_descriptions (
-    card_id BIGINT REFERENCES cards(id) ON DELETE CASCADE,
-    language VARCHAR(3),
-    form VARCHAR(10), -- common, evo
-    flavour_text TEXT,
-    skill_text TEXT,
-    cv TEXT,
+    cost INTEGER NOT NULL,
+    type INTEGER NOT NULL, -- 1=從者, 2=法術, 3=護符
+    class INTEGER NOT NULL, -- 職業
+    rarity INTEGER NOT NULL, -- 1=青銅, 2=白銀, 3=黃金, 4=虹彩
+    card_set_id INTEGER NOT NULL REFERENCES svwb_data.card_sets(id),
+    cv JSONB DEFAULT '{}', -- 多語言聲優
     illustrator TEXT,
-    PRIMARY KEY (card_id, language, form)
-);
-
--- 8. 卡片進化資訊表
-CREATE TABLE card_evolutions (
-    card_id BIGINT REFERENCES cards(id) ON DELETE CASCADE,
-    card_resource_id BIGINT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    PRIMARY KEY (card_id)
-);
-
--- 9. 卡片進化多語言圖片表
-CREATE TABLE card_evolution_images (
-    card_id BIGINT REFERENCES cards(id) ON DELETE CASCADE,
-    language VARCHAR(3), -- cht, chs, en, ja, ko
+    is_token BOOLEAN DEFAULT FALSE,
+    is_include_rotation BOOLEAN DEFAULT TRUE,
     card_image_hash TEXT,
     card_banner_image_hash TEXT,
-    PRIMARY KEY (card_id, language)
+    evo_card_resource_id BIGINT,
+    evo_card_image_hash TEXT,
+    evo_card_banner_image_hash TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    
+    CONSTRAINT fk_card_set FOREIGN KEY (card_set_id) REFERENCES svwb_data.card_sets(id)
 );
 
--- 10. 卡片種族關聯表
-CREATE TABLE card_tribes (
-    card_id BIGINT REFERENCES cards(id) ON DELETE CASCADE,
-    tribe_id INTEGER REFERENCES tribes(id),
-    PRIMARY KEY (card_id, tribe_id)
+-- 卡片文字內容表（分語言存儲）
+CREATE TABLE svwb_data.card_texts (
+    id BIGSERIAL PRIMARY KEY,
+    card_id BIGINT NOT NULL REFERENCES svwb_data.cards(card_id) ON DELETE CASCADE,
+    language svwb_data.language_code NOT NULL,
+    skill_text TEXT DEFAULT '',
+    flavour_text TEXT DEFAULT '',
+    evo_skill_text TEXT DEFAULT '',
+    evo_flavour_text TEXT DEFAULT '',
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    
+    UNIQUE(card_id, language)
 );
 
--- 11. 卡片關聯表 (相關卡片)
-CREATE TABLE card_relations (
-    card_id BIGINT REFERENCES cards(id) ON DELETE CASCADE,
-    related_card_id BIGINT,
-    relation_type VARCHAR(20) DEFAULT 'related', -- related, specific_effect
-    PRIMARY KEY (card_id, related_card_id, relation_type)
+-- 卡片部族關聯表
+CREATE TABLE svwb_data.card_tribes (
+    id BIGSERIAL PRIMARY KEY,
+    card_id BIGINT NOT NULL REFERENCES svwb_data.cards(card_id) ON DELETE CASCADE,
+    tribe_id INTEGER NOT NULL REFERENCES svwb_data.tribes(id),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    
+    UNIQUE(card_id, tribe_id)
 );
 
--- 12. 卡片問答表
-CREATE TABLE card_questions (
-    id SERIAL PRIMARY KEY,
-    card_id BIGINT REFERENCES cards(id) ON DELETE CASCADE,
-    language VARCHAR(3),
+-- 卡片關聯表（相關卡片）
+CREATE TABLE svwb_data.card_relations (
+    id BIGSERIAL PRIMARY KEY,
+    card_id BIGINT NOT NULL REFERENCES svwb_data.cards(card_id) ON DELETE CASCADE,
+    related_card_id BIGINT NOT NULL,
+    relation_type TEXT DEFAULT 'related', -- 'related', 'specific_effect'
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    
+    UNIQUE(card_id, related_card_id, relation_type)
+);
+
+-- 卡片問答表
+CREATE TABLE svwb_data.card_questions (
+    id BIGSERIAL PRIMARY KEY,
+    card_id BIGINT NOT NULL REFERENCES svwb_data.cards(card_id) ON DELETE CASCADE,
+    language svwb_data.language_code NOT NULL,
     question TEXT NOT NULL,
     answer TEXT NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 13. 卡片風格變體表
-CREATE TABLE card_styles (
-    id SERIAL PRIMARY KEY,
-    card_id BIGINT REFERENCES cards(id) ON DELETE CASCADE,
-    hash TEXT,
-    evo_hash TEXT,
-    name TEXT,
-    name_ruby TEXT,
-    cv TEXT,
-    illustrator TEXT,
-    skill_text TEXT,
-    flavour_text TEXT,
-    evo_flavour_text TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+-- 提示表
+CREATE TABLE svwb_data.tips (
+    id BIGSERIAL PRIMARY KEY,
+    language svwb_data.language_code NOT NULL,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    sort_order INTEGER DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    
+    UNIQUE(language, title)
 );
 
--- 14. 資料更新記錄表
-CREATE TABLE data_sync_logs (
-    id SERIAL PRIMARY KEY,
-    language VARCHAR(3),
-    total_cards INTEGER,
-    successful_cards INTEGER,
-    failed_cards INTEGER,
-    sync_status VARCHAR(20), -- success, partial, failed
-    error_message TEXT,
-    started_at TIMESTAMP WITH TIME ZONE,
-    completed_at TIMESTAMP WITH TIME ZONE,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
+-- 創建索引
+CREATE INDEX idx_cards_base_card_id ON svwb_data.cards(base_card_id);
+CREATE INDEX idx_cards_card_set_id ON svwb_data.cards(card_set_id);
+CREATE INDEX idx_cards_type ON svwb_data.cards(type);
+CREATE INDEX idx_cards_class ON svwb_data.cards(class);
+CREATE INDEX idx_cards_rarity ON svwb_data.cards(rarity);
+CREATE INDEX idx_cards_cost ON svwb_data.cards(cost);
+CREATE INDEX idx_card_texts_card_id_language ON svwb_data.card_texts(card_id, language);
+CREATE INDEX idx_card_tribes_card_id ON svwb_data.card_tribes(card_id);
+CREATE INDEX idx_card_relations_card_id ON svwb_data.card_relations(card_id);
+CREATE INDEX idx_card_questions_card_id_language ON svwb_data.card_questions(card_id, language);
+CREATE INDEX idx_tips_language ON svwb_data.tips(language);
 
--- 15. 卡片排序表
-CREATE TABLE card_sort_orders (
-    id SERIAL PRIMARY KEY,
-    language VARCHAR(3) UNIQUE NOT NULL,
-    card_ids BIGINT[] NOT NULL, -- 使用陣列存儲卡片ID排序
-    total_cards INTEGER NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
--- 建立索引以提升查詢效能
-CREATE INDEX idx_cards_class ON cards(class);
-CREATE INDEX idx_cards_cost ON cards(cost);
-CREATE INDEX idx_cards_rarity ON cards(rarity);
-CREATE INDEX idx_cards_card_set_id ON cards(card_set_id);
-CREATE INDEX idx_cards_is_token ON cards(is_token);
-CREATE INDEX idx_cards_is_include_rotation ON cards(is_include_rotation);
-CREATE INDEX idx_card_images_language ON card_images(language);
-CREATE INDEX idx_card_names_language ON card_names(language);
-CREATE INDEX idx_card_names_name ON card_names(name);
-CREATE INDEX idx_card_descriptions_language ON card_descriptions(language);
-CREATE INDEX idx_card_evolution_images_language ON card_evolution_images(language);
-CREATE INDEX idx_data_sync_logs_language ON data_sync_logs(language);
-CREATE INDEX idx_data_sync_logs_created_at ON data_sync_logs(created_at);
-CREATE INDEX idx_card_sort_orders_language ON card_sort_orders(language);
-
--- 建立更新時間的觸發器
-CREATE OR REPLACE FUNCTION update_updated_at_column()
+-- 更新時間觸發器函數
+CREATE OR REPLACE FUNCTION svwb_data.update_modified_time()
 RETURNS TRIGGER AS $$
 BEGIN
     NEW.updated_at = NOW();
     RETURN NEW;
 END;
-$$ language 'plpgsql';
+$$ LANGUAGE plpgsql;
 
-CREATE TRIGGER update_tips_updated_at BEFORE UPDATE ON tips FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_card_sets_updated_at BEFORE UPDATE ON card_sets FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_tribes_updated_at BEFORE UPDATE ON tribes FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_skills_updated_at BEFORE UPDATE ON skills FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_cards_updated_at BEFORE UPDATE ON cards FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_card_sort_orders_updated_at BEFORE UPDATE ON card_sort_orders FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+-- 創建觸發器
+CREATE TRIGGER update_card_sets_modified_time
+    BEFORE UPDATE ON svwb_data.card_sets
+    FOR EACH ROW
+    EXECUTE FUNCTION svwb_data.update_modified_time();
 
--- 建立 RLS (Row Level Security) 策略 (可選)
--- ALTER TABLE cards ENABLE ROW LEVEL SECURITY;
--- ALTER TABLE card_names ENABLE ROW LEVEL SECURITY;
--- ALTER TABLE card_descriptions ENABLE ROW LEVEL SECURITY;
+CREATE TRIGGER update_tribes_modified_time
+    BEFORE UPDATE ON svwb_data.tribes
+    FOR EACH ROW
+    EXECUTE FUNCTION svwb_data.update_modified_time();
 
--- 註解說明
-COMMENT ON TABLE tips IS '系統Tips資訊表';
-COMMENT ON TABLE cards IS '卡片主要資訊表';
-COMMENT ON TABLE card_images IS '卡片多語言圖片表';
-COMMENT ON TABLE card_names IS '卡片多語言名稱表';
-COMMENT ON TABLE card_descriptions IS '卡片多語言描述表';
-COMMENT ON TABLE card_evolutions IS '卡片進化資訊表';
-COMMENT ON TABLE card_evolution_images IS '卡片進化多語言圖片表';
-COMMENT ON TABLE card_tribes IS '卡片種族關聯表';
-COMMENT ON TABLE card_relations IS '卡片關聯表';
-COMMENT ON TABLE card_questions IS '卡片問答表';
-COMMENT ON TABLE card_styles IS '卡片風格變體表';
-COMMENT ON TABLE data_sync_logs IS '資料同步記錄表';
-COMMENT ON TABLE card_sort_orders IS '卡片排序表';
+CREATE TRIGGER update_skills_modified_time
+    BEFORE UPDATE ON svwb_data.skills
+    FOR EACH ROW
+    EXECUTE FUNCTION svwb_data.update_modified_time();
 
-COMMENT ON COLUMN cards.type IS '卡片類型: 1=從者, 2=護符, 3=建築物, 4=法術';
-COMMENT ON COLUMN cards.class IS '職業: 0=中立, 1=精靈, 2=皇家護衛, 3=巫師, 4=龍族, 5=死靈法師, 6=主教, 7=復仇者';
-COMMENT ON COLUMN cards.rarity IS '稀有度: 1=銅, 2=銀, 3=金, 4=虹';
+CREATE TRIGGER update_cards_modified_time
+    BEFORE UPDATE ON svwb_data.cards
+    FOR EACH ROW
+    EXECUTE FUNCTION svwb_data.update_modified_time();
+
+CREATE TRIGGER update_card_texts_modified_time
+    BEFORE UPDATE ON svwb_data.card_texts
+    FOR EACH ROW
+    EXECUTE FUNCTION svwb_data.update_modified_time();
+
+CREATE TRIGGER update_card_questions_modified_time
+    BEFORE UPDATE ON svwb_data.card_questions
+    FOR EACH ROW
+    EXECUTE FUNCTION svwb_data.update_modified_time();
+
+CREATE TRIGGER update_tips_modified_time
+    BEFORE UPDATE ON svwb_data.tips
+    FOR EACH ROW
+    EXECUTE FUNCTION svwb_data.update_modified_time();
+
+-- RLS 啟用
+ALTER TABLE svwb_data.card_sets ENABLE ROW LEVEL SECURITY;
+ALTER TABLE svwb_data.tribes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE svwb_data.skills ENABLE ROW LEVEL SECURITY;
+ALTER TABLE svwb_data.cards ENABLE ROW LEVEL SECURITY;
+ALTER TABLE svwb_data.card_texts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE svwb_data.card_tribes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE svwb_data.card_relations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE svwb_data.card_questions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE svwb_data.tips ENABLE ROW LEVEL SECURITY;
+
+-- 創建 RLS 政策（允許所有操作給認證用戶，如果需要更細緻的權限控制可以修改）
+-- 讀取政策（所有人可讀）
+CREATE POLICY "Enable read access for all users" ON svwb_data.card_sets FOR SELECT USING (true);
+CREATE POLICY "Enable read access for all users" ON svwb_data.tribes FOR SELECT USING (true);
+CREATE POLICY "Enable read access for all users" ON svwb_data.skills FOR SELECT USING (true);
+CREATE POLICY "Enable read access for all users" ON svwb_data.cards FOR SELECT USING (true);
+CREATE POLICY "Enable read access for all users" ON svwb_data.card_texts FOR SELECT USING (true);
+CREATE POLICY "Enable read access for all users" ON svwb_data.card_tribes FOR SELECT USING (true);
+CREATE POLICY "Enable read access for all users" ON svwb_data.card_relations FOR SELECT USING (true);
+CREATE POLICY "Enable read access for all users" ON svwb_data.card_questions FOR SELECT USING (true);
+CREATE POLICY "Enable read access for all users" ON svwb_data.tips FOR SELECT USING (true);
+
+-- 寫入政策（認證用戶可寫）
+CREATE POLICY "Enable write access for authenticated users" ON svwb_data.card_sets FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Enable write access for authenticated users" ON svwb_data.tribes FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Enable write access for authenticated users" ON svwb_data.skills FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Enable write access for authenticated users" ON svwb_data.cards FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Enable write access for authenticated users" ON svwb_data.card_texts FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Enable write access for authenticated users" ON svwb_data.card_tribes FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Enable write access for authenticated users" ON svwb_data.card_relations FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Enable write access for authenticated users" ON svwb_data.card_questions FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Enable write access for authenticated users" ON svwb_data.tips FOR ALL USING (auth.role() = 'authenticated');
+
+-- 服務角色政策（用於腳本同步）
+CREATE POLICY "Enable all access for service role" ON svwb_data.card_sets FOR ALL USING (auth.jwt() ->> 'role' = 'service_role');
+CREATE POLICY "Enable all access for service role" ON svwb_data.tribes FOR ALL USING (auth.jwt() ->> 'role' = 'service_role');
+CREATE POLICY "Enable all access for service role" ON svwb_data.skills FOR ALL USING (auth.jwt() ->> 'role' = 'service_role');
+CREATE POLICY "Enable all access for service role" ON svwb_data.cards FOR ALL USING (auth.jwt() ->> 'role' = 'service_role');
+CREATE POLICY "Enable all access for service role" ON svwb_data.card_texts FOR ALL USING (auth.jwt() ->> 'role' = 'service_role');
+CREATE POLICY "Enable all access for service role" ON svwb_data.card_tribes FOR ALL USING (auth.jwt() ->> 'role' = 'service_role');
+CREATE POLICY "Enable all access for service role" ON svwb_data.card_relations FOR ALL USING (auth.jwt() ->> 'role' = 'service_role');
+CREATE POLICY "Enable all access for service role" ON svwb_data.card_questions FOR ALL USING (auth.jwt() ->> 'role' = 'service_role');
+CREATE POLICY "Enable all access for service role" ON svwb_data.tips FOR ALL USING (auth.jwt() ->> 'role' = 'service_role');
+
+-- 初始化一些基本數據
+INSERT INTO svwb_data.card_sets (id, name) VALUES 
+(10000, '{"cht": "基本卡", "chs": "基本卡", "en": "Basic", "ja": "ベーシック", "ko": "베이직"}'),
+(10001, '{"cht": "傳說揭幕", "chs": "传说揭幕", "en": "Rise of Legends", "ja": "レジェンドライズ", "ko": "레전드 라이즈"}'),
+(10002, '{"cht": "無限進化", "chs": "无限进化", "en": "Infinite Evolution", "ja": "インフィニット・エヴォリューション", "ko": "무한 진화"}');
+
+INSERT INTO svwb_data.tribes (id, name) VALUES 
+(0, '{"cht": "-", "chs": "-", "en": "-", "ja": "-", "ko": "-"}'),
+(2, '{"cht": "士兵", "chs": "士兵", "en": "Officer", "ja": "兵士", "ko": "병사"}'),
+(3, '{"cht": "魯米那斯", "chs": "鲁米那斯", "en": "Luminas", "ja": "ルミナス", "ko": "루미나스"}'),
+(4, '{"cht": "雷維翁", "chs": "雷维翁", "en": "Levin", "ja": "雷維翁", "ko": "레비온"}'),
+(5, '{"cht": "妖精", "chs": "妖精", "en": "Fairy", "ja": "フェアリー", "ko": "페어리"}'),
+(6, '{"cht": "死者", "chs": "死者", "en": "Undead", "ja": "死者", "ko": "언데드"}'),
+(8, '{"cht": "土之印", "chs": "土之印", "en": "Earth Sigil", "ja": "土の印", "ko": "대지의 인장"}'),
+(11, '{"cht": "馬納歷亞", "chs": "马纳历亚", "en": "Manaria", "ja": "マナリア", "ko": "마나리아"}'),
+(12, '{"cht": "巨像", "chs": "巨像", "en": "Golem", "ja": "ゴーレム", "ko": "골렘"}'),
+(13, '{"cht": "式神", "chs": "式神", "en": "Shikigami", "ja": "式神", "ko": "시키가미"}'),
+(14, '{"cht": "創造物", "chs": "创造物", "en": "Artifact", "ja": "アーティファクト", "ko": "아티팩트"}'),
+(15, '{"cht": "人偶", "chs": "人偶", "en": "Puppet", "ja": "操り人形", "ko": "인형"}'),
+(17, '{"cht": "海洋", "chs": "海洋", "en": "Oceanic", "ja": "海洋", "ko": "해양"}'),
+(20, '{"cht": "弒滅者", "chs": "弑灭者", "en": "Destroyer", "ja": "デストロイヤー", "ko": "파괴자"}');
+
+INSERT INTO svwb_data.skills (id, name, replace_text) VALUES 
+(0, '{"cht": "", "chs": "", "en": "", "ja": "", "ko": ""}', '{}'),
+(1, '{"cht": "入場曲", "chs": "入场曲", "en": "Fanfare", "ja": "ファンファーレ", "ko": "팡파르"}', '{}'),
+(2, '{"cht": "謝幕曲", "chs": "谢幕曲", "en": "Last Words", "ja": "ラストワード", "ko": "라스트 워드"}', '{}'),
+(3, '{"cht": "進化時", "chs": "进化时", "en": "Evolve", "ja": "進化時", "ko": "진화시"}', '{}'),
+(4, '{"cht": "攻擊時", "chs": "攻击时", "en": "Strike", "ja": "攻撃時", "ko": "공격시"}', '{}'),
+(5, '{"cht": "守護", "chs": "守护", "en": "Ward", "ja": "守護", "ko": "수호"}', '{}'),
+(6, '{"cht": "疾馳", "chs": "疾驰", "en": "Storm", "ja": "疾走", "ko": "질주"}', '{}'),
+(7, '{"cht": "潛行", "chs": "潜行", "en": "Stealth", "ja": "潜伏", "ko": "잠복"}', '{}'),
+(8, '{"cht": "必殺", "chs": "必杀", "en": "Bane", "ja": "必殺", "ko": "필살"}', '{}'),
+(9, '{"cht": "吸血", "chs": "吸血", "en": "Drain", "ja": "ドレイン", "ko": "드레인"}', '{}'),
+(10, '{"cht": "覺醒", "chs": "觉醒", "en": "Overflow", "ja": "覚醒", "ko": "각성"}', '{}'),
+(12, '{"cht": "魔力增幅時", "chs": "魔力增幅时", "en": "Spellboost", "ja": "スペルブースト", "ko": "스펠부스트"}', '{"cht": "魔力增幅", "chs": "魔力增幅", "en": "Spellboost", "ja": "スペルブースト", "ko": "스펠부스트"}'),
+(13, '{"cht": "倒數", "chs": "倒数", "en": "Countdown", "ja": "カウントダウン", "ko": "카운트다운"}', '{}'),
+(14, '{"cht": "死靈術", "chs": "死灵术", "en": "Necromancy", "ja": "ネクロマンス", "ko": "네크로맨스"}', '{}'),
+(15, '{"cht": "土之秘術", "chs": "土之秘术", "en": "Earth Rite", "ja": "土の秘術", "ko": "대지의 비술"}', '{}'),
+(16, '{"cht": "突進", "chs": "突进", "en": "Rush", "ja": "突進", "ko": "돌진"}', '{}'),
+(17, '{"cht": "交戰時", "chs": "交战时", "en": "Clash", "ja": "交戦時", "ko": "교전시"}', '{}'),
+(18, '{"cht": "爆能強化", "chs": "爆能强化", "en": "Accelerate", "ja": "アクセラレート", "ko": "액셀러레이트"}', '{}'),
+(19, '{"cht": "亡者召還", "chs": "亡者召唤", "en": "Reanimate", "ja": "リアニメイト", "ko": "리애니메이트"}', '{}'),
+(25, '{"cht": "融合", "chs": "融合", "en": "Fusion", "ja": "フュージョン", "ko": "퓨전"}', '{}'),
+(26, '{"cht": "協作", "chs": "协作", "en": "Union Burst", "ja": "ユニオンバースト", "ko": "유니온 버스트"}', '{}'),
+(27, '{"cht": "土之印", "chs": "土之印", "en": "Earth Sigil", "ja": "土の印", "ko": "대지의 인장"}', '{}'),
+(29, '{"cht": "連擊", "chs": "连击", "en": "Combo", "ja": "コンボ", "ko": "콤보"}', '{}'),
+(30, '{"cht": "威懾", "chs": "威慑", "en": "Intimidate", "ja": "威圧", "ko": "위압"}', '{}'),
+(31, '{"cht": "光紋", "chs": "光纹", "en": "Crystallize", "ja": "結晶", "ko": "결정"}', '{}'),
+(32, '{"cht": "障壁", "chs": "障壁", "en": "Barrier", "ja": "バリア", "ko": "배리어"}', '{}'),
+(33, '{"cht": "超進化時", "chs": "超进化时", "en": "Evo", "ja": "エボ", "ko": "에보"}', '{}'),
+(34, '{"cht": "模式", "chs": "模式", "en": "Choose", "ja": "チョイス", "ko": "초이스"}', '{}'),
+(35, '{"cht": "策動", "chs": "策动", "en": "Invocation", "ja": "起動", "ko": "기동"}', '{}'),
+(36, '{"cht": "紋章", "chs": "纹章", "en": "Crest", "ja": "クレスト", "ko": "크레스트"}', '{}'),
+(38, '{"cht": "啟示錄牌組", "chs": "启示录牌组", "en": "Apocalypse Deck", "ja": "アポカリプスデッキ", "ko": "아포칼립스 덱"}', '{}');
+
+-- 視圖：卡片完整信息（便於查詢）
+CREATE VIEW svwb_data.cards_full_info AS
+SELECT 
+    c.*,
+    cs.name as card_set_name,
+    ct.language,
+    ct.skill_text,
+    ct.flavour_text,
+    ct.evo_skill_text,
+    ct.evo_flavour_text
+FROM svwb_data.cards c
+LEFT JOIN svwb_data.card_sets cs ON c.card_set_id = cs.id
+LEFT JOIN svwb_data.card_texts ct ON c.card_id = ct.card_id;

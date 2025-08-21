@@ -1,5 +1,0 @@
-{
-  "supabase_url": "https://your-project.supabase.co",
-  "supabase_key": "your-supabase-anon-key",
-  "database_url": "postgresql://postgres:your-password@db.your-project.supabase.co:5432/postgres"
-}

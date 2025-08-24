@@ -1,172 +1,149 @@
-# Shadowverse WB 牌組資訊爬蟲
+# Shadowverse WB 牌組爬蟲腳本 (簡化版本)
 
-這是一個用於爬取 Shadowverse: Worlds Beyond 牌組資訊的 Python 腳本。
+## 概述
 
-## 功能特色
+`deck_crawler_simple.py` 是 `deck_crawler.py` 的簡化版本，專門用於爬取直接返回 JSON 格式的牌組資訊 API。
 
-- 支援從 shadowverse-wb.com 爬取牌組詳細資訊
-- 優先使用 API 方式獲取資料，失敗時自動降級到 Selenium 爬取
-- 回傳 JSON 格式的結構化資料
-- 只提取必要的牌組資訊欄位
-- 支援無頭模式運行
+## 主要差異
 
-## 安裝需求
+### 原始版本 (`deck_crawler.py`)
+- 使用 Selenium 進行完整的網頁爬取
+- 支持複雜的網頁結構解析
+- 包含多種備用數據提取方法
+- 需要 Chrome WebDriver
+- 適合處理動態生成的內容
 
-### 1. 安裝 Python 依賴
+### 簡化版本 (`deck_crawler_simple.py`)
+- 使用 `requests` 直接請求 JSON API
+- 移除複雜的網頁解析邏輯
+- 更輕量級，啟動更快
+- 僅依賴標準 HTTP 請求
+- 適合直接提供 JSON 的 API
 
-```bash
-pip install -r requirements_shadowverse_scraper.txt
-```
+## 功能特點
 
-### 2. 安裝 Chrome 瀏覽器
+### 核心功能
+- ✅ 直接從 JSON API 獲取牌組資訊
+- ✅ 自動格式化數據結構
+- ✅ 錯誤處理和重試機制
+- ✅ 支援超時設置
 
-確保系統已安裝 Google Chrome 瀏覽器。
+### 數據處理
+- ✅ 提取 `total_red_ether` (紅以太總數)
+- ✅ 提取 `num_follower` (從者數量)
+- ✅ 提取 `num_spell` (法術數量)
+- ✅ 提取 `num_amulet` (護符數量)
+- ✅ 提取 `mana_curve` (法力曲線)
+- ✅ 提取 `battle_format` (對戰格式)
+- ✅ 提取 `class_id` (職業ID)
+- ✅ 提取 `sub_class_id` (子職業ID)
+- ✅ 提取 `sort_card_id_list` (排序卡牌ID列表)
+- ✅ 提取 `deck_card_num` (牌組卡牌數量)
 
-### 3. ChromeDriver
-
-腳本會自動處理 ChromeDriver，但如果遇到問題，可以手動安裝：
-
-```bash
-pip install webdriver-manager
-```
+### 工具函數
+- ✅ `extract_deck_hash_from_url()` - 從 URL 提取牌組 Hash
 
 ## 使用方法
 
-### 基本使用
+### 基本用法
 
 ```python
-from shadowverse_deck_scraper import scrape_shadowverse_deck
+from deck_crawler_simple import scrape_shadowverse_deck_simple
 
-# 牌組 URL
+# 直接爬取牌組資訊
 url = "https://shadowverse-wb.com/web/DeckBuilder/deckHashDetail?hash=2.5.cYLU.cYLU.cYb6.cYb6.cYb6.cYqk.cYqk.ckYk.ckYk.ckaI.ckaI.ckoW.ckoW.ckoW.ckog.ckog.ckrU.ckrU.ckrU.cl1-.cl1-.cl1-.cl28.cl28.cl28.cl2I.cl2I.cl2I.cxFE.cxFE.d6mk.d6mk.d6mk.d6zE.d6zE.d6zE.d7SU.d7SU.d7Se.d7Se&lang=cht"
 
-# 爬取資料
-deck_info = scrape_shadowverse_deck(url)
+deck_info = scrape_shadowverse_deck_simple(url)
 print(deck_info)
 ```
 
-### 直接運行主腳本
+### 進階用法
 
-```bash
-python shadowverse_deck_scraper.py
+```python
+from deck_crawler_simple import ShadowverseDeckScraperSimple, extract_deck_hash_from_url
+
+# 使用類對象（可重用會話）
+with ShadowverseDeckScraperSimple(timeout=60) as scraper:
+    deck_info = scraper.scrape_deck_info(url)
+
+# 提取牌組 Hash
+deck_hash = extract_deck_hash_from_url(url)
+print(f"牌組 Hash: {deck_hash}")
 ```
 
-## 回傳資料格式
+### 命令行運行
 
-腳本會回傳包含以下欄位的 JSON 物件：
+```bash
+python deck_crawler_simple.py
+```
+
+## 依賴項目
+
+- ✅ `requests` - HTTP 請求庫 (已包含在 `requirements.txt`)
+
+## 輸出格式
+
+腳本會生成以下格式的 JSON 數據：
 
 ```json
 {
-  "total_red_ether": 68710,
-  "num_follower": 32,
-  "num_spell": 6,
-  "num_amulet": 2,
-  "mana_curve": { "2": 14, "3": 7, "4": 2, "5": 5, "7": 7, "8": 5 },
+  "total_red_ether": 0,
+  "num_follower": 0,
+  "num_spell": 0,
+  "num_amulet": 0,
+  "mana_curve": {},
   "battle_format": 2,
   "class_id": 5,
   "sub_class_id": null,
-  "sort_card_id_list": [
-    10103110, 10152110, 10153120, 10153310, 10251310, 10102110, 10252110,
-    10152210, 10153130, 10154130, 10254120, 10104110, 10204110, 10154120,
-    10154110, 10254110
-  ],
-  "deck_card_num": {
-    "10103110": 3,
-    "10152110": 2,
-    "10153120": 3,
-    "10153310": 3,
-    "10251310": 3,
-    "10102110": 2,
-    "10252110": 3,
-    "10152210": 2,
-    "10153130": 2,
-    "10154130": 3,
-    "10254120": 2,
-    "10104110": 2,
-    "10204110": 2,
-    "10154120": 3,
-    "10154110": 3,
-    "10254110": 2
-  }
+  "sort_card_id_list": [],
+  "deck_card_num": {}
 }
 ```
 
-## 欄位說明
+## 錯誤處理
 
-- `total_red_ether`: 總紅以太消耗
-- `num_follower`: 隨從卡數量
-- `num_spell`: 法術卡數量
-- `num_amulet`: 護符卡數量
-- `mana_curve`: 法力曲線（費用 -> 卡牌數量）
-- `battle_format`: 對戰格式 ID
-- `class_id`: 主職業 ID
-- `sub_class_id`: 副職業 ID（如果有）
-- `sort_card_id_list`: 排序後的卡牌 ID 列表
-- `deck_card_num`: 每張卡的數量（卡牌 ID -> 數量）
+腳本包含完善的錯誤處理：
 
-## 進階用法
+- ✅ 網路請求失敗
+- ✅ JSON 解析錯誤
+- ✅ 數據格式化錯誤
+- ✅ 超時處理
 
-### 自訂參數
+## 適用場景
 
-```python
-from shadowverse_deck_scraper import ShadowverseDeckScraper
+### 推薦使用簡化版本的情況
+- 目標 API 直接返回 JSON 格式
+- 不需要處理複雜的網頁結構
+- 希望更快的啟動速度
+- 資源有限的環境
 
-# 使用自訂參數
-with ShadowverseDeckScraper(headless=False, timeout=60) as scraper:
-    deck_info = scraper.scrape_deck_info(url)
-```
+### 仍需使用原始版本的情況
+- 網站使用大量 JavaScript 生成內容
+- 需要模擬用戶行為（如點擊、滾動）
+- 處理動態載入的內容
+- 需要繞過反爬蟲機制
 
-### 批次處理
+## 性能比較
 
-```python
-urls = [
-    "url1",
-    "url2",
-    "url3"
-]
+| 指標 | 原始版本 | 簡化版本 |
+|------|----------|----------|
+| 啟動時間 | 慢 (需啟動瀏覽器) | 快 (直接請求) |
+| 記憶體使用 | 高 | 低 |
+| 網路請求 | 複雜 | 簡單 |
+| 依賴複雜度 | 高 (Selenium + Chrome) | 低 (僅 requests) |
+| 適用場景 | 複雜網頁 | JSON API |
 
-results = []
-for url in urls:
-    try:
-        deck_info = scrape_shadowverse_deck(url)
-        results.append({"url": url, "data": deck_info, "success": True})
-    except Exception as e:
-        results.append({"url": url, "error": str(e), "success": False})
-```
+## 擴展建議
 
-## 故障排除
+如果需要處理其他格式的 API，可以：
 
-### 常見問題
+1. 修改 `format_deck_data()` 方法適配新的數據結構
+2. 添加自定義的請求頭或參數
+3. 實現數據驗證邏輯
+4. 添加重試機制
 
-1. **ChromeDriver 錯誤**
-   - 確保已安裝 Google Chrome
-   - 嘗試更新 Chrome 到最新版本
-   - 手動安裝 webdriver-manager
+## 相關文件
 
-2. **網路超時**
-   - 增加 timeout 參數值
-   - 檢查網路連線
-
-3. **爬取失敗**
-   - 檢查 URL 是否正確
-   - 確認網站是否可正常訪問
-   - 嘗試關閉無頭模式查看瀏覽器行為
-
-### 調試模式
-
-設定 `headless=False` 可以看到瀏覽器的實際操作過程：
-
-```python
-deck_info = scrape_shadowverse_deck(url, headless=False)
-```
-
-## 注意事項
-
-1. 請遵守網站的使用條款和 robots.txt
-2. 建議在請求之間加入適當的延遲
-3. 大量爬取時請考慮對伺服器的影響
-4. 網站結構可能會變更，屆時需要更新腳本
-
-## 授權
-
-此腳本僅供學習和研究用途。使用時請遵守相關法律法規和網站條款。 
+- `deck_crawler.py` - 完整的 Selenium 版本
+- `requirements.txt` - 項目依賴
+- `scraped_deck_info_simple.json` - 輸出示例

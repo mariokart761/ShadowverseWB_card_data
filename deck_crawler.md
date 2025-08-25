@@ -1,89 +1,109 @@
-# Shadowverse WB 牌組爬蟲腳本 (簡化版本)
+# Shadowverse 牌組資訊擷取器（Python）
 
-## 概述
+**雙模式：URL / Deck Code，含網址前處理**
 
-`deck_crawler_simple.py` 是 `deck_crawler.py` 的簡化版本，專門用於爬取直接返回 JSON 格式的牌組資訊 API。
+本腳本用於從 Shadowverse WB 取得牌組資訊。支援兩種資料來源：
 
-## 主要差異
+1. **URL 模式**：直接對會回傳 JSON 的網址發送請求並解析。
+2. **Deck Code 模式**：POST 到官方端點 `https://shadowverse-wb.com/web/DeckCode/getDeck`，payload 為 `{"deck_code": "<4碼>"}`，回應 JSON 與 URL 模式一致。
 
-### 原始版本 (`deck_crawler.py`)
-- 使用 Selenium 進行完整的網頁爬取
-- 支持複雜的網頁結構解析
-- 包含多種備用數據提取方法
-- 需要 Chrome WebDriver
-- 適合處理動態生成的內容
+支援**網址**自動轉換：
+`https://shadowverse-wb.com/<lang>/deck/detail/?hash=<...>`
+→ 轉為
+`https://shadowverse-wb.com/web/DeckBuilder/deckHashDetail?hash=<...>&lang=<lang>`
 
-### 簡化版本 (`deck_crawler_simple.py`)
-- 使用 `requests` 直接請求 JSON API
-- 移除複雜的網頁解析邏輯
-- 更輕量級，啟動更快
-- 僅依賴標準 HTTP 請求
-- 適合直接提供 JSON 的 API
+---
 
 ## 功能特點
 
-### 核心功能
-- ✅ 直接從 JSON API 獲取牌組資訊
-- ✅ 自動格式化數據結構
-- ✅ 錯誤處理和重試機制
-- ✅ 支援超時設置
+* **雙模式**：`--url` 或 `--deck-code` 取用牌組資訊，輸出欄位一致。
+* **網址前處理**：自動將 `/cht/deck/detail/?hash=...` 等格式改為 API。
+* **語言代碼**：`--lang` 自動補到 URL query（會覆蓋前處理偵測到的語言）。
+* **User-Agent**：可自訂 `--ua`。
+* **零相依**：只用 Python 標準函式庫，無需額外套件。
+* **標準輸出/檔案輸出**：結果可印出或存檔（`-o`）。
 
-### 數據處理
-- ✅ 提取 `total_red_ether` (紅以太總數)
-- ✅ 提取 `num_follower` (從者數量)
-- ✅ 提取 `num_spell` (法術數量)
-- ✅ 提取 `num_amulet` (護符數量)
-- ✅ 提取 `mana_curve` (法力曲線)
-- ✅ 提取 `battle_format` (對戰格式)
-- ✅ 提取 `class_id` (職業ID)
-- ✅ 提取 `sub_class_id` (子職業ID)
-- ✅ 提取 `sort_card_id_list` (排序卡牌ID列表)
-- ✅ 提取 `deck_card_num` (牌組卡牌數量)
+---
 
-### 工具函數
-- ✅ `extract_deck_hash_from_url()` - 從 URL 提取牌組 Hash
+## 系統需求
 
-## 使用方法
+* Python 3.8+
+* 可連線網際網路
 
-### 基本用法
+---
 
-```python
-from deck_crawler_simple import scrape_shadowverse_deck_simple
+## 安裝
 
-# 直接爬取牌組資訊
-url = "https://shadowverse-wb.com/web/DeckBuilder/deckHashDetail?hash=2.5.cYLU.cYLU.cYb6.cYb6.cYb6.cYqk.cYqk.ckYk.ckYk.ckaI.ckaI.ckoW.ckoW.ckoW.ckog.ckog.ckrU.ckrU.ckrU.cl1-.cl1-.cl1-.cl28.cl28.cl28.cl2I.cl2I.cl2I.cxFE.cxFE.d6mk.d6mk.d6mk.d6zE.d6zE.d6zE.d7SU.d7SU.d7Se.d7Se&lang=cht"
+將腳本儲存為 `deck_crawler_dual.py`（檔名自訂皆可）。
 
-deck_info = scrape_shadowverse_deck_simple(url)
-print(deck_info)
-```
+---
 
-### 進階用法
+## 快速開始
 
-```python
-from deck_crawler_simple import ShadowverseDeckScraperSimple, extract_deck_hash_from_url
+> **❗重要：URL 請用引號包起來**（尤其含 `&lang=...` 時，避免殼層把 `&` 當成指令分隔）。
 
-# 使用類對象（可重用會話）
-with ShadowverseDeckScraperSimple(timeout=60) as scraper:
-    deck_info = scraper.scrape_deck_info(url)
-
-# 提取牌組 Hash
-deck_hash = extract_deck_hash_from_url(url)
-print(f"牌組 Hash: {deck_hash}")
-```
-
-### 命令行運行
+### URL 模式（API URL）
 
 ```bash
-python deck_crawler_simple.py
+python3 deck_crawler_dual.py --url "https://shadowverse-wb.com/web/DeckBuilder/deckHashDetail?hash=...&lang=cht"
 ```
 
-## 依賴項目
+### URL 模式（官網URL，自動轉換）
 
-- ✅ `requests` - HTTP 請求庫 (已包含在 `requirements.txt`)
+```bash
+python3 deck_crawler_dual.py --url "https://shadowverse-wb.com/cht/deck/detail/?hash=..."
+```
 
-## 輸出格式
+### Deck Code 模式（四碼代碼）
 
-腳本會生成以下格式的 JSON 數據：
+```bash
+python3 deck_crawler_dual.py --deck-code Ab1C
+```
+
+### 指定 User-Agent 與輸出檔名
+
+```bash
+python3 deck_crawler_dual.py --deck-code Ab1C --ua "Mozilla/5.0" -o deck.json
+```
+
+---
+
+## 命令列參數
+
+| 參數                     | 說明                                                     | 範例                                                    |
+| ---------------------- | ------------------------------------------------------ | ----------------------------------------------------- |
+| `--url`                | 直接取用 JSON 的完整網址（含 query）。與 `--deck-code` 二選一。          | `--url "https://...deckHashDetail?hash=...&lang=cht"` |
+| `--deck-code`          | 牌組代碼（4 碼英數）。與 `--url` 二選一。                             | `--deck-code Ab1C`                                    |
+| `--lang`               | **URL 模式可選**：語言代碼（如 `cht/jpn`），會加到/覆蓋 URL 的 `lang` 參數。 | `--lang jpn`                                          |
+| `--ua`, `--user-agent` | 自訂 User-Agent                                          | `--ua "Mozilla/5.0"`                                  |
+| `-o`, `--output`       | 將結果輸出為檔案（預設印到 stdout）                                  | `-o deck.json`                                        |
+
+---
+
+## URL 前處理規則
+
+當 `--url` 指向下列格式時：
+
+```
+https://shadowverse-wb.com/<lang>/deck/detail/?hash=<HASH>
+https://shadowverse-wb.com/deck/detail/?hash=<HASH>         # 無語言片段
+```
+
+會自動轉為：
+
+```
+https://shadowverse-wb.com/web/DeckBuilder/deckHashDetail?hash=<HASH>&lang=<lang?>
+```
+
+* 若路徑含語言（如 `cht`），會補成 `?lang=cht`。
+* 若原本 query 已帶 `lang`，沿用原值。
+* 若同時指定 `--lang`，**以 `--lang` 為準**。
+
+---
+
+## 欄位輸出（Schema）
+
+兩種模式最終輸出欄位一致（皆為 JSON 物件）：
 
 ```json
 {
@@ -93,57 +113,77 @@ python deck_crawler_simple.py
   "num_amulet": 0,
   "mana_curve": {},
   "battle_format": 2,
-  "class_id": 5,
+  "class_id": 0,
   "sub_class_id": null,
   "sort_card_id_list": [],
   "deck_card_num": {}
 }
 ```
 
-## 錯誤處理
+### 欄位說明
 
-腳本包含完善的錯誤處理：
+| 欄位                  | 型別             | 說明                       |
+| ------------------- | -------------- | ------------------------ |
+| `total_red_ether`   | number         | 分解紅乙太總量（或成本）             |
+| `num_follower`      | number         | 隨從張數                     |
+| `num_spell`         | number         | 法術張數                     |
+| `num_amulet`        | number         | 護符張數                     |
+| `mana_curve`        | object         | 費曲分佈，key 通常是費用、value 是張數 |
+| `battle_format`     | number         | 對戰格式代碼                   |
+| `class_id`          | number         | 職業 ID                    |
+| `sub_class_id`      | number \| null | 子職業 ID（若有）               |
+| `sort_card_id_list` | array          | 依排序的卡片 ID（或字串）清單         |
+| `deck_card_num`     | object         | 卡片 ID → 張數對照             |
 
-- ✅ 網路請求失敗
-- ✅ JSON 解析錯誤
-- ✅ 數據格式化錯誤
-- ✅ 超時處理
+> 若來源 JSON 缺少對應欄位，腳本會給預設值（如 `0`、`{}`、`[]` 或 `null`）。
 
-## 適用場景
+---
 
-### 推薦使用簡化版本的情況
-- 目標 API 直接返回 JSON 格式
-- 不需要處理複雜的網頁結構
-- 希望更快的啟動速度
-- 資源有限的環境
+## 跨殼層使用範例（避免 `&` 問題）
 
-### 仍需使用原始版本的情況
-- 網站使用大量 JavaScript 生成內容
-- 需要模擬用戶行為（如點擊、滾動）
-- 處理動態載入的內容
-- 需要繞過反爬蟲機制
+### Windows CMD
 
-## 性能比較
+```bat
+python deck_crawler_dual.py --url "https://shadowverse-wb.com/web/DeckBuilder/deckHashDetail?hash=...&lang=cht"
+REM 或使用跳脫：
+python deck_crawler_dual.py --url https://shadowverse-wb.com/web/DeckBuilder/deckHashDetail?hash=...^&lang=cht
+```
 
-| 指標 | 原始版本 | 簡化版本 |
-|------|----------|----------|
-| 啟動時間 | 慢 (需啟動瀏覽器) | 快 (直接請求) |
-| 記憶體使用 | 高 | 低 |
-| 網路請求 | 複雜 | 簡單 |
-| 依賴複雜度 | 高 (Selenium + Chrome) | 低 (僅 requests) |
-| 適用場景 | 複雜網頁 | JSON API |
+### PowerShell
 
-## 擴展建議
+```powershell
+python .\deck_crawler_dual.py --url 'https://shadowverse-wb.com/web/DeckBuilder/deckHashDetail?hash=...&lang=cht'
+```
 
-如果需要處理其他格式的 API，可以：
+### macOS / Linux（Bash/Zsh）
 
-1. 修改 `format_deck_data()` 方法適配新的數據結構
-2. 添加自定義的請求頭或參數
-3. 實現數據驗證邏輯
-4. 添加重試機制
+```bash
+python3 deck_crawler_dual.py --url 'https://shadowverse-wb.com/web/DeckBuilder/deckHashDetail?hash=...&lang=cht'
+```
 
-## 相關文件
+---
 
-- `deck_crawler.py` - 完整的 Selenium 版本
-- `requirements.txt` - 項目依賴
-- `scraped_deck_info_simple.json` - 輸出示例
+## 錯誤處理與退出碼
+
+* 網路或 HTTP 錯誤（如 4xx/5xx）、回應非 JSON、或最外層不是物件：
+
+  * 會在 **stderr** 印出 `[錯誤] <訊息>`
+  * 以 **非 0** 代碼結束（方便 CI 判斷）。
+* 成功執行：結束碼 **0**。
+
+---
+
+## 常見問題（FAQ）
+
+**Q1：為什麼看到** `'lang' is not recognized as an internal or external command` ？
+A：你在 **Windows CMD**（或 Bash）直接貼了含 `&lang=...` 的 URL 而未加引號，殼層把 `&` 當成指令分隔。請用引號或跳脫 `^&`，或改用 `--lang` 參數。
+
+**Q2：我只知道 Deck Code，沒有 URL 可以用？**
+A：使用 Deck Code 模式：
+`python deck_crawler_dual.py --deck-code Ab1C`
+
+**Q3：來源回應 JSON 外面還包了一層 `data` / `result` / `deckDetail`？**
+A：腳本會嘗試在常見 root key（`data/result/deckDetail/deck/payload`）下挖取欄位，通常不需更改。
+
+**Q4：需要代理或額外 headers 嗎？**
+A：預設帶簡單 `User-Agent`。若環境需要，可用 `--ua` 指定自訂 UA；如需代理，請用系統層代理或自行擴充程式碼。

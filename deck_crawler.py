@@ -1,308 +1,234 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
 """
-Shadowverse WB 牌組資訊爬蟲腳本 (簡化版本)
-直接從 JSON API 獲取牌組資訊，移除 Selenium 依賴
+Shadowverse 牌組資訊擷取器（雙模式：URL / Deck Code）+ URL 前處理
+- URL 模式：支援官網連結樣式 /<lang>/deck/detail/?hash=... 轉換為 API 樣式 /web/DeckBuilder/deckHashDetail?hash=...
+- Deck Code 模式：POST 到 https://shadowverse-wb.com/web/DeckCode/getDeck，payload: {"deck_code": "XXXX"}
+- 兩種模式輸出相同欄位結構
+
+使用範例
+--------
+# URL（API樣式，記得整段加引號以避免 & 被殼層吃掉）
+python deck_crawler_dual.py --url "https://shadowverse-wb.com/web/DeckBuilder/deckHashDetail?hash=...&lang=cht"
+
+# URL（官網樣式，會自動轉換）
+python deck_crawler_dual.py --url "https://shadowverse-wb.com/cht/deck/detail/?hash=..."
+
+# Deck Code（4 碼）
+python deck_crawler_dual.py --deck-code Ab1C
+
+# 指定 User-Agent、輸出檔案
+python deck_crawler_dual.py --deck-code Ab1C --ua "Mozilla/5.0" -o deck.json
 """
 
+import argparse
 import json
-import requests
-import re
-from urllib.parse import urlparse, parse_qs
-import time
+import sys
+from typing import Any, Dict, Optional, Tuple
+from urllib.request import urlopen, Request
+from urllib.error import URLError, HTTPError
+from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
 
+GET_DECK_ENDPOINT = "https://shadowverse-wb.com/web/DeckCode/getDeck"
 
-class ShadowverseDeckScraperSimple:
-    def __init__(self, timeout=30):
-        """
-        初始化簡化爬蟲
+# 需要輸出的欄位
+NEEDED_FIELDS = [
+    "total_red_ether",
+    "num_follower",
+    "num_spell",
+    "num_amulet",
+    "mana_curve",
+    "battle_format",
+    "class_id",
+    "sub_class_id",
+    "sort_card_id_list",
+    "deck_card_num",
+]
 
-        Args:
-            timeout (int): 請求超時時間（秒）
-        """
-        self.timeout = timeout
-        self.session = requests.Session()
-        self.session.headers.update({
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-        })
+# 常見包裹層鍵名
+CANDIDATE_ROOT_KEYS = ["data", "result", "deckDetail", "deck", "payload"]
 
-    def scrape_deck_info(self, url):
-        """
-        從 JSON API 或 HTML 頁面獲取牌組資訊
+def _first_non_none(*vals):
+    for v in vals:
+        if v is not None:
+            return v
+    return None
 
-        Args:
-            url (str): 牌組詳細頁面 URL
+def _dig(obj: Dict[str, Any], key: str) -> Optional[Any]:
+    """在可能的容器層中找 key；若頂層沒有，就往常見 root key 裡找一次。"""
+    if key in obj:
+        return obj[key]
+    for rk in CANDIDATE_ROOT_KEYS:
+        sub = obj.get(rk)
+        if isinstance(sub, dict) and key in sub:
+            return sub[key]
+    return None
 
-        Returns:
-            dict: 包含所需牌組資訊的字典
-        """
-        try:
-            print(f"正在請求 API: {url}")
+def format_deck_data(raw: Dict[str, Any]) -> Dict[str, Any]:
+    """將原始 JSON 對齊成需要的欄位，缺值給預設。"""
+    return {
+        "total_red_ether": _first_non_none(_dig(raw, "total_red_ether"), 0),
+        "num_follower":    _first_non_none(_dig(raw, "num_follower"), 0),
+        "num_spell":       _first_non_none(_dig(raw, "num_spell"), 0),
+        "num_amulet":      _first_non_none(_dig(raw, "num_amulet"), 0),
+        "mana_curve":      _first_non_none(_dig(raw, "mana_curve"), {}),
+        "battle_format":   _first_non_none(_dig(raw, "battle_format"), 2),
+        "class_id":        _first_non_none(_dig(raw, "class_id"), 5),
+        "sub_class_id":    _first_non_none(_dig(raw, "sub_class_id"), None),
+        "sort_card_id_list": _first_non_none(_dig(raw, "sort_card_id_list"), []),
+        "deck_card_num":   _first_non_none(_dig(raw, "deck_card_num"), {}),
+    }
 
-            # 發送請求獲取數據
-            response = self.session.get(url, timeout=self.timeout)
-            response.raise_for_status()
-
-            # 首先嘗試直接解析為 JSON（如果響應是純 JSON）
-            try:
-                deck_data = response.json()
-                print("成功獲取純 JSON 數據")
-                print(f"JSON 數據內容: {deck_data}")
-                return self.format_deck_data(deck_data)
-            except json.JSONDecodeError:
-                print("響應不是純 JSON，嘗試從 HTML 中提取 JSON 數據")
-                print(f"響應內容前 200 字符: {response.text[:200]}")
-                # 如果不是純 JSON，嘗試從 HTML 中提取
-                return self.extract_json_from_html(response.text)
-
-        except requests.exceptions.RequestException as e:
-            print(f"請求失敗: {e}")
-            raise
-        except Exception as e:
-            print(f"處理過程中發生錯誤: {e}")
-            raise
-
-    def extract_json_from_html(self, html_content):
-        """
-        從 HTML 內容中提取 JSON 數據
-
-        Args:
-            html_content (str): HTML 頁面內容
-
-        Returns:
-            dict: 提取並格式化後的牌組資料
-        """
-        try:
-            # 尋找可能包含牌組資料的 JSON 模式
-            json_patterns = [
-                r'"total_red_ether":\s*(\d+)',
-                r'"num_follower":\s*(\d+)',
-                r'"num_spell":\s*(\d+)',
-                r'"num_amulet":\s*(\d+)',
-                r'"battle_format":\s*(\d+)',
-                r'"class_id":\s*(\d+)'
-            ]
-
-            extracted_data = {}
-            for pattern in json_patterns:
-                match = re.search(pattern, html_content)
-                if match:
-                    field_name = pattern.split('"')[1]
-                    extracted_data[field_name] = int(match.group(1))
-
-            if extracted_data:
-                print("從 HTML 中提取到基本資料")
-
-                # 嘗試提取更多複雜數據
-                self.extract_complex_data(html_content, extracted_data)
-
-                return self.format_deck_data(extracted_data)
-            else:
-                print("無法從 HTML 中提取資料")
-                raise Exception("無法從 HTML 內容中提取牌組資料")
-
-        except Exception as e:
-            print(f"HTML 解析失敗: {e}")
-            raise
-
-    def extract_complex_data(self, html_content, extracted_data):
-        """
-        提取複雜的數據結構
-
-        Args:
-            html_content (str): HTML 內容
-            extracted_data (dict): 已提取的基本數據
-        """
-        # 提取 mana_curve
-        mana_curve_match = re.search(r'"mana_curve":\s*({[^}]+})', html_content)
-        if mana_curve_match:
-            try:
-                extracted_data['mana_curve'] = json.loads(mana_curve_match.group(1))
-            except:
-                extracted_data['mana_curve'] = {}
-
-        # 提取 sort_card_id_list
-        card_list_match = re.search(r'"sort_card_id_list":\s*(\[[^\]]+\])', html_content)
-        if card_list_match:
-            try:
-                extracted_data['sort_card_id_list'] = json.loads(card_list_match.group(1))
-            except:
-                extracted_data['sort_card_id_list'] = []
-
-        # 提取 deck_card_num
-        deck_card_match = re.search(r'"deck_card_num":\s*({[^}]+})', html_content)
-        if deck_card_match:
-            try:
-                extracted_data['deck_card_num'] = json.loads(deck_card_match.group(1))
-            except:
-                extracted_data['deck_card_num'] = {}
-
-    def format_deck_data(self, raw_data):
-        """
-        格式化牌組資料，只保留需要的欄位
-
-        Args:
-            raw_data (dict): 原始 JSON 數據
-
-        Returns:
-            dict: 格式化後的牌組資料
-        """
-        try:
-            # 檢查數據結構類型
-            if 'data' in raw_data and isinstance(raw_data['data'], dict):
-                # 新版 API 結構
-                data = raw_data['data']
-                print("檢測到新版 API 數據結構")
-
-                # 從 deck_card_num 計算卡牌統計
-                deck_card_num = data.get('deck_card_num', {})
-                sort_card_id_list = data.get('sort_card_id_list', [])
-
-                # 計算各類型卡牌數量
-                num_follower = 0
-                num_spell = 0
-                num_amulet = 0
-                mana_curve = {}
-
-                for card_id in sort_card_id_list:
-                    if str(card_id) in deck_card_num:
-                        count = deck_card_num[str(card_id)]
-                        # 從 card_details 中獲取卡牌信息
-                        card_details = data.get('card_details', {}).get(str(card_id), {})
-                        card_common = card_details.get('common', {})
-
-                        # 判斷卡牌類型
-                        card_type = card_common.get('type', 0)
-                        if card_type == 1:  # 從者
-                            num_follower += count
-                        elif card_type == 4:  # 法術
-                            num_spell += count
-                        elif card_type == 2 or card_type == 3:  # 護符
-                            num_amulet += count
-
-                        # 計算法力曲線
-                        cost = card_common.get('cost', 0)
-                        if cost in mana_curve:
-                            mana_curve[cost] += count
-                        else:
-                            mana_curve[cost] = count
-
-                formatted_data = {
-                    "total_red_ether": 0,  # API 沒有提供這個數據
-                    "num_follower": num_follower,
-                    "num_spell": num_spell,
-                    "num_amulet": num_amulet,
-                    "mana_curve": mana_curve,
-                    "battle_format": 2,  # 默認值
-                    "class_id": -1,  # 默認值
-                    "sub_class_id": None,
-                    "sort_card_id_list": sort_card_id_list,
-                    "deck_card_num": deck_card_num
-                }
-
-            else:
-                # 舊版或兼容結構
-                print("使用兼容模式處理數據")
-                formatted_data = {
-                    "total_red_ether": raw_data.get("total_red_ether", 0),
-                    "num_follower": raw_data.get("num_follower", 0),
-                    "num_spell": raw_data.get("num_spell", 0),
-                    "num_amulet": raw_data.get("num_amulet", 0),
-                    "mana_curve": raw_data.get("mana_curve", {}),
-                    "battle_format": raw_data.get("battle_format", 2),
-                    "class_id": raw_data.get("class_id", 5),
-                    "sub_class_id": raw_data.get("sub_class_id"),
-                    "sort_card_id_list": raw_data.get("sort_card_id_list", []),
-                    "deck_card_num": raw_data.get("deck_card_num", {})
-                }
-
-            print("資料格式化完成")
-            return formatted_data
-
-        except Exception as e:
-            print(f"資料格式化失敗: {e}")
-            raise
-
-    def close(self):
-        """關閉會話"""
-        if self.session:
-            self.session.close()
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.close()
-
-
-def scrape_shadowverse_deck_simple(url, timeout=30):
-    """
-    爬取 Shadowverse WB 牌組資訊的簡化便利函數
-
-    Args:
-        url (str): 牌組詳細頁面 URL
-        timeout (int): 超時時間（秒）
-
-    Returns:
-        dict: 牌組資訊
-    """
-    with ShadowverseDeckScraperSimple(timeout=timeout) as scraper:
-        return scraper.scrape_deck_info(url)
-
-
-def extract_deck_hash_from_url(url):
-    """
-    從 URL 中提取牌組 hash
-
-    Args:
-        url (str): 牌組 URL
-
-    Returns:
-        str: 牌組 hash，如果無法提取則返回 None
-    """
+def _decode_json_bytes(data: bytes) -> Dict[str, Any]:
     try:
-        parsed_url = urlparse(url)
-        query_params = parse_qs(parsed_url.query)
-        return query_params.get('hash', [None])[0]
-    except Exception as e:
-        print(f"提取 hash 失敗: {e}")
-        return None
+        text = data.decode("utf-8", errors="strict")
+    except UnicodeDecodeError:
+        text = data.decode("latin-1", errors="replace")
+    try:
+        obj = json.loads(text)
+    except json.JSONDecodeError as e:
+        raise RuntimeError(f"內容不是合法 JSON：{e}") from e
+    if not isinstance(obj, dict):
+        raise RuntimeError("最外層 JSON 不是物件（dict），不符合預期")
+    return obj
 
+def fetch_json_via_url(url: str, user_agent: Optional[str] = None) -> Dict[str, Any]:
+    headers = {}
+    if user_agent:
+        headers["User-Agent"] = user_agent
+    req = Request(url, headers=headers)
+    try:
+        with urlopen(req, timeout=30) as resp:
+            data = resp.read()
+    except HTTPError as e:
+        raise RuntimeError(f"HTTP {e.code} - {e.reason}") from e
+    except URLError as e:
+        raise RuntimeError(f"URL 錯誤：{e.reason}") from e
+    return _decode_json_bytes(data)
+
+def fetch_json_via_deck_code(deck_code: str, user_agent: Optional[str] = None) -> Dict[str, Any]:
+    """POST 到官方 getDeck 端點，payload: {\"deck_code\": \"XXXX\"}"""
+    headers = {"Content-Type": "application/json; charset=utf-8"}
+    if user_agent:
+        headers["User-Agent"] = user_agent
+    body = json.dumps({"deck_code": deck_code}).encode("utf-8")
+    req = Request(GET_DECK_ENDPOINT, headers=headers, data=body, method="POST")
+    try:
+        with urlopen(req, timeout=30) as resp:
+            data = resp.read()
+    except HTTPError as e:
+        # 盡量帶出伺服器回覆
+        detail = ""
+        try:
+            detail = e.read().decode("utf-8", errors="ignore")
+        except Exception:
+            pass
+        msg = f"HTTP {e.code} - {e.reason}"
+        if detail:
+            msg += f" - {detail}"
+        raise RuntimeError(msg) from e
+    except URLError as e:
+        raise RuntimeError(f"URL 錯誤：{e.reason}") from e
+    return _decode_json_bytes(data)
+
+def normalize_deck_url_if_needed(raw_url: str) -> Tuple[str, Optional[str]]:
+    """
+    若為舊樣式 https://shadowverse-wb.com/<lang>/deck/detail/?hash=... ，
+    轉為 https://shadowverse-wb.com/web/DeckBuilder/deckHashDetail?hash=... ，
+    並回傳偵測到的 lang（若有）。
+    回傳: (normalized_url, detected_lang or None)
+    """
+    u = urlparse(raw_url)
+    path = (u.path or "").lower()
+    host = (u.netloc or "").lower()
+
+    # 只處理 shadowverse-wb.com domain
+    if not host.endswith("shadowverse-wb.com"):
+        return raw_url, None
+
+    # 解析 query 以取得 hash
+    q = dict(parse_qsl(u.query, keep_blank_values=True))
+    hash_val = q.get("hash")
+
+    # path segments（去掉空片段）
+    segs = [s for s in path.split("/") if s]
+
+    # 型態一：/<lang>/deck/detail[/]
+    # 例如 /cht/deck/detail/
+    detected_lang: Optional[str] = None
+    if len(segs) >= 3 and segs[1] == "deck" and segs[2].startswith("detail"):
+        # 第一段視為語言（排除 web 等非語言片段）
+        first = segs[0]
+        if first not in {"web", "deck", "builder"}:
+            detected_lang = first
+
+    # 型態二：/deck/detail[/]（不含語言片段）
+    if detected_lang is None and len(segs) >= 2 and segs[0] == "deck" and segs[1].startswith("detail"):
+        detected_lang = None  # 沒偵測到語言，但仍可能要轉換
+
+    # 若命中上述其中一種、且有 hash，就轉換
+    if (detected_lang is not None or (len(segs) >= 2 and segs[0] == "deck" and segs[1].startswith("detail"))) and hash_val:
+        new_path = "/web/DeckBuilder/deckHashDetail"
+        new_query_pairs = {"hash": hash_val}
+        # 若原本 query 就帶 lang，沿用；否則帶上 path 偵測到的語言
+        if "lang" in q:
+            new_query_pairs["lang"] = q["lang"]
+        elif detected_lang:
+            new_query_pairs["lang"] = detected_lang
+        new_u = urlunparse((u.scheme or "https", u.netloc, new_path, "", urlencode(new_query_pairs), ""))
+        return new_u, detected_lang
+
+    # 否則不變
+    return raw_url, None
+
+def add_or_update_lang_query(url: str, lang: Optional[str]) -> str:
+    if not lang:
+        return url
+    u = urlparse(url)
+    q = dict(parse_qsl(u.query, keep_blank_values=True))
+    q["lang"] = lang
+    new_query = urlencode(q)
+    return urlunparse((u.scheme, u.netloc, u.path, u.params, new_query, u.fragment))
+
+def scrape_deck_by_url(url: str, user_agent: Optional[str] = None) -> Dict[str, Any]:
+    raw = fetch_json_via_url(url, user_agent=user_agent)
+    return format_deck_data(raw)
+
+def scrape_deck_by_code(deck_code: str, user_agent: Optional[str] = None) -> Dict[str, Any]:
+    raw = fetch_json_via_deck_code(deck_code, user_agent=user_agent)
+    return format_deck_data(raw)
 
 def main():
-    """主函數 - 示例用法"""
-    # 示例 URL
-    example_url = "https://shadowverse-wb.com/web/DeckBuilder/deckHashDetail?hash=2.5.cYLU.cYLU.cYb6.cYb6.cYb6.cYqk.cYqk.ckYk.ckYk.ckaI.ckaI.ckoW.ckoW.ckoW.ckog.ckog.ckrU.ckrU.ckrU.cl1-.cl1-.cl1-.cl28.cl28.cl28.cl2I.cl2I.cl2I.cxFE.cxFE.d6mk.d6mk.d6mk.d6zE.d6zE.d6zE.d7SU.d7SU.d7Se.d7Se&lang=cht"
+    parser = argparse.ArgumentParser(description="Shadowverse 牌組資訊（URL / Deck Code 雙模式，含 URL 前處理）")
+    g = parser.add_mutually_exclusive_group(required=True)
+    g.add_argument("--url", help="直接取用 JSON 的 URL（建議整段加引號）")
+    g.add_argument("--deck-code", help="牌組代碼（4 碼）")
+    parser.add_argument("--lang", help="（URL 模式可選）語言代碼，例如 cht/jpn；會覆蓋前處理所偵測到的語言")
+    parser.add_argument("--ua", "--user-agent", dest="ua", default="Mozilla/5.0",
+                        help="自訂 User-Agent（可選）")
+    parser.add_argument("-o", "--output", help="輸出檔名（預設印到 stdout）")
+    args = parser.parse_args()
 
     try:
-        print("開始爬取牌組資訊...")
-        print(f"目標 URL: {example_url}")
-
-        # 提取並顯示牌組 hash
-        deck_hash = extract_deck_hash_from_url(example_url)
-        if deck_hash:
-            print(f"牌組 Hash: {deck_hash}")
-
-        # 爬取資料
-        deck_info = scrape_shadowverse_deck_simple(example_url)
-
-        # 輸出結果
-        print("\n爬取結果:")
-        print(json.dumps(deck_info, indent=2, ensure_ascii=False))
-
-        # 儲存到檔案
-        with open('scraped_deck_info_simple.json', 'w', encoding='utf-8') as f:
-            json.dump(deck_info, f, indent=2, ensure_ascii=False)
-
-        print("\n結果已儲存到 scraped_deck_info_simple.json")
-
+        if args.url:
+            # 先做舊樣式轉換（可偵測到 path 的語言）
+            normalized_url, detected_lang = normalize_deck_url_if_needed(args.url)
+            # 再以 --lang 覆蓋（若提供）
+            fetch_url = add_or_update_lang_query(normalized_url, args.lang or detected_lang)
+            deck = scrape_deck_by_url(fetch_url, user_agent=args.ua)
+        else:
+            deck_code = args.deck_code.strip()
+            deck = scrape_deck_by_code(deck_code, user_agent=args.ua)
     except Exception as e:
-        print(f"爬取失敗: {e}")
-        return 1
+        print(f"[錯誤] {e}", file=sys.stderr)
+        sys.exit(1)
 
-    return 0
-
+    if args.output:
+        with open(args.output, "w", encoding="utf-8") as f:
+            json.dump(deck, f, ensure_ascii=False, indent=2)
+    else:
+        print(json.dumps(deck, ensure_ascii=False, indent=2))
 
 if __name__ == "__main__":
-    import sys
-    sys.exit(main())
+    main()

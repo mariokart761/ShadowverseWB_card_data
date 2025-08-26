@@ -1,326 +1,290 @@
-# Shadowverse 卡片資料同步至 Supabase
+# Shadowverse 資料庫說明文檔（Supabase）
 
-這個專案提供了將 Shadowverse 卡片資料和提示資料同步到 Supabase 資料庫的完整解決方案。
+> 本文件說明 `schema.sql` 的資料模型、權限、索引與維運作業；並補充 `supabase_sync.py` 同步腳本的使用重點與最佳實務。
 
-## 專案結構
+---
+
+## 1. 目標與範圍
+
+* 以 **base + i18n** 正規化模型管理多語系卡片資料（卡組、部族、技能、卡片本體與文字、問答、提示等）。
+* 以 **RLS（Row Level Security）** 與策略區分匿名/已登入/Service Role 權限。
+* 以觸發器自動維護 `updated_at`，並提供一個查詢友善的匯總視圖 `cards_full_info`。
+
+---
+
+## 2. 名詞與命名約定
+
+* **Base**：語言獨立屬性（例如 ID、數值屬性、所屬卡包）。
+* **i18n**：語言相關屬性（例如名稱、圖片雜湊、文案）。
+* **語言代碼**：`cht`、`chs`、`en`、`ja`、`ko`。
+
+> 註：DDL 中亦定義 `card_type`、`card_class`、`card_rarity` 枚舉，但目前欄位仍以整數存放（保留向枚舉遷移的可能）。
+
+---
+
+## 3. 資料模型總覽（ER 重點）
 
 ```
-project/
-├── supabase/
-│   ├── config.json          # Supabase 連線配置
-│   └── schema.sql           # 資料庫結構定義
-├── output/
-│   ├── shadowverse_cards_cht.json
-│   ├── shadowverse_cards_chs.json
-│   ├── shadowverse_cards_en.json
-│   ├── shadowverse_cards_ja.json
-│   ├── shadowverse_cards_ko.json
-│   └── tips_data/
-│       ├── tips_data_cht.json
-│       ├── tips_data_chs.json
-│       ├── tips_data_en.json
-│       ├── tips_data_ja.json
-│       └── tips_data_ko.json
-└── supabase_sync.py # 同步腳本
+card_set_bases (1) ─┐
+                    ├─< card_set_i18n (多語)
+tribe_bases (1) ────┤
+                    └─< tribe_i18n   (多語)
+skill_bases (1) ────┐
+                    └─< skill_i18n   (多語)
+
+card_bases (1) ──< card_i18n (多語)
+   │               │
+   │               ├─< card_texts (每語言 1 筆)
+   │
+   ├─< card_tribes (多對多至 tribe_bases)
+   ├─< card_relations (自關聯: related / specific_effect)
+   └─< card_questions (多語)
 ```
 
-## 安裝依賴
+---
 
-```bash
-pip install supabase
-```
+## 4. 枚舉型別（Enums）
 
-## 設置步驟
+* `language_code`: `cht | chs | en | ja | ko`
+* `card_type`: `follower | spell | amulet`
+* `card_class`: `neutral | forestcraft | swordcraft | runecraft | dragoncraft | shadowcraft | bloodcraft | havencraft | portalcraft`
+* `card_rarity`: `bronze | silver | gold | legendary`
 
-### 1. 創建 Supabase 專案
+> 目前 `card_bases.type/class/rarity` 為整數欄位，對應關係建議於應用層或參照表維護；未來可視需要遷移為上述枚舉。
 
-1. 前往 [Supabase](https://supabase.com/) 創建新專案
-2. 記下專案的 URL 和 service_role key
+---
 
-### 2. 執行資料庫結構
+## 5. 資料表一覽與欄位說明
 
-在 Supabase Dashboard 的 SQL Editor 中執行 `schema.sql` 中的所有 SQL 指令，這會創建：
+### 5.1 卡組系列（Set）
 
-- `svwb_data` schema
-- 所有必要的資料表
-- RLS 政策
-- 觸發器
-- 初始化資料（卡組系列、部族、技能）
+**card\_set\_bases**
 
-### 3. 配置連線資訊
+* `id` (PK)
+* `created_at`, `updated_at`
 
-創建 `supabase/config.json` 文件：
+**card\_set\_i18n**（PK: `card_set_id + language`）
 
-```json
-{
-  "supabase_url": "https://your-project-id.supabase.co",
-  "supabase_key": "your-service-role-key-here"
-}
-```
+* `card_set_id` → `card_set_bases.id`
+* `language` (language\_code)
+* `name`
+* 時戳欄位同上
 
-**注意：** 使用 service_role key（不是 anon key）以便有完整的讀寫權限。
+### 5.2 部族（Tribe）
 
-## 使用方法
+**tribe\_bases** / **tribe\_i18n**：結構與卡組系列相同（`name` 為部族名稱）。
 
-### 基本同步操作
+### 5.3 技能（Skill）
 
-#### 同步所有語言的所有資料
-```bash
-python supabase_sync.py
-```
+**skill\_bases** / **skill\_i18n**：
 
-#### 同步特定語言
-```bash
-python supabase_sync.py -l cht en ja
-```
+* `skill_i18n.name` 技能名
+* `skill_i18n.replace_text` 技能取代文字（模板/渲染用）
 
-#### 只同步卡片資料
-```bash
-python supabase_sync.py --cards-only
-```
+### 5.4 卡片（Card）
 
-#### 只同步提示資料
-```bash
-python supabase_sync.py --tips-only
-```
+**card\_bases**（語言獨立屬性）
 
-#### 只同步特定語言的卡片資料
-```bash
-python supabase_sync.py -l cht --cards-only
-```
+* `card_id` (PK)
+* `base_card_id`：同卡多版本聚合鍵（同屬一張卡不同語言/進化圖等）
+* 數值屬性：`atk`, `life`, `cost`
+* 類別屬性：`type`（1=從者, 2=護符(無倒數), 3=護符(有倒數), 4=法術）、`class`（職業）、`rarity`（1\~4）
+* 其他：`card_set_id`, `is_token`（是否衍生物）、`is_include_rotation`（是否輪替可用）
+* 時戳：`created_at`, `updated_at`
 
-### 資料管理操作
+**card\_i18n**（語言相關屬性，PK: `card_id + language`）
 
-#### 驗證資料完整性
-```bash
-python supabase_sync.py --validate
-```
+* 基本：`name`, `name_ruby`, `cv`, `illustrator`
+* 靜態資源：`card_resource_id` / `card_image_hash` / `card_banner_image_hash`
+* 進化圖資源：`evo_card_resource_id` / `evo_card_image_hash` / `evo_card_banner_image_hash`
 
-#### 清理資料庫（危險操作）
-```bash
-python supabase_sync.py --clean
-```
+**card\_texts**（每語言一筆，Unique: `card_id + language`）
 
-### 查看幫助
-```bash
-python supabase_sync.py --help
-```
+* `skill_text`, `flavour_text`
+* 進化後：`evo_skill_text`, `evo_flavour_text`
+* FK：(`card_id`, `language`) → `card_i18n(card_id, language)`（ON DELETE CASCADE）
 
-### 常用組合命令
+**card\_tribes**（卡片與部族多對多）
 
-#### 清理並重新同步所有資料
-```bash
-python supabase_sync.py --clean
-python supabase_sync.py
-```
+* `card_id` → `card_bases.card_id`
+* `tribe_id` → `tribe_bases.id`
+* `UNIQUE(card_id, tribe_id)`
 
-#### 同步後驗證資料
-```bash
-python supabase_sync.py
-python supabase_sync.py --validate
-```
+**card\_relations**（卡片之間的引用關係）
 
-## 資料庫結構說明
+* `card_id`, `related_card_id`
+* `relation_type`：`related` / `specific_effect`
+* `UNIQUE(card_id, related_card_id, relation_type)`
 
-### 主要資料表
+**card\_questions**（Q\&A，依語言分筆）
 
-| 資料表 | 說明 |
-|--------|------|
-| `card_sets` | 卡組系列 |
-| `tribes` | 部族 |
-| `skills` | 技能 |
-| `cards` | 卡片主資料 |
-| `card_texts` | 卡片文字內容（多語言） |
-| `card_tribes` | 卡片-部族關聯 |
-| `card_relations` | 卡片相關關係 |
-| `card_questions` | 卡片問答 |
-| `tips` | 遊戲提示 |
+* `card_id`, `language`, `question`, `answer`
+* FK：(`card_id`, `language`) → `card_i18n(card_id, language)`（ON DELETE CASCADE）
 
-### 多語言支援
+### 5.5 提示（Tips）
 
-- 支援語言：`cht`, `chs`, `en`, `ja`, `ko`
-- 名稱類字段使用 JSONB 格式儲存多語言內容
-- 文字內容分語言存儲在獨立記錄中
+**tips**
 
-### 查詢範例
+* `language`, `title`, `description`, `sort_order`
+* `UNIQUE(language, title)`
+
+---
+
+## 6. 視圖（View）
+
+**cards\_full\_info**：便於單表查詢卡片完整資訊的匯總視圖。
+
+* 來源：`card_bases` 內聯 `card_i18n`；左外聯 `card_set_i18n`（同語言）與 `card_texts`（同語言）。
+* 欄位：
+
+  * 來自 `card_bases` 的所有欄位
+  * 語言欄位與 `card_i18n` 文案/資源欄位
+  * `card_set_name`（由 `card_set_i18n.name` 投影）
+  * `skill_text`, `flavour_text`, `evo_skill_text`, `evo_flavour_text`
+
+> 建議用於 API 讀取與後台檢索；進階篩選（部族、關聯）可額外 JOIN 對應表。
+
+---
+
+## 7. 索引與效能
+
+已建立針對常用篩選欄位的索引：
+
+* `card_bases`: `base_card_id`, `card_set_id`, `type`, `class`, `rarity`, `cost`
+* `card_i18n`: `language`, `(language, card_id)`
+* `card_set_i18n/tribe_i18n/skill_i18n`: `language`, `(language, *_id)`
+* 其他：`card_texts(card_id, language)`, `card_tribes(card_id)`, `card_relations(card_id)`, `card_questions(card_id, language)`, `tips(language)`
+
+**查詢建議**
+
+* 以語言為先：多語內容檢索時先以 `language = :lang` 篩選，再以其他條件縮小結果。
+* 依卡包/職業/費用做複合條件，讓單欄索引仍能快速篩選。
+
+---
+
+## 8. RLS（列級安全）與政策
+
+**RLS 啟用於所有表**，並配置三類政策：
+
+1. **Read for all users**：任何角色可 `SELECT`（公開讀）
+2. **All access for service\_role**：Service Role 可 `ALL`（供離線同步腳本使用）
+3. **Write for authenticated**：登入用戶可 `ALL`（如前端需要寫入；若前端純讀可移除此組）
+
+> 若僅允許後端/腳本寫入，建議移除「authenticated 寫入」政策，或改為更細粒度（逐表/逐動作）。
+
+---
+
+## 9. 觸發器與時間戳
+
+* 通用觸發器函數 `update_modified_time()`：於 **UPDATE** 時回填 `updated_at = now()`。
+* 已套用於 base、i18n 與其他主要表。
+* 注意：**INSERT** 不會觸發更新 `updated_at`，其值維持預設 `now()`。
+
+---
+
+## 10. 資料遷移（舊→新 base+i18n）操作指南
+
+> DDL 內已備妥步驟註解與範例 SQL，建議流程：
+
+1. **建立新表**（本 schema 已完成）
+2. **回填 base 與 i18n**（依舊表 `card_sets/tribes/skills/cards` 匯入）
+3. **調整外鍵**：讓 `card_tribes`、`card_texts`、`card_questions` 指向新結構
+4. **驗證數量**：以 UNION 檢視舊/新筆數是否一致
+5. **刪除舊表**：確認成功後再清理
+
+---
+
+## 11. 同步腳本使用（`supabase_sync.py`）
+
+### 11.1 作用
+
+* 從 `output/` 內各語言 JSON 匯入：卡組名稱、部族、技能（含 `replace_text`）、卡片（含進化/圖片哈希/文字）、部族關聯、卡片關聯、Q\&A、提示（tips）。
+* 預設語言集：`cht chs en ja ko`；可選 `--cards-only` / `--tips-only`。
+* 提供 `--test`（表可存取性）、`--validate`（統計數量）、`--clean`（危險：清空資料）。
+
+### 11.2 權限與 Schema
+
+* 以 **Service Role key** 連線（需具 `service_role` 政策與 `public` schema）。
+* 以 `schema('public').table(name)` 方式操作各表。
+
+### 11.3 匯入邏輯摘要
+
+* **idempotent**：先查有無，再決定 `insert/update`；關聯表如 `card_tribes`/`card_relations` 先全刪後重建，確保與來源一致。
+* **語言依賴**：部族/關聯只在 `cht` 語言回寫一次，避免重複。
+* **一致性**：`card_texts`、`card_questions` 依語言唯一；`tips` 依語言全量覆蓋（先刪舊再插入）。
+
+### 11.4 常見問題
+
+* `permission denied`：多半為 RLS/金鑰錯誤，請確認 `schema.sql` 已套用、使用 service\_role key、並重新建立連線。
+* `42P01`（關聯不存在）：請確認已於正確 schema 建表且客戶端指定 `public`。
+
+---
+
+## 12. 常見查詢範例（SQL）
+
+**A. 以視圖查卡片（含卡包名與文案）**
 
 ```sql
--- 查詢特定語言的所有卡片
-SELECT c.*, ct.skill_text, ct.flavour_text 
-FROM svwb_data.cards c
-LEFT JOIN svwb_data.card_texts ct ON c.card_id = ct.card_id 
-WHERE ct.language = 'cht';
+SELECT card_id, language, name, card_set_name, cost, type, class, rarity,
+       skill_text, evo_skill_text
+FROM cards_full_info
+WHERE language = 'cht' AND card_set_id = 900 AND class = 2
+ORDER BY cost, rarity DESC;
+```
 
--- 查詢特定卡片的所有語言版本
-SELECT c.name, ct.language, ct.skill_text 
-FROM svwb_data.cards c
-JOIN svwb_data.card_texts ct ON c.card_id = ct.card_id 
-WHERE c.card_id = 10201110;
+**B. 查指定卡片的部族**
 
--- 查詢特定語言的提示
-SELECT * FROM svwb_data.tips 
-WHERE language = 'cht' 
+```sql
+SELECT t.*
+FROM card_tribes ct
+JOIN tribe_i18n t ON t.tribe_id = ct.tribe_id AND t.language = 'cht'
+WHERE ct.card_id = 123456;
+```
+
+**C. 查與某卡相關的卡（含特效關係）**
+
+```sql
+SELECT cr.related_card_id, cr.relation_type
+FROM card_relations cr
+WHERE cr.card_id = 123456;
+```
+
+**D. 查某語言的 Tips（依排序）**
+
+```sql
+SELECT title, description
+FROM tips
+WHERE language = 'ja'
 ORDER BY sort_order;
 ```
 
-## 權限設定
+---
 
-### RLS 政策
+## 13. 維運建議與最佳實務
 
-- **讀取權限：** 所有用戶可讀取
-- **寫入權限：** 認證用戶可寫入
-- **服務權限：** service_role 有完整權限（用於腳本同步）
+* **唯讀應用**：若前台不需寫入，建議移除或收斂「authenticated 全寫入」政策，避免誤用。
+* **枚舉一致性**：若切換至枚舉型別，需規劃好舊整數值→枚舉值的遷移與檢核。
+* **批次匯入**：大量更新建議以語言/卡包分批執行，觀察寫入量與延遲。
+* **索引維護**：觀測慢查詢（特別是多條件檢索），必要時新增複合索引。
+* **備援/回滾**：在 `--clean` 或大量刪改前先備份（或在非正式環境驗證）。
 
-### 安全建議
+---
 
-1. 不要在客戶端使用 service_role key
-2. 生產環境建議設置更細緻的 RLS 政策
-3. 定期輪換 API key
+## 14. 版本控管與變更紀錄（建議）
 
-## 故障排除
+* 將 `schema.sql` 納入版本控管，以 migration 檔標記版本/日期。
+* 對 `supabase_sync.py` 的語言集/匯入策略/刪除策略變更應記錄在 CHANGELOG。
 
-## 故障排除
+---
 
-### 常見錯誤
+### 附錄：欄位對照（速查）
 
-#### 1. 連線失敗
-```
-✗ 載入配置失敗: Invalid API key
-```
-**解決方法：**
-- 檢查 `supabase/config.json` 配置是否正確
-- 確認 URL 格式：`https://your-project-id.supabase.co`
-- 確認使用 service_role key（不是 anon key）
-- 檢查 key 是否已過期或被禁用
+* **語言欄位**：所有 i18n 表與 `card_texts`、`card_questions`、`tips` 皆有 `language`（enum）。
+* **主鍵/唯一**：
 
-#### 2. 權限錯誤
-```
-✗ 同步卡片資料失敗: Insufficient privileges
-```
-**解決方法：**
-- 確保使用 service_role key（有完整讀寫權限）
-- 檢查 RLS 政策是否正確設定
-- 確認資料庫 schema 已正確創建
-
-#### 3. 資料格式錯誤
-```
-✗ 同步卡片 10201110 失敗: Invalid input syntax for type integer
-```
-**解決方法：**
-- 確認 JSON 文件格式正確，沒有損壞
-- 檢查必要字段是否存在且格式正確
-- 驗證卡片 ID 是否為有效的整數
-
-#### 4. 文件不存在
-```
-卡片資料文件不存在: output/shadowverse_cards_cht.json
-```
-**解決方法：**
-- 確認文件路徑正確
-- 檢查文件名稱格式：`shadowverse_cards_{language_code}.json`
-- 確保 `output/` 和 `output/tips_data/` 目錄存在
-
-#### 5. 外鍵約束錯誤
-```
-警告: 部族 ID 999 不存在，跳過
-```
-**說明：**
-- 這是正常的警告訊息，不會影響同步
-- 腳本會自動跳過不存在的外鍵關聯
-- 如需要，可在基礎資料中新增對應的部族/技能資料
-
-### 日誌輸出說明
-
-腳本會輸出詳細的同步進度和狀態：
-
-```bash
-=== 開始同步 Shadowverse 資料到 Supabase ===
-✓ 成功連接到 Supabase: https://xxx.supabase.co
-
---- 處理 CHT 語言 ---
-
-開始同步 cht 語言卡片資料...
-  同步卡組系列資料...
-  同步部族資料...
-  同步技能資料...
-  同步卡片資料... (共 327 張)
-    已處理 50/327 張卡片
-    已處理 100/327 張卡片
-    ✓ 完成處理 327 張卡片
-✓ cht 語言卡片資料同步完成
-
-開始同步 cht 語言提示資料...
-✓ cht 語言提示資料同步完成 (共 71 條)
-
-=== 同步完成 ===
-成功: 10/10
-✓ 所有資料同步成功
-
-自動驗證資料完整性...
-=== 驗證資料完整性 ===
-卡片總數: 327
-CHT - 卡片文字: 327, 提示: 71
-CHS - 卡片文字: 327, 提示: 71
-EN - 卡片文字: 327, 提示: 71
-JA - 卡片文字: 327, 提示: 71
-KO - 卡片文字: 327, 提示: 71
-部族關聯: 156
-卡片關聯: 89
-問答: 45
-✓ 資料完整性檢查完成
-```
-
-## 補充
-若遇到權限錯誤（schema未公開，無法同步），可以在 SQL Editor 運行以下命令：
-```
-alter database postgres
-set
-  search_path = svwb_data,
-  public;
-
-GRANT USAGE ON SCHEMA svwb_data TO anon, authenticated, service_role;
-GRANT ALL ON ALL TABLES IN SCHEMA svwb_data TO anon, authenticated, service_role;
-GRANT ALL ON ALL ROUTINES IN SCHEMA svwb_data TO anon, authenticated, service_role;
-GRANT ALL ON ALL SEQUENCES IN SCHEMA svwb_data TO anon, authenticated, service_role;
-ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA svwb_data GRANT ALL ON TABLES TO anon, authenticated, service_role;
-ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA svwb_data GRANT ALL ON ROUTINES TO anon, authenticated, service_role;
-ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA svwb_data GRANT ALL ON SEQUENCES TO anon, authenticated, service_role;
-```
-
-### 狀態圖示說明
-- ✓ 成功操作
-- ✗ 失敗操作  
-- ⚠️ 警告訊息（不影響同步）
-
-## 性能優化
-
-### 批次處理
-
-腳本每處理 50 張卡片會顯示進度，對於大量資料同步很有效。
-
-### 索引優化
-
-資料庫已創建必要的索引來優化查詢性能：
-- 卡片 ID 索引
-- 語言索引
-- 複合索引
-
-## 擴展性
-
-### 新增語言
-
-1. 在 `language_code` 枚舉中新增語言代碼
-2. 更新同步腳本的語言列表
-3. 準備對應語言的資料文件
-
-### 新增字段
-
-1. 修改資料表結構
-2. 更新同步腳本邏輯
-3. 重新同步資料
-
-## 版本兼容性
-
-- Python 3.7+
-- supabase-py 最新版本
-- PostgreSQL 14+（Supabase 預設）
+  * `*_bases`: `id` 或 `card_id`
+  * `*_i18n`: `(*_id, language)`
+  * `card_texts`: `UNIQUE(card_id, language)`
+  * `card_tribes`: `UNIQUE(card_id, tribe_id)`
+  * `card_relations`: `UNIQUE(card_id, related_card_id, relation_type)`
+  * `tips`: `UNIQUE(language, title)`

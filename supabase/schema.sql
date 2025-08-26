@@ -20,7 +20,7 @@ $$;
 DO $$
 BEGIN
    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'card_class') THEN
-      CREATE TYPE card_class AS ENUM ('neutral', 'forestcraft', 'swordcraft', 'runecraft', 'dragoncraft', 'shadowcraft', 'bloodcraft', 'havencraft', 'portalcraft');
+      CREATE TYPE card_class AS ENUM ('neutral', 'elf', 'royal', 'witch', 'dragon', 'nightmare', 'bishop', 'nemesis');
    END IF;
 END
 $$;
@@ -396,66 +396,3 @@ FROM card_bases b
 JOIN card_i18n i ON b.card_id = i.card_id
 LEFT JOIN card_set_i18n csi ON b.card_set_id = csi.card_set_id AND i.language = csi.language
 LEFT JOIN card_texts ct ON b.card_id = ct.card_id AND i.language = ct.language;
-
--- === 遷移腳本：從舊表結構遷移到新結構 ===
--- 注意：請在確認新表結構正確且無資料後執行此腳本
--- 執行順序：1. 建立新表 2. 執行遷移 3. 驗證資料 4. 刪除舊表
-
--- 步驟1: 回填基礎表資料
--- INSERT INTO card_set_bases(id, created_at, updated_at)
--- SELECT id, MIN(created_at), MAX(updated_at) FROM card_sets GROUP BY id;
-
--- INSERT INTO tribe_bases(id, created_at, updated_at)
--- SELECT id, MIN(created_at), MAX(updated_at) FROM tribes GROUP BY id;
-
--- INSERT INTO skill_bases(id, created_at, updated_at)
--- SELECT id, MIN(created_at), MAX(updated_at) FROM skills GROUP BY id;
-
--- INSERT INTO card_bases (card_id, base_card_id, atk, life, cost, type, class, rarity, card_set_id, is_token, is_include_rotation, created_at, updated_at)
--- SELECT card_id, base_card_id, atk, life, cost, type, class, rarity, card_set_id, is_token, is_include_rotation,
---        MIN(created_at), MAX(updated_at)
--- FROM cards
--- GROUP BY card_id, base_card_id, atk, life, cost, type, class, rarity, card_set_id, is_token, is_include_rotation;
-
--- 步驟2: 回填i18n表資料
--- INSERT INTO card_set_i18n(card_set_id, language, name, created_at, updated_at)
--- SELECT id, language, name, created_at, updated_at FROM card_sets;
-
--- INSERT INTO tribe_i18n(tribe_id, language, name, created_at, updated_at)
--- SELECT id, language, name, created_at, updated_at FROM tribes;
-
--- INSERT INTO skill_i18n(skill_id, language, name, replace_text, created_at, updated_at)
--- SELECT id, language, name, replace_text, created_at, updated_at FROM skills;
-
--- INSERT INTO card_i18n (card_id, language, name, name_ruby, cv, illustrator,
---                        card_resource_id, card_image_hash, card_banner_image_hash,
---                        evo_card_resource_id, evo_card_image_hash, evo_card_banner_image_hash,
---                        created_at, updated_at)
--- SELECT card_id, language, name, name_ruby, cv, illustrator,
---        card_resource_id, card_image_hash, card_banner_image_hash,
---        evo_card_resource_id, evo_card_image_hash, evo_card_banner_image_hash,
---        created_at, updated_at
--- FROM cards;
-
--- 步驟3: 更新外鍵（如果尚未執行 ALTER TABLE 語句）
--- ALTER TABLE card_tribes DROP CONSTRAINT IF EXISTS card_tribes_tribe_id_fkey;
--- ALTER TABLE card_tribes ADD CONSTRAINT card_tribes_tribe_id_fkey FOREIGN KEY (tribe_id) REFERENCES tribe_bases(id);
-
--- ALTER TABLE card_texts DROP CONSTRAINT IF EXISTS card_texts_card_id_language_fkey;
--- ALTER TABLE card_texts ADD CONSTRAINT card_texts_card_lang_fkey FOREIGN KEY (card_id, language) REFERENCES card_i18n(card_id, language) ON DELETE CASCADE;
-
--- ALTER TABLE card_questions DROP CONSTRAINT IF EXISTS card_questions_card_id_language_fkey;
--- ALTER TABLE card_questions ADD CONSTRAINT card_questions_card_lang_fkey FOREIGN KEY (card_id, language) REFERENCES card_i18n(card_id, language) ON DELETE CASCADE;
-
--- 步驟4: 驗證遷移
--- SELECT 'card_sets' as table_name, COUNT(*) as old_count FROM card_sets
--- UNION ALL
--- SELECT 'card_set_bases', COUNT(*) FROM card_set_bases
--- UNION ALL
--- SELECT 'card_set_i18n', COUNT(*) FROM card_set_i18n;
-
--- 步驟5: 刪除舊表（在確認遷移成功後）
--- DROP TABLE IF EXISTS card_sets CASCADE;
--- DROP TABLE IF EXISTS tribes CASCADE;
--- DROP TABLE IF EXISTS skills CASCADE;
--- DROP TABLE IF EXISTS cards CASCADE;

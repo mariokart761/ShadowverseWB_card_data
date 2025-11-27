@@ -147,7 +147,7 @@ class ShadowverseDataSync:
             try:
                 set_id_int = int(set_id)
 
-                # 步驟1: 確保基礎表記錄存在
+                # 步驟1: 同步基礎表記錄（無論是否存在都要確保存在）
                 base_table = self._get_table('card_set_bases')
                 existing_base = base_table.select('id').eq('id', set_id_int).execute()
 
@@ -190,7 +190,7 @@ class ShadowverseDataSync:
             try:
                 tribe_id_int = int(tribe_id)
 
-                # 步驟1: 確保基礎表記錄存在
+                # 步驟1: 同步基礎表記錄（無論是否存在都要確保存在）
                 base_table = self._get_table('tribe_bases')
                 existing_base = base_table.select('id').eq('id', tribe_id_int).execute()
 
@@ -233,7 +233,7 @@ class ShadowverseDataSync:
             try:
                 skill_id_int = int(skill_id)
 
-                # 步驟1: 確保基礎表記錄存在
+                # 步驟1: 同步基礎表記錄（無論是否存在都要確保存在）
                 base_table = self._get_table('skill_bases')
                 existing_base = base_table.select('id').eq('id', skill_id_int).execute()
 
@@ -281,26 +281,31 @@ class ShadowverseDataSync:
                 if not common:
                     continue
 
-                # 步驟1: 確保基礎表記錄存在
+                # 步驟1: 同步基礎表記錄（無論是否存在都要更新）
                 base_table = self._get_table('card_bases')
                 existing_base = base_table.select('card_id').eq('card_id', card_id_int).execute()
 
+                # 準備基礎表資料（語言不變屬性）
+                base_data = {
+                    'card_id': card_id_int,
+                    'base_card_id': common.get('base_card_id', card_id_int),
+                    'atk': common.get('atk'),
+                    'life': common.get('life'),
+                    'cost': common.get('cost', 0),
+                    'type': common.get('type', 1),
+                    'class': common.get('class', 0),
+                    'rarity': common.get('rarity', 1),
+                    'card_set_id': common.get('card_set_id'),
+                    'is_token': common.get('is_token', False),
+                    'is_include_rotation': common.get('is_include_rotation', True)
+                }
+
                 if not existing_base.data:
-                    # 準備基礎表資料（語言不變屬性）
-                    base_data = {
-                        'card_id': card_id_int,
-                        'base_card_id': common.get('base_card_id', card_id_int),
-                        'atk': common.get('atk'),
-                        'life': common.get('life'),
-                        'cost': common.get('cost', 0),
-                        'type': common.get('type', 1),
-                        'class': common.get('class', 0),
-                        'rarity': common.get('rarity', 1),
-                        'card_set_id': common.get('card_set_id'),
-                        'is_token': common.get('is_token', False),
-                        'is_include_rotation': common.get('is_include_rotation', True)
-                    }
+                    # 新增記錄
                     base_table.insert(base_data).execute()
+                else:
+                    # 更新現有記錄
+                    base_table.update(base_data).eq('card_id', card_id_int).execute()
 
                 # 步驟2: 同步i18n表資料（語言相關屬性）
                 i18n_table = self._get_table('card_i18n')

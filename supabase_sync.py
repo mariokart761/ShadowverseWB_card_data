@@ -232,6 +232,7 @@ class ShadowverseDataSync:
             self._sync_cards(
                 payload.get("card_details", {}),
                 payload.get("cards", {}),
+                payload.get("sort_card_id_list", []),
                 language_code,
             )
 
@@ -317,12 +318,23 @@ class ShadowverseDataSync:
         self._bulk_upsert("skill_bases", base_rows, "id", "技能基礎資料")
         self._bulk_upsert("skill_i18n", i18n_rows, "skill_id,language", "技能多語資料")
 
-    def _sync_cards(self, card_details: Dict[str, Any], cards_data: Dict[str, Any], language_code: str):
+    def _sync_cards(
+        self,
+        card_details: Dict[str, Any],
+        cards_data: Dict[str, Any],
+        sort_card_id_list: List[int],
+        language_code: str,
+    ):
         """同步卡片資料"""
         if not card_details:
             return
 
         print(f"  同步卡片資料... (共 {len(card_details)} 張)")
+
+        # 官方排序（從 1 開始）；不在列表中的卡（衍生卡等）寫入 NULL
+        sort_order_map: Dict[int, int] = {}
+        for card_id in sort_card_id_list or []:
+            sort_order_map.setdefault(int(card_id), len(sort_order_map) + 1)
 
         base_rows: List[Dict[str, Any]] = []
         i18n_rows: List[Dict[str, Any]] = []
@@ -358,6 +370,7 @@ class ShadowverseDataSync:
                         "card_set_id": common.get("card_set_id"),
                         "is_token": common.get("is_token", False),
                         "is_include_rotation": common.get("is_include_rotation", True),
+                        "sort_order": sort_order_map.get(real_card_id),
                     }
                 )
 
